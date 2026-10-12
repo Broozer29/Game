@@ -21,17 +21,18 @@ import java.util.Map;
 public class ControlsTab {
 
     private static final int HEADER_Y = 105; //From the top of the card to the centre of the row
-    private static final int FIRE_Y = 155;
-    private static final int SPECIAL_ATTACK_Y = 210;
-    private static final int HOLD_FIRE_Y = 265;
-    private static final int MESSAGE_Y = 320;
+    private static final int FIRE_Y = 150;
+    private static final int SPECIAL_ATTACK_Y = 195;
+    private static final int HOLD_FIRE_Y = 240;
+    private static final int FREEZE_SHOP_Y = 285;
+    private static final int MESSAGE_Y = 335;
     private static final int BOTTOM_Y = 395; //The same row as SAVE
     private static final int LABEL_X = -215; //From the centre of the card to the start of a label
     private static final int BINDING_X = 150; //From the centre of the card to the centre of the binding column
     private static final int RESET_X = -120; //From the centre of the card to the centre of RESET
     private static final int MAX_KEY_NAME_LENGTH = 16; //Keeps a key name inside the binding column
 
-    private static final BindableAction[] ACTIONS = {BindableAction.FIRE, BindableAction.SPECIAL_ATTACK, BindableAction.HOLD_FIRE};
+    private static final BindableAction[] ACTIONS = {BindableAction.FIRE, BindableAction.SPECIAL_ATTACK, BindableAction.HOLD_FIRE, BindableAction.FREEZE_SHOP};
 
     private final SettingsManager settingsManager = SettingsManager.getInstance();
     private final int centerX;
@@ -59,6 +60,7 @@ public class ControlsTab {
         rowYs.put(BindableAction.FIRE, FIRE_Y);
         rowYs.put(BindableAction.SPECIAL_ATTACK, SPECIAL_ATTACK_Y);
         rowYs.put(BindableAction.HOLD_FIRE, HOLD_FIRE_Y);
+        rowYs.put(BindableAction.FREEZE_SHOP, FREEZE_SHOP_Y);
         actionHeader = MenuText.createText("ACTION", centerX + scaled(LABEL_X), cardTop + scaled(HEADER_Y), textScale, MenuText.ALIGN_LEFT);
         for (BindableAction action : ACTIONS) {
             labels.put(action, MenuText.createText(actionName(action), centerX + scaled(LABEL_X), cardTop + scaled(rowYs.get(action)), textScale, MenuText.ALIGN_LEFT));
@@ -77,6 +79,8 @@ public class ControlsTab {
                 return "SPECIAL ATTACK";
             case HOLD_FIRE:
                 return "AUTO FIRE";
+            case FREEZE_SHOP:
+                return "FREEZE SHOP";
             default:
                 return "FIRE";
         }

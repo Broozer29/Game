@@ -44,7 +44,9 @@ public class ShopRoller {
             ShopSlot previousSlot = previousRow == null ? null : previousRow.get(i);
             if (previousSlot != null && previousSlot.getStatus() == ShopSlotStatusEnums.Available && isItemAvailable(previousSlot.getItem())) {
                 //Carried over in the same slot, with its old rarity and price (a free item stays free)
-                slots.add(new ShopSlot(previousSlot.getItem(), previousSlot.getRarity(), previousSlot.getCost(), ShopSlotStatusEnums.Available));
+                ShopSlot carriedSlot = new ShopSlot(previousSlot.getItem(), previousSlot.getRarity(), previousSlot.getCost(), ShopSlotStatusEnums.Available);
+                carriedSlot.setCarried(true);
+                slots.add(carriedSlot);
                 continue;
             }
 

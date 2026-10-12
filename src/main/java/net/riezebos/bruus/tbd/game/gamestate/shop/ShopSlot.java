@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gamestate.shop;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 
@@ -10,6 +11,9 @@ public class ShopSlot {
     private ItemRarityEnums rarity;
     private float cost;
     private ShopSlotStatusEnums status;
+    // Set only on a slot carried over from a frozen shop, to play the thaw once. Not saved.
+    @JsonIgnore
+    private boolean carried;
 
     public ShopSlot() {
     }
@@ -51,5 +55,15 @@ public class ShopSlot {
 
     public void setStatus(ShopSlotStatusEnums status) {
         this.status = status;
+    }
+
+    @JsonIgnore
+    public boolean isCarried() {
+        return carried;
+    }
+
+    @JsonIgnore
+    public void setCarried(boolean carried) {
+        this.carried = carried;
     }
 }

@@ -1,6 +1,14 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
+import com.studiohartman.jamepad.ControllerButton;
 import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
+import net.riezebos.bruus.tbd.game.settings.BindableAction;
+import net.riezebos.bruus.tbd.game.settings.InputBindings;
+import net.riezebos.bruus.tbd.game.settings.SettingsManager;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
@@ -28,6 +36,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -56,6 +65,12 @@ public class ShopBoard extends MenuBoard {
     private MenuGrid activeGrid = regularMenuGrid;
     // Set by every input that changes the screen; onInputHandled rebuilds only then (BACK on a closed inventory changes nothing)
     private boolean rebuildNeeded = false;
+    // When the thaw of the carried items started (ms); 0 when none is playing
+    private long thawStartMillis = 0;
+    private static final int THAW_CORNERS_HOLD_MS = 250;
+    private static final int THAW_CORNERS_TOTAL_MS = 1000;
+    private static final int THAW_RIM_HOLD_MS = 400;
+    private static final int THAW_RIM_TOTAL_MS = 1600;
 
     private List<GUIComponent> popGUIComponentList = new ArrayList<>();
 
@@ -146,6 +161,7 @@ public class ShopBoard extends MenuBoard {
         nextLevelModifiersTextCollection = shopBoardCreator.createLevelModifiersText(songLengthBackgroundCard);
         // Create items from the shop contents
         buildItemRows();
+        thawStartMillis = anySlotCarried() ? System.currentTimeMillis() : 0;
 
         // Create difficulty and song length settings using the respective background cards
         selectPirateTribe = shopBoardCreator.createSelectPirateTribe(songDifficultyBackgroundCard);
@@ -366,6 +382,32 @@ public class ShopBoard extends MenuBoard {
         regularGridThirdRow = shopBoardCreator.createRowOfItems(2, contents);
     }
 
+    private boolean anySlotCarried() {
+        ShopContents contents = ShopManager.getInstance().getContents();
+        if (contents == null) {
+            return false;
+        }
+        for (List<ShopSlot> row : contents.getRows()) {
+            for (ShopSlot slot : row) {
+                if (slot.isCarried()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Freezes or unfreezes the whole shop, for the Freeze button and the Freeze shop binding
+    public void toggleFreeze() {
+        ShopContents contents = ShopManager.getInstance().getContents();
+        if (contents == null) {
+            return;
+        }
+        contents.setFrozen(!contents.isFrozen());
+        AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+        SaveManager.getInstance().exportCurrentSave();
+    }
+
     public void rerollShop() {
         ShopContents contents = ShopManager.getInstance().getContents();
         ShopRoller.rollShop(contents);
@@ -546,6 +588,26 @@ public class ShopBoard extends MenuBoard {
         }
     }
 
+    // The Freeze shop binding: a press of the bound key or button toggles the freeze (not while the inventory is open)
+    // and is not also a confirm or back. The frost is drawn live from the frozen flag, so no rebuild is needed.
+    @Override
+    protected boolean handleHostedInput(List<MenuAction> actions) {
+        List<Integer> keys = MenuInput.getInstance().pollPressedKeys();
+        List<ControllerButton> buttons = MenuInput.getInstance().pollPressedButtons();
+        if (showInventory) {
+            return false;
+        }
+        InputBindings bindings = SettingsManager.getInstance().getSettings().getInputBindings();
+        int key = bindings.getKey(BindableAction.FREEZE_SHOP);
+        ControllerButton button = bindings.getButton(BindableAction.FREEZE_SHOP);
+        boolean pressed = (key != KeyEvent.VK_UNDEFINED && keys.contains(key)) || (button != null && buttons.contains(button));
+        if (pressed) {
+            toggleFreeze();
+            actions.removeIf(action -> action == MenuAction.CONFIRM || action == MenuAction.BACK);
+        }
+        return false;
+    }
+
     @Override
     protected MenuGrid activeGrid() {
         return activeGrid;
@@ -601,6 +663,18 @@ public class ShopBoard extends MenuBoard {
 
     @Override
     protected void drawScreenOverlay(Graphics2D g) {
+        ShopContents shopContents = ShopManager.getInstance().getContents();
+        if (thawStartMillis != 0 && (shopContents == null || System.currentTimeMillis() - thawStartMillis >= THAW_RIM_TOTAL_MS)) {
+            //The thaw is over: forget the marks, so nothing is drawn or checked for it any more
+            if (shopContents != null) {
+                for (List<ShopSlot> row : shopContents.getRows()) {
+                    for (ShopSlot slot : row) {
+                        slot.setCarried(false);
+                    }
+                }
+            }
+            thawStartMillis = 0;
+        }
         for (GUIComponent component : popGUIComponentList) {
             if (component != null && component.isVisible()) {
                 drawGUIComponent(g, component);
@@ -744,6 +818,64 @@ public class ShopBoard extends MenuBoard {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, originalAntialiasing);
     }
 
+    // Thin corner lines on the icon box, outside the frost rim: an L per corner, moved `travel` px outward diagonally
+    private void drawFrostCorners(Graphics2D g, int x, int y, int width, int height, float alpha, int travel) {
+        float factor = DataClass.getInstance().getResolutionFactor();
+        float scale = width / 64f;
+        int length = Math.round(width * 0.26f);
+        int thickness = Math.max(1, Math.round(scale));
+        //The rim sits framePadding outside the icon and is 2 px wide (1 px outside its centre); the lines stand 2 px (scaled) beyond that
+        int offset = Math.round(3 * factor) + 1 + Math.round(2 * scale) + thickness;
+        int glow = Math.max(2, Math.round(3 * scale));
+
+        Composite originalComposite = g.getComposite();
+        Color originalColor = g.getColor();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0f, Math.min(1f, alpha))));
+        for (int dx = -1; dx <= 1; dx += 2) {
+            for (int dy = -1; dy <= 1; dy += 2) {
+                int cornerX = (dx < 0 ? x - offset : x + width + offset) + dx * travel;
+                int cornerY = (dy < 0 ? y - offset : y + height + offset) + dy * travel;
+                int horizontalX = dx < 0 ? cornerX : cornerX - length;
+                int horizontalY = dy < 0 ? cornerY : cornerY - thickness;
+                int verticalX = dx < 0 ? cornerX : cornerX - thickness;
+                int verticalY = dy < 0 ? cornerY : cornerY - length;
+                g.setColor(new Color(127, 220, 255, 45));
+                for (int i = glow; i >= 1; i--) {
+                    g.fillRect(horizontalX - i, horizontalY - i, length + i * 2, thickness + i * 2);
+                    g.fillRect(verticalX - i, verticalY - i, thickness + i * 2, length + i * 2);
+                }
+                g.setColor(new Color(230, 248, 255));
+                g.fillRect(horizontalX, horizontalY, length, thickness);
+                g.fillRect(verticalX, verticalY, thickness, length);
+            }
+        }
+        g.setComposite(originalComposite);
+        g.setColor(originalColor);
+    }
+
+    // The break thaw of a carried item: the frost holds, the corner lines fly outward and fade, then the rim fades
+    private void drawThaw(Graphics2D g, ShopItem object, int framePadding) {
+        long elapsed = System.currentTimeMillis() - thawStartMillis;
+        int xCoordinate = object.getXCoordinate();
+        int yCoordinate = object.getYCoordinate();
+
+        if (elapsed < THAW_RIM_TOTAL_MS) {
+            float rimProgress = Math.max(0f, Math.min(1f, (elapsed - THAW_RIM_HOLD_MS) / (float) (THAW_RIM_TOTAL_MS - THAW_RIM_HOLD_MS)));
+            float rimAlpha = 1f - rimProgress * rimProgress; //Ease in: slow at first
+            Composite originalComposite = g.getComposite();
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, rimAlpha));
+            drawFrostGlow(g, xCoordinate - framePadding, yCoordinate - framePadding,
+                    object.getWidth() + framePadding * 2, object.getHeight() + framePadding * 2, 5);
+            g.setComposite(originalComposite);
+        }
+        if (elapsed < THAW_CORNERS_TOTAL_MS) {
+            float progress = Math.max(0f, Math.min(1f, (elapsed - THAW_CORNERS_HOLD_MS) / (float) (THAW_CORNERS_TOTAL_MS - THAW_CORNERS_HOLD_MS)));
+            float eased = 1f - (1f - progress) * (1f - progress); //Ease out: fast at first
+            int travel = Math.round(9 * DataClass.getInstance().getResolutionFactor() * eased);
+            drawFrostCorners(g, xCoordinate, yCoordinate, object.getWidth(), object.getHeight(), 1f - eased, travel);
+        }
+    }
+
     private void drawItemsInShop(Graphics2D g, ShopItem object) {
 
         int xCoordinate = object.getXCoordinate();
@@ -754,19 +886,23 @@ public class ShopBoard extends MenuBoard {
             int framePadding = Math.round(3 * DataClass.getInstance().getResolutionFactor());
             drawFrostGlow(g, xCoordinate - framePadding, yCoordinate - framePadding,
                     object.getWidth() + framePadding * 2, object.getHeight() + framePadding * 2, 5);
+            drawFrostCorners(g, xCoordinate, yCoordinate, object.getWidth(), object.getHeight(), 1f, 0);
+        } else if (thawStartMillis != 0 && object.getSlot().isCarried() && object.getShopItemInformation().isAvailable()) {
+            drawThaw(g, object, Math.round(3 * DataClass.getInstance().getResolutionFactor()));
         }
+        int textShift = Math.round(8 * DataClass.getInstance().getResolutionFactor()); //Keeps the frost and its corner lines off the name
         g.setColor(object.getShopItemInformation().getItemRarity().getColor());
 
         if (object.getShopItemInformation().isAvailable()) {
             g.setFont(new Font(textFont, Font.BOLD, Math.round(10 * DataClass.getInstance().getResolutionFactor())));
             g.drawString(object.getShopItemInformation().getItem().getItemName(),
                     xCoordinate,
-                    yCoordinate + object.getHeight() + Math.round(10 * DataClass.getInstance().getResolutionFactor()));
+                    yCoordinate + object.getHeight() + textShift + Math.round(10 * DataClass.getInstance().getResolutionFactor()));
 
             g.setFont(new Font(textFont, Font.PLAIN, Math.round(10 * DataClass.getInstance().getResolutionFactor())));
             g.drawString(object.getShopItemInformation().getItemRarity().toString()
                     , xCoordinate
-                    , yCoordinate + object.getHeight() + Math.round(22 * DataClass.getInstance().getResolutionFactor()));
+                    , yCoordinate + object.getHeight() + textShift + Math.round(22 * DataClass.getInstance().getResolutionFactor()));
 
 
             boolean isFree = object.getShopItemInformation().getCost() <= 0.001f;
@@ -777,12 +913,12 @@ public class ShopBoard extends MenuBoard {
             }
             g.drawString(cost
                     , xCoordinate
-                    , yCoordinate + object.getHeight() + Math.round(34 * DataClass.getInstance().getResolutionFactor()));
+                    , yCoordinate + object.getHeight() + textShift + Math.round(34 * DataClass.getInstance().getResolutionFactor()));
         } else {
             g.setFont(new Font(textFont, Font.PLAIN, Math.round(10 * DataClass.getInstance().getResolutionFactor())));
             g.drawString("Unavailable!",
                     xCoordinate,
-                    yCoordinate + object.getHeight() + Math.round(10 * DataClass.getInstance().getResolutionFactor()));
+                    yCoordinate + object.getHeight() + textShift + Math.round(10 * DataClass.getInstance().getResolutionFactor()));
         }
     }
 

@@ -6,8 +6,13 @@ All notable changes on the `Nelis` branch.
 
 ### Added
 - A free Freeze button next to Refresh in the shop. Items you don't buy in a frozen shop come back in the same slots in the next shop, at the same price. Bought slots get new items. The frozen state is saved.
+- A new snowflake icon on the Freeze button.
+- Frozen items get thin corner lines around the frost frame.
+- A Freeze shop binding: F on the keyboard and RB on the controller by default. You can remap it in the CONTROLS tab, and it only works in the shop.
+- Kept items play a thaw animation when the next shop opens: the corner lines fly outward and fade, then the frost fades. It plays once and not when you continue a saved run.
 
 ### Changed
+- In the shop, the name, rarity and price under every item sit a little lower, so the frost no longer touches them.
 - Refreshing the shop also unfreezes it.
 - The shop's refresh cost is now worked out when you enter the shop, instead of when the level ends. It is still 15% of your minerals.
 - Internal: the shop's items, prices, bought slots, free refreshes and refresh cost now live in one saved data model (ShopContents), and the shop is saved after entering it, after every purchase and after every refresh.
