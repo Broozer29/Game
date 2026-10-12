@@ -22,6 +22,7 @@ Specifically, the Grid system, navigating the grid, reading and executing contro
 Some boards even have the left/right and up/down navigation methods reversed since the screen/grid is build from a row perspective instead of columns.
 It's a mess, not scalable and horribly inefficient. I do like the seperation between board and boardcreator and want to keep this boardcreators as is.
 Since 2026-10-11 the menu screens read keys and the controller through one shared `MenuInput`; the grid and its navigation are still copied per board (Nelis).
+On 2026-10-11 the base classes MenuBoard and MenuGrid were added (branch menu-board-base) and all five menu screens (difficulty, class selection, main menu, boons and shop) now use them (Nelis). This entry stays because GameBoard still copies some of the drawing.
 
 ## GameBoard: Drawing text on screen
 An unnecessary amount of code in GameBoard.java is used to draw text on screen. It's incredibly verbose, inefficient and horrible to maintain/read.

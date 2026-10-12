@@ -2,9 +2,11 @@ package net.riezebos.bruus.tbd.guiboards.boardcreators;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlot;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlotStatusEnums;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelDifficulty;
 import net.riezebos.bruus.tbd.game.level.enums.MiniBossConfig;
@@ -26,7 +28,6 @@ public class ShopBoardCreator {
     private float verticalScreenDistance;
     private float objectScale;
 
-    private ShopManager shopManager;
     public static int shopItemIconDimensions = Math.round(75 * DataClass.getInstance().getResolutionFactor());
 
     public ShopBoardCreator() {
@@ -36,7 +37,6 @@ public class ShopBoardCreator {
         this.verticalSpacing = 60 * DataClass.getInstance().getResolutionFactor();
         this.horizontalScreenDistance = 75 * DataClass.getInstance().getResolutionFactor();
         this.verticalScreenDistance = 20 * DataClass.getInstance().getResolutionFactor();
-        this.shopManager = ShopManager.getInstance();
         this.objectScale = Math.min(1 * DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor);
         shopItemIconDimensions = Math.round(75 * objectScale);
     }
@@ -224,8 +224,45 @@ public class ShopBoardCreator {
         spriteConfiguration.setImageType(ImageEnums.Square_Card);
 
         GUIComponent backgroundCard = new GUIComponent(spriteConfiguration);
+        //Half the width of the description card below it, so the Freeze card fits beside it
+        backgroundCard.setImageDimensions(Math.round(boardWidth * (350 / 1440f) / 2), backgroundCard.getHeight());
         backgroundCard.setYCoordinate(yCoordinate + Math.round(backgroundCard.getHeight() * 0.1f));
         return backgroundCard;
+    }
+
+    public GUIComponent createFreezeBackgroundCard(GUIComponent rerollBackgroundCard) {
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
+                rerollBackgroundCard.getXCoordinate() + rerollBackgroundCard.getWidth(),
+                rerollBackgroundCard.getYCoordinate(),
+                1, ImageEnums.Square_Card);
+        GUIComponent backgroundCard = new GUIComponent(spriteConfiguration);
+        backgroundCard.setImageDimensions(rerollBackgroundCard.getWidth(), rerollBackgroundCard.getHeight());
+        return backgroundCard;
+    }
+
+    public GUIComponent createFreezeButton(GUIComponent backgroundCard) {
+        int xCoordinate = backgroundCard.getCenterXCoordinate();
+        int yCoordinate = backgroundCard.getCenterYCoordinate();
+
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.GUIFreeze);
+        GUIComponent freezeButton = new MenuButton(spriteConfiguration);
+        freezeButton.setMenuFunctionality(MenuFunctionEnums.FreezeShop);
+
+        int freezeButtonDimensions = Math.round((backgroundCard.getWidth() / 4) * objectScale);
+        freezeButton.setImageDimensions(freezeButtonDimensions, freezeButtonDimensions);
+        freezeButton.setCenterCoordinates(xCoordinate, yCoordinate);
+        freezeButton.setDescriptionOfComponent("Freezes the shop. Frozen items remain in the shop until the next turn.");
+        return freezeButton;
+    }
+
+    public GUITextCollection createFreezeText(GUIComponent backgroundCard) {
+        int xCoordinate = backgroundCard.getXCoordinate() + Math.round(backgroundCard.getWidth() * 0.15f);
+        int yCoordinate = backgroundCard.getYCoordinate();
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate + Math.round(backgroundCard.getHeight() * 0.2f), "FREEZE SHOP");
+        textCollection.setScale(1.1f * objectScale);
+        textCollection.setStartingXCoordinate(backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2));
+        return textCollection;
     }
 
     public GUIComponent createRerollButton(GUIComponent backgroundCard) {
@@ -239,7 +276,7 @@ public class ShopBoardCreator {
         int rerollButonDimensions = Math.round((backgroundCard.getWidth() / 4) * objectScale);
         refreshButton.setImageDimensions(rerollButonDimensions, rerollButonDimensions);
         refreshButton.setCenterCoordinates(xCoordinate, yCoordinate);
-        refreshButton.setDescriptionOfComponent("Refreshes all items in the shop, allowing you to purchase new items. Cost is equal to 15% of minerals you entered the shop with.");
+        refreshButton.setDescriptionOfComponent("Refreshes all items in the shop, allowing you to purchase new items. Cost is equal to 15% of minerals you entered the shop with. Refreshing also unfreezes the shop.");
         return refreshButton;
     }
 
@@ -296,98 +333,31 @@ public class ShopBoardCreator {
         return config;
     }
 
-    private void handleHelpRequestedRelic(ShopItem shopItem) {
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.HelpRequested) != null && shopItem.getShopItemInformation().getItem().equals(ItemEnums.Contract)) {
-            shopItem.getShopItemInformation().setCost(0);
-        }
-    }
+    private static final String[] lockedRowDescriptions = {
+            "Previously completed level must be a difficulty of 2 or higher.",
+            "Previously completed level must be a difficulty of 4 or higher.",
+            "Previously completed level must be a difficulty of 6."
+    };
 
-    public List<GUIComponent> createNewFirstRowOfItems() {
-        List<GUIComponent> firstRow = new ArrayList<>();
-        boolean rolledRare = false;
-        for (int i = 0; i < 8; i++) {
+    //Builds one row of shop buttons from the slots of the shop contents
+    public List<GUIComponent> createRowOfItems(int row, ShopContents contents) {
+        List<GUIComponent> itemRow = new ArrayList<>();
+        List<ShopSlot> slots = contents.getRows().get(row);
+        for (int i = 0; i < slots.size(); i++) {
             float x = (i * (shopItemIconDimensions + horizontalSpacing)) + horizontalScreenDistance;
-            float y = verticalScreenDistance;
+            float y = (row * (shopItemIconDimensions + verticalSpacing)) + verticalScreenDistance;
             SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
 
-
-            ShopItem shopItem = new ShopItem(spriteConfiguration, !rolledRare ? ItemRarityEnums.getCommonOrRareEnum() : ItemRarityEnums.Common);
-
-            if (shopManager.getRowsUnlocked() < 1) {
-                shopItem.lockItemInShop();
-                shopItem.getShopItemInformation().setItemDescription("Previously completed level must be a difficulty of 2 or higher.");
+            ShopItem shopItem = new ShopItem(spriteConfiguration, slots.get(i));
+            if (slots.get(i).getStatus() == ShopSlotStatusEnums.Locked) {
+                shopItem.getShopItemInformation().setItemDescription(lockedRowDescriptions[row]);
             }
             shopItem.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
-            shopItem.setColumn(0);
+            shopItem.setColumn(row);
             shopItem.setRow(i);
-            firstRow.add(shopItem);
-
-            if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
-                rolledRare = true;
-            }
-
-            handleHelpRequestedRelic(shopItem);
+            itemRow.add(shopItem);
         }
-        return firstRow;
-    }
-
-    public List<GUIComponent> createNewSecondRowOfItems() {
-        List<GUIComponent> secondRow = new ArrayList<>();
-        boolean rolledRare = false;
-        for (int i = 0; i < 8; i++) {
-            float x = (i * (shopItemIconDimensions + horizontalSpacing)) + horizontalScreenDistance;
-            float y = (1 * (shopItemIconDimensions + verticalSpacing)) + verticalScreenDistance;
-            ItemRarityEnums type = !rolledRare ? ItemRarityEnums.getCommonOrRareEnum() : ItemRarityEnums.Common;
-
-            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
-            ShopItem shopItem = new ShopItem(spriteConfiguration, type);
-//            shopItem.getMenuItemInformation().setCost(shopItem.getMenuItemInformation().getCost() * 1.25f);
-
-
-            if (shopManager.getRowsUnlocked() < 2) {
-                shopItem.lockItemInShop();
-                shopItem.getShopItemInformation().setItemDescription("Previously completed level must be a difficulty of 4 or higher.");
-            }
-            shopItem.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
-            shopItem.setColumn(1);
-            shopItem.setRow(i);
-            secondRow.add(shopItem);
-
-            if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
-                rolledRare = true;
-            }
-            handleHelpRequestedRelic(shopItem);
-        }
-        return secondRow;
-    }
-
-
-    public List<GUIComponent> createNewThirdRowOfItems() {
-        List<GUIComponent> thirdRow = new ArrayList<>();
-        boolean rolledRare = false;
-        for (int i = 0; i < 8; i++) {
-            float x = (i * (shopItemIconDimensions + horizontalSpacing)) + horizontalScreenDistance;
-            float y = (2 * (shopItemIconDimensions + verticalSpacing)) + verticalScreenDistance;
-            ItemRarityEnums type =  !rolledRare ? ItemRarityEnums.getCommonOrRareEnum() : ItemRarityEnums.Common;
-
-            SpriteConfiguration spriteConfiguration = createSpriteConfiguration(x, y, 1, ImageEnums.Invisible);
-            ShopItem shopItem = new ShopItem(spriteConfiguration, type);
-
-            if (shopManager.getRowsUnlocked() < 3) {
-                shopItem.lockItemInShop();
-                shopItem.getShopItemInformation().setItemDescription("Previously completed level must be a difficulty of 6.");
-            }
-            shopItem.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
-            shopItem.setColumn(2);
-            shopItem.setRow(i);
-            thirdRow.add(shopItem);
-
-            if(shopItem.getShopItemInformation().getItemRarity() == ItemRarityEnums.Rare) {
-                rolledRare = true;
-            }
-            handleHelpRequestedRelic(shopItem);
-        }
-        return thirdRow;
+        return itemRow;
     }
 
 

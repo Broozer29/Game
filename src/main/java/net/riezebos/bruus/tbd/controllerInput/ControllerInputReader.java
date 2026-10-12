@@ -41,7 +41,7 @@ public class ControllerInputReader {
     private boolean waitingForRelease = false;
     private static final int MAX_QUEUED_BUTTONS = 16;
     private final Set<ControllerButton> buttonsDown = EnumSet.noneOf(ControllerButton.class); // as seen by the last tick
-    // Buttons that went down, for the CONTROLS tab: filled by the controller clock, drained by the settings page (both on the Swing thread); a full queue drops new presses
+    // Buttons that went down, for the CONTROLS tab and the Freeze shop binding: filled by the controller clock, drained by the settings page and the shop screen (all on the Swing thread); a full queue drops new presses
     private final BlockingQueue<ControllerButton> pressedButtons = new ArrayBlockingQueue<>(MAX_QUEUED_BUTTONS);
 
     // After joining a seat, the input that joined is ignored until everything is let go
