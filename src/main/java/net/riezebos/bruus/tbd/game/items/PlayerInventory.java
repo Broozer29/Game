@@ -48,7 +48,7 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.DistributedHeat);
+            addItem(ItemEnums.PlasmaCoatedBullets);
         } else {
             cashMoney = 0;
         }
@@ -217,8 +217,6 @@ public class PlayerInventory {
                 return new VIPTicket();
             case ElectricDestabilizer:
                 return new ElectricDestabilizer();
-            case ModulePower:
-                return new ModulePower();
             case ModuleAccuracy:
                 return new ModuleAccuracy();
             case UpgradeFocusFire:

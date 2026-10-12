@@ -12,6 +12,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.CalmInChaosStorm;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.CaptainPrimaryGun;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.CarrierPrimaryGun;
@@ -27,6 +28,8 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
+import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import net.riezebos.bruus.tbd.game.items.items.CalmInChaos;
@@ -903,6 +906,13 @@ public class SpaceShip extends GameObject {
     public void stopMoving() {
         directionx = 0;
         directiony = 0;
+    }
+
+    public EffectInterface initIgniteEffect(){
+        SpaceShip spaceShip = PlayerManager.getInstance().getRandomSpaceShip();
+        float duration = PlayerStats.getInstance().getIgniteDuration() * spaceShip.getIgniteDurationModifier();
+        float damage = PlayerStats.getInstance().getIgniteDamage() * spaceShip.getIgniteDamageModifier();
+        return new DamageOverTime(damage, duration, EffectIdentifiers.Ignite);
     }
 
     private void haltMoveLeft() {

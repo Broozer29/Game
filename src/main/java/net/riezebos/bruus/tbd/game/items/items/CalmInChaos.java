@@ -9,8 +9,8 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class CalmInChaos extends Item {
-    private static float targetDamagePercentage = 200f;
-    public static float hitPointRequirement = 0.75f;
+    private static float targetDamagePercentage = 250f;
+    public static float hitPointRequirement = 0.5f;
     public static float damageModifier = (float) (
             (targetDamagePercentage / 100f)
                     * SpecialAttack.defaultInternalTickCooldown

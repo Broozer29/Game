@@ -11,14 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 // One shared cache for rotated and resized images (single images and frame lists) with one memory budget.
 // Least recently used entries are dropped first when the pixel data of all cached images exceeds the budget.
@@ -59,7 +52,7 @@ public class ImageCache {
 
     private ImageCache() {
         String statsDir = System.getProperty("game.cacheStatsDir");
-        if (statsDir != null && !statsDir.isBlank()) {
+        if (DevTestSettings.exportCachePerformance && statsDir != null && !statsDir.isBlank()) {
             try {
                 Path dir = Paths.get(statsDir);
                 Files.createDirectories(dir);

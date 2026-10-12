@@ -50,7 +50,7 @@ public class SpawnSpecialAttackOnDeath implements EffectInterface {
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
         SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(gameObject.getDamage(), gameObject.isFriendly(), true, false, true, false, false);
 
-        SpecialAttack specialAttack = new LingeringAttack(spriteAnimationConfiguration, specialAttackConfiguration, null);
+        SpecialAttack specialAttack = new LingeringAttack(spriteAnimationConfiguration, specialAttackConfiguration);
         specialAttack.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         specialAttack.setTransparancyAlpha(false, 0.8f, 0.0f);
         return specialAttack;
