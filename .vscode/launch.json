@@ -5,6 +5,7 @@
       "type": "java",
       "name": "Run Game",
       "request": "launch",
+      "preLaunchTask": "compile",
       "mainClass": "net.riezebos.bruus.tbd.Game",
       "projectName": "Game",
       "cwd": "${workspaceFolder}",

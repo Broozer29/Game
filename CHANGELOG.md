@@ -35,6 +35,7 @@ All notable changes on the `Nelis` branch.
 - The stick no longer keeps moving the cursor on its own during the first seconds of the shop.
 - Electro Shredding's description now shows its real bonus (+100% per item at full shield), and Electrify drones' Electro Shred gets that bonus too.
 - Scorching Fury, Ephemeral Blaze and Eterna Burn now change the burn from the Fire Shield, lingering flames and the gasoline explosion too, not only from the flamethrower.
+- Standing where the portal appears no longer sends you straight to the shop and skips the relic choice after a boss: the portal now only appears once the relic is chosen, and can only be entered after it has appeared.
 
 ## 2026-10-10
 

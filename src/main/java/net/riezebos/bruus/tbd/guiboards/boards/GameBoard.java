@@ -48,6 +48,7 @@ import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.game.util.performancelogger.GameLoadLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
@@ -212,6 +213,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.hasExportedLogs = false;
         this.showRelicSelection = false;
         hasChosenRelic = false;
+        relicSelectionEnabled = false;
         selectedComponent = null;
         BoardManager.getInstance().getShopBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
         BoardManager.getInstance().getDifficultySelectionBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
@@ -269,6 +271,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     @Override
     public void paintComponent(Graphics g) {
+        long loadDrawStart = System.nanoTime();
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         drawObjects(g2d);
@@ -303,6 +306,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         ControllerNotices.getInstance().draw(g2d);
 
         Toolkit.getDefaultToolkit().sync();
+        if (GameLoadLogger.getInstance().isEnabled()) {
+            GameLoadLogger.getInstance().logDraw(loadDrawStart);
+        }
     }
 
     private void goToNextLevel() {
@@ -1080,6 +1086,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     // Called on every action/input. Essentially the infinite loop that plays the game
     public void actionPerformed(ActionEvent e) {
+        GameLoadLogger gameLoadLogger = GameLoadLogger.getInstance();
+        long loadTickStart = gameLoadLogger.isEnabled() ? gameLoadLogger.startTick() : 0;
         try {
             if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
                 if (this.zoningInAlpha <= 0.05) {
@@ -1115,6 +1123,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             if (lastKnownState == null || lastKnownState != gameState.getGameState()) {
                 lastKnownState = gameState.getGameState();
                 System.out.println("Last known gamestate: " + lastKnownState);
+            }
+            if (gameLoadLogger.isEnabled()) {
+                gameLoadLogger.endTick(loadTickStart);
             }
             repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5);
         } catch (Exception ex) {
@@ -1440,6 +1451,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private boolean isUsersFirstInputForRelicselection = false;
     private double gameSecondsSinceBossDied = 0;
     private boolean relicSelectionEnabled = false;
+
+    // A boss died and its relic has not been chosen yet
+    public boolean isRelicSelectionPending() {
+        return relicSelectionEnabled && !hasChosenRelic;
+    }
 
     private boolean shouldShowRelicSelection() {
         if (relicSelectionEnabled && gameSecondsSinceBossDied + 1 < GameState.getInstance().getGameSeconds()) {
