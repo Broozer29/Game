@@ -2,6 +2,8 @@
 Level flow, portals, the structure of a run and saved progress.
 
 ## Bugs
+- At the start of a level the song progress bar shows full for a moment before it resets (Nelis, 2026-10-12)
+  - `GameBoard.drawSongProgressBar` only skips drawing when both the progression and the song length are negative (`&&`); before the new level's start time and song end are set it divides old values
 - Enemies flying down (and formations flying down or up) appear inside the screen instead of entering from outside it (Nelis, 2026-10-08)
   - Single enemies: `SpawningCoordinator.getUpBlockYCoordinate` returns a y between -150 and 0, the top edge of the sprite, so most of a tall enemy is already on screen when it spawns
   - Formations: `Director.calculateBaseY` keeps only 10 pixels between the top or bottom edge and the formation's first row, and enemies are placed by their center, so the first row starts half visible

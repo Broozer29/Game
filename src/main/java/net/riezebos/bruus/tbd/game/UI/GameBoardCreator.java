@@ -406,10 +406,11 @@ public class GameBoardCreator {
     }
 
     public int calculateProgressBarFillingWidth(double currentFrame, double maxFrames) {
-        if (currentFrame < 0) {
+        //Until the new song's end is known the length is not positive: show an empty bar (a width of 0 or less would leave the full-width image)
+        if (currentFrame < 0 || maxFrames <= 0) {
             return 1;
         }
-        return Math.min(progressBarFrame.getWidth(), (int) (currentFrame / maxFrames * progressBarFrame.getWidth()));
+        return Math.max(1, Math.min(progressBarFrame.getWidth(), (int) (currentFrame / maxFrames * progressBarFrame.getWidth())));
     }
 
 
