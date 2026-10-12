@@ -10,21 +10,24 @@ import java.util.Random;
 public enum ItemEnums {
 
     //Disabled/deprecated stuff
-    ReflectiveShielding(ItemRarityEnums.Common, ImageEnums.Thornedplates, "Reflective Shielding", false),
     Thornweaver(ItemRarityEnums.Relic, ImageEnums.ThornWeaver, "Thornweaver", false),
     BarbedAegis(ItemRarityEnums.Rare, ImageEnums.BarbedAegis, "Barbed Aegis", false),
     BarbedMissiles(ItemRarityEnums.Rare, ImageEnums.BarbedMissiles, "Barbed Missiles", false),
-    BarrierSuperSizer(ItemRarityEnums.Common, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", false), //It's a boring item
     ProtossThorns(ItemRarityEnums.Rare, ImageEnums.Test_Image, "Thorned Ships", false),
     Locked(ItemRarityEnums.Locked, ImageEnums.LockedIcon, "Locked", false),
     RepulsionArmorPlate(ItemRarityEnums.Common, ImageEnums.Starcraft2_Health_Upgrade_2, "Armor Plate", false), //It's boring and never used
     MoneyPrinter(ItemRarityEnums.Rare, ImageEnums.MoneyPrinter, "Loot Box", false), //Completely fucks up the pacing & has broken implementation
-    PyrrhicProtocol(ItemRarityEnums.Legendary, ImageEnums.PyrrhicProtocolIcon, "Pyrrhic Protocol", false),
+    PyrrhicProtocol(ItemRarityEnums.Legendary, ImageEnums.PyrrhicProtocolIcon, "Pyrrhic Protocol", false), //you dont want your beacon to die (unless, beacon build???)
     VengeanceProtocol(ItemRarityEnums.Rare, ImageEnums.VengeanceProtocolIcon, "Vengeance Protocol", false),
-    EnergySiphon(ItemRarityEnums.Common, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
-    ModulePower(ItemRarityEnums.Legendary, ImageEnums.Test_Image, "Module: Power", false), //disabled omdat drones al genoeg snowballen, dit zou extra op extra zijn
     PuncturingPierce(ItemRarityEnums.Legendary, ImageEnums.PuncturingPierces, "Puncturing Pierce", false), //disabled want saai
     Guillotine(ItemRarityEnums.Legendary, ImageEnums.Guillotine, "Guillotine", false), //disabled want fundamenteel niet eens met de spirit van deze item, saaie item en een nachtmerrie om omheen te designen
+    RocketLauncher(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Dual_Rockets, "Rocket Launcher", false),
+    ArmorPiercingRounds(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", false),
+    KineticDynamo(ItemRarityEnums.Legendary, ImageEnums.KineticDynamoIcon, "Kinetic Dynamo", false), //todo multiplayer update broke it and I never fixed it
+
+    ReflectiveShielding(ItemRarityEnums.Common, ImageEnums.Thornedplates, "Reflective Shielding", false),
+    EnergySiphon(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
+    BarrierSuperSizer(ItemRarityEnums.Common, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", false),
     //Relics 2.0
     //generic relics
     Placeholder(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
@@ -47,7 +50,6 @@ public enum ItemEnums {
     OneShotOneKill(ItemRarityEnums.Relic, ImageEnums.OneShotOneKill, "One shot, one kill", true),
     ElectricDestabilizer(ItemRarityEnums.Relic, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true),
     SideCannons(ItemRarityEnums.Relic, ImageEnums.SideCannons, "Side Cannons", true),
-    RocketLauncher(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Dual_Rockets, "Rocket Launcher", false),
 
     //firefighter relics
     ModuleScorch(ItemRarityEnums.Relic, ImageEnums.ModuleScorchIcon, "Module: Scorch", true),
@@ -77,13 +79,11 @@ public enum ItemEnums {
 
 
     //-----------------------------
-    ArmorPiercingRounds(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", true),
     LeechingLasers(ItemRarityEnums.Rare, ImageEnums.LeechingLasers, "Leeching Lasers", false),
     CalmInChaos(ItemRarityEnums.Legendary, ImageEnums.CalmInChaos, "Calm in chaos", true),
     ElectroShredding(ItemRarityEnums.Legendary, ImageEnums.Electroshedding, "Electro Shredding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
     Recycler(ItemRarityEnums.Rare, ImageEnums.Recycler, "Recycler", true),
-
     PhotonPiercer(ItemRarityEnums.Common, ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true),
     CannisterOfGasoline(ItemRarityEnums.Rare, ImageEnums.CannisterOfGasoline, "Gasoline", true),
     RegenerativeSteel(ItemRarityEnums.Common, ImageEnums.Starcraft2_Heal, "Regenerative Steel", true),
@@ -110,7 +110,7 @@ public enum ItemEnums {
     ScorchingFury(ItemRarityEnums.Common, ImageEnums.Starcraft2RepairBeam, "Scorching Fury", true),
     FlameDetonation(ItemRarityEnums.Legendary, ImageEnums.Starcraft2_MineExplosion, "Flame Detonation", true),
     EscalatingFlames(ItemRarityEnums.Common, ImageEnums.EscalatingFlames, "Escalating Flames", true),
-    FuelCannister(ItemRarityEnums.Rare, ImageEnums.FuelCannister, "Fuel Cannister", true),
+    FuelCannister(ItemRarityEnums.Legendary, ImageEnums.FuelCannister, "Fuel Cannister", true),
     BargainBucket(ItemRarityEnums.Legendary, ImageEnums.BargainBucket, "Bargain Bucket", true),
     ProtossScout(ItemRarityEnums.Common, ImageEnums.ScoutItem, "Hangar Bay: Scout", true),
     ProtossArbiter(ItemRarityEnums.Rare, ImageEnums.ArbiterItem, "Hangar Bay: Arbiter", true),
@@ -119,7 +119,6 @@ public enum ItemEnums {
     HangarBayUpgrade(ItemRarityEnums.Legendary, ImageEnums.HangarBayIcon, "Hangar Bay Upgrade", true),
     RallyTheFleet(ItemRarityEnums.Rare, ImageEnums.RallyTheFleetIcon, "Rally the Fleet", true),
     Martyrdom(ItemRarityEnums.Legendary, ImageEnums.FrenzyIcon, "Martyrdom", true),
-    KineticDynamo(ItemRarityEnums.Legendary, ImageEnums.KineticDynamoIcon, "Kinetic Dynamo", false),
     ArbiterMultiTargeting(ItemRarityEnums.Rare, ImageEnums.ArbiterMultiTargetIcon, "Arbiter Multi Targeting", true),
     ConstructionKit(ItemRarityEnums.Legendary, ImageEnums.ConstructionKitIcon, "Construction Kit", true),
     SynergeticLink(ItemRarityEnums.Legendary, ImageEnums.SynergeticLinkIcon, "Synergetic Link", false),

@@ -217,8 +217,6 @@ public class PlayerInventory {
                 return new VIPTicket();
             case ElectricDestabilizer:
                 return new ElectricDestabilizer();
-            case ModulePower:
-                return new ModulePower();
             case ModuleAccuracy:
                 return new ModuleAccuracy();
             case UpgradeFocusFire:

@@ -390,9 +390,6 @@ public class ItemDescriptionRetriever {
                 return "Increases the amount of Bile Bits created from Bile by " + FragmentationSacs.bonusBileBits + ".";
             }
             //--------------------------------------Uncounted--------------------------------------
-            case ModulePower -> {
-                return "Drones deal " + Math.round(ModulePower.damageBonus * 100) + "% more damage.";
-            }
             case ArmorPiercingRounds -> {
                 return "Increases damage dealt to Mini Bosses by " + Math.round(ArmorPiercingRounds.damageModifier * 100) + "%";
             }

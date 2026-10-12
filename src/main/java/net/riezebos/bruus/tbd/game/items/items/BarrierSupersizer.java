@@ -13,11 +13,11 @@ public class BarrierSupersizer extends Item {
         super(ItemEnums.BarrierSuperSizer, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
-    //Increases the maximum shield and overloaded shield by 10% and 20% per item
+    //Increases the maximum shield and overloaded shield by 20%
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(gameObject instanceof SpaceShip spaceShip) {
-            //deprecated & removed
+            spaceShip.setMaxShieldPoints(spaceShip.getMaxShieldPoints() * (1 + modifierBonus * quantity));
         }
     }
 
