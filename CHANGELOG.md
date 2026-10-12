@@ -14,7 +14,7 @@ All notable changes on the `Nelis` branch.
 ### Changed
 - In the shop, the name, rarity and price under every item sit a little lower, so the frost no longer touches them.
 - Refreshing the shop also unfreezes it.
-- The thaw is faster (corner lines 0.5 s, frost 0.8 s). Unfreezing the shop plays the same thaw on every frozen item. After you freeze or unfreeze, the Freeze button and its binding wait 0.9 s before they work again.
+- The thaw is faster: the corner lines and the frost break off together in 0.6 s. Unfreezing the shop plays the same thaw on every frozen item. After you unfreeze, the Freeze button and its binding wait 0.7 s before they work again; freezing has no wait.
 - Internal: the freeze code moved out of ShopBoard into ShopFreezeService (logic) and ShopFreezeEffect (drawing).
 - The shop's refresh cost is now worked out when you enter the shop, instead of when the level ends. It is still 15% of your minerals.
 - Internal: the shop's items, prices, bought slots, free refreshes and refresh cost now live in one saved data model (ShopContents), and the shop is saved after entering it, after every purchase and after every refresh.

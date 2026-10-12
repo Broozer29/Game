@@ -11,10 +11,8 @@ import java.util.List;
 // Everything the shop draws for the freeze: the frost on the items, the thaw, and the Freeze button with its glow. The logic is in ShopFreezeService.
 public class ShopFreezeEffect {
 
-    private static final int THAW_CORNERS_HOLD_MS = 125;
-    private static final int THAW_CORNERS_TOTAL_MS = 500;
-    private static final int THAW_RIM_HOLD_MS = 200;
-    private static final int THAW_RIM_TOTAL_MS = ShopFreezeService.THAW_RIM_TOTAL_MS;
+    private static final int THAW_HOLD_MS = 100;
+    private static final int THAW_TOTAL_MS = ShopFreezeService.THAW_TOTAL_MS;
 
     private static ShopFreezeEffect instance = new ShopFreezeEffect();
 
@@ -146,26 +144,24 @@ public class ShopFreezeEffect {
         g.setColor(originalColor);
     }
 
-    // The break thaw of a carried or just-unfrozen item: the frost holds, the corner lines fly outward and fade, then the rim fades
+    // The break thaw of a carried or just-unfrozen item: the frost holds, then the corner lines fly outward while they and the rim fade out together
     private void drawThaw(Graphics2D g, ShopItem object, int framePadding) {
         long elapsed = System.currentTimeMillis() - service.getThawStartMillis();
+        if (elapsed >= THAW_TOTAL_MS) {
+            return;
+        }
         int xCoordinate = object.getXCoordinate();
         int yCoordinate = object.getYCoordinate();
+        float progress = Math.max(0f, Math.min(1f, (elapsed - THAW_HOLD_MS) / (float) (THAW_TOTAL_MS - THAW_HOLD_MS)));
+        float eased = 1f - (1f - progress) * (1f - progress); //Ease out: fast at first
+        float alpha = 1f - eased;
 
-        if (elapsed < THAW_RIM_TOTAL_MS) {
-            float rimProgress = Math.max(0f, Math.min(1f, (elapsed - THAW_RIM_HOLD_MS) / (float) (THAW_RIM_TOTAL_MS - THAW_RIM_HOLD_MS)));
-            float rimAlpha = 1f - rimProgress * rimProgress; //Ease in: slow at first
-            Composite originalComposite = g.getComposite();
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, rimAlpha));
-            drawFrostGlow(g, xCoordinate - framePadding, yCoordinate - framePadding,
-                    object.getWidth() + framePadding * 2, object.getHeight() + framePadding * 2, 5);
-            g.setComposite(originalComposite);
-        }
-        if (elapsed < THAW_CORNERS_TOTAL_MS) {
-            float progress = Math.max(0f, Math.min(1f, (elapsed - THAW_CORNERS_HOLD_MS) / (float) (THAW_CORNERS_TOTAL_MS - THAW_CORNERS_HOLD_MS)));
-            float eased = 1f - (1f - progress) * (1f - progress); //Ease out: fast at first
-            int travel = Math.round(9 * DataClass.getInstance().getResolutionFactor() * eased);
-            drawFrostCorners(g, xCoordinate, yCoordinate, object.getWidth(), object.getHeight(), 1f - eased, travel);
-        }
+        Composite originalComposite = g.getComposite();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        drawFrostGlow(g, xCoordinate - framePadding, yCoordinate - framePadding,
+                object.getWidth() + framePadding * 2, object.getHeight() + framePadding * 2, 5);
+        g.setComposite(originalComposite);
+        int travel = Math.round(9 * DataClass.getInstance().getResolutionFactor() * eased);
+        drawFrostCorners(g, xCoordinate, yCoordinate, object.getWidth(), object.getHeight(), alpha, travel);
     }
 }

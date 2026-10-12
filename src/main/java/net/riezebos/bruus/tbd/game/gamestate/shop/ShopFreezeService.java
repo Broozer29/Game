@@ -14,17 +14,17 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
-// The freeze logic of the shop: the toggle with its cooldown, the thaw marks and the thaw clock. It draws nothing (see ShopFreezeEffect).
+// The freeze logic of the shop: the toggle with the cooldown after an unfreeze, the thaw marks and the thaw clock. It draws nothing (see ShopFreezeEffect).
 public class ShopFreezeService {
 
     // How long the whole thaw takes (ms); the cooldown and the end of the thaw are measured from it
-    public static final int THAW_RIM_TOTAL_MS = 800;
-    // Freezing or unfreezing waits until the thaw is over plus 0.1 s, so the toggle can't be spammed
-    private static final int FREEZE_TOGGLE_COOLDOWN_MS = THAW_RIM_TOTAL_MS + 100;
+    public static final int THAW_TOTAL_MS = 600;
+    // After an unfreeze, the toggle waits until its thaw is over plus 0.1 s, so the thaw can't be spammed; freezing has no cooldown
+    private static final int UNFREEZE_COOLDOWN_MS = THAW_TOTAL_MS + 100;
 
     // When the thaw of the carried items, or of the items just unfrozen, started (ms); 0 when none is playing
     private long thawStartMillis = 0;
-    private long lastFreezeToggleMillis = 0;
+    private long lastUnfreezeMillis = 0;
 
     private static ShopFreezeService instance = new ShopFreezeService();
 
@@ -49,11 +49,11 @@ public class ShopFreezeService {
     public void toggleFreeze() {
         ShopContents contents = ShopManager.getInstance().getContents();
         long now = System.currentTimeMillis();
-        if (contents == null || now - lastFreezeToggleMillis < FREEZE_TOGGLE_COOLDOWN_MS) {
+        if (contents == null || now - lastUnfreezeMillis < UNFREEZE_COOLDOWN_MS) {
             return;
         }
-        lastFreezeToggleMillis = now;
         if (contents.isFrozen()) {
+            lastUnfreezeMillis = now;
             //Unfreezing plays the same thaw as a new shop does on its kept items, on every item that was frozen
             for (List<ShopSlot> row : contents.getRows()) {
                 for (ShopSlot slot : row) {
@@ -77,7 +77,7 @@ public class ShopFreezeService {
     // Forgets the carried marks once the thaw is over, so nothing is drawn or checked for it any more
     public void clearThawIfOver() {
         ShopContents contents = ShopManager.getInstance().getContents();
-        if (thawStartMillis != 0 && (contents == null || System.currentTimeMillis() - thawStartMillis >= THAW_RIM_TOTAL_MS)) {
+        if (thawStartMillis != 0 && (contents == null || System.currentTimeMillis() - thawStartMillis >= THAW_TOTAL_MS)) {
             if (contents != null) {
                 for (List<ShopSlot> row : contents.getRows()) {
                     for (ShopSlot slot : row) {
