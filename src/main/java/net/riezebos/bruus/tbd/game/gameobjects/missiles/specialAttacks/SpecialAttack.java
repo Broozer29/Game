@@ -29,7 +29,7 @@ public class SpecialAttack extends GameObject {
     protected float maxHPDamagePercentageForMissiles;
     private Map<GameObject, Double> affectedObjects = new HashMap<>();
     protected double internalTickCooldown = defaultInternalTickCooldown;
-    public static double defaultInternalTickCooldown = 0.25f;
+    public static double defaultInternalTickCooldown = 0.15f;
     protected boolean isDissipating = false;
     protected boolean appliesItemEffects = true;
 

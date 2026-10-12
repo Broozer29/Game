@@ -48,7 +48,7 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.DistributedHeat);
+            addItem(ItemEnums.PlasmaCoatedBullets);
         } else {
             cashMoney = 0;
         }

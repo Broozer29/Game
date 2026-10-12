@@ -115,9 +115,8 @@ public class DormentExplosion implements EffectInterface {
                 SpriteAnimationConfiguration burningConfig = new SpriteAnimationConfiguration(spriteConfiguration, 2, true);
                 burningConfig.getSpriteConfiguration().setImageType(ImageEnums.IgniteBurning);
                 burningConfig.getSpriteConfiguration().setScale(1);
-                SpriteAnimation burningAnimation = new SpriteAnimation(burningConfig);
-                DamageOverTime burning = new DamageOverTime(burningDamage * PlayerManager.getInstance().getIgniteDamageModifier(ownerOrCreator), burningDuration, burningAnimation, EffectIdentifiers.Ignite);
-                explosion.addEffectToApply(burning);
+                EffectInterface igniteEffect = PlayerManager.getInstance().getRandomSpaceShip().initIgniteEffect();
+                explosion.addEffectToApply(igniteEffect);
             }
         }
         explosion.getAnimation().setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
@@ -144,7 +143,7 @@ public class DormentExplosion implements EffectInterface {
 
         SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(0, true,
                 true, false, true, false, false);
-        SpecialAttack lingeringFlame = new LingeringAttack(spriteAnimationConfiguration, specialAttackConfiguration, ownerOrCreator);
+        SpecialAttack lingeringFlame = new LingeringAttack(spriteAnimationConfiguration, specialAttackConfiguration);
         lingeringFlame.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
         handleSpecialAttack(lingeringFlame);
         MissileManager.getInstance().addSpecialAttack(lingeringFlame);

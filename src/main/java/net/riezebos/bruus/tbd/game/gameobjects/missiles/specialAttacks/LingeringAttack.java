@@ -2,16 +2,11 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.zerg.Mutalisk;
-import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
-import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.FlameDetonation;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -20,7 +15,7 @@ public class LingeringAttack extends SpecialAttack{
     private double gamesecondsStarted;
     private double duration;
 
-    public LingeringAttack(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration specialAttackConfiguration, GameObject igniteSource) {
+    public LingeringAttack(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration specialAttackConfiguration) {
         super(spriteAnimationConfiguration, specialAttackConfiguration);
         this.setObjectType("Lingering Attack");
         this.allowRepeatedDamage = true;
@@ -36,21 +31,18 @@ public class LingeringAttack extends SpecialAttack{
                 FlameDetonation flameDetonation = (FlameDetonation) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.FlameDetonation);
                 this.duration = flameDetonation.getDuration();
             }
-            initIgniteEffect(igniteSource);
+            initIgniteEffect();
         } else if(this.imageEnum.equals(ImageEnums.PoisonCloud)){
             super.internalTickCooldown = 0.45; //roughly every 0.5 seconds it applies damage
             this.damage = specialAttackConfiguration.getDamage();
             this.duration = Mutalisk.cloudDuration + (EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.2f);
         }
-
         gamesecondsStarted = GameState.getInstance().getGameSeconds();
     }
 
-    private void initIgniteEffect(GameObject igniteSource){
-        float duration = PlayerStats.getInstance().getIgniteDuration();
-        float damage = PlayerStats.getInstance().getIgniteDamage() * PlayerManager.getInstance().getIgniteDamageModifier(igniteSource);
-        EffectInterface ignite = new DamageOverTime(damage, duration, EffectIdentifiers.Ignite);
-        this.effectsToApply.add(ignite);
+    private void initIgniteEffect(){
+        SpaceShip spaceShip = PlayerManager.getInstance().getRandomSpaceShip();
+        this.effectsToApply.add(spaceShip.initIgniteEffect());
     }
 
     @Override

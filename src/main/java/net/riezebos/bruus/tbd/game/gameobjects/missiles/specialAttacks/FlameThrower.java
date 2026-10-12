@@ -1,13 +1,12 @@
 package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
 import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
-import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.WithoutGasItsAss;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -38,13 +37,9 @@ public class FlameThrower extends SpecialAttack {
         }
     }
 
-    private void initIgniteEffect() {
-        float duration = PlayerStats.getInstance().getIgniteDuration();
-        float damage = PlayerStats.getInstance().getIgniteDamage();
-        SpaceShip owner = (SpaceShip) this.ownerOrCreator;
-
-        EffectInterface ignite = new DamageOverTime(damage * owner.getIgniteDamageModifier(), duration, EffectIdentifiers.Ignite);
-        this.effectsToApply.add(ignite);
+    private void initIgniteEffect(){
+        SpaceShip spaceShip = PlayerManager.getInstance().getRandomSpaceShip();
+        this.effectsToApply.add(spaceShip.initIgniteEffect());
     }
 
     private void initIgniteMagnificationEffect() {
