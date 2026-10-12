@@ -2,6 +2,12 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-13
+
+### Changed
+- Internal: a level's boss and mini bosses are now decided before the level starts, in one plan. Nothing changes in play.
+- Internal: the image cache has a protected level section for images prepared just before a level; at the end of the level they return to the normal cache. Nothing uses it yet.
+
 ## 2026-10-12
 
 ### Added

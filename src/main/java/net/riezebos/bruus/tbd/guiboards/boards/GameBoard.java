@@ -231,6 +231,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             enemyManager.resetManager();
             missileManager.resetManager();
             levelManager = LevelManager.getInstance();
+            levelManager.clearPlan();
             relicBackgroundCards.clear();
             relicSelectionGrid.clear();
             GameBoardCreator.getInstance().resetRelicShopItems();

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class DirectorManager {
 
@@ -24,7 +25,6 @@ public class DirectorManager {
     private GodRunDetector godRunDetector = GodRunDetector.getInstance();
     private List<Director> directorList = new ArrayList<>();
     private List<MonsterCard> baseMonsterCards = new ArrayList<>();
-    private List<MonsterCard> miniBossMonsterCards = new ArrayList<>();
     private boolean enabled;
 
     private double lastCashCarrierSpawnTime;
@@ -85,7 +85,8 @@ public class DirectorManager {
         }
 
 
-        Director miniBossDirector = new Director(DirectorType.MiniBoss, miniBossMonsterCards);
+        Director miniBossDirector = new Director(DirectorType.MiniBoss, List.of());
+        miniBossDirector.setPlannedMiniBosses(LevelManager.getInstance().getPlannedMiniBosses());
         directorList.add(miniBossDirector);
 
         lastCashCarrierSpawnTime = 0;
@@ -109,8 +110,7 @@ public class DirectorManager {
         EnemyTribes enemyTribes = LevelManager.getInstance().getCurrentEnemyTribe();
 
         List<EnemyEnums> availableMonsters = new ArrayList<>();
-        List<EnemyEnums> filteredEnemies = Arrays.stream(EnemyEnums.values())
-                .filter(enemyEnums -> GameState.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired())
+        List<EnemyEnums> filteredEnemies = unlockedEnemies()
                 .filter(enemyEnums -> enemyEnums.getEnemyCategory() != EnemyCategory.Special
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Summon
                         && enemyEnums.getEnemyCategory() != EnemyCategory.Boss
@@ -131,17 +131,17 @@ public class DirectorManager {
             MonsterCard card = new MonsterCard(enemy, enemy.getCreditCost(), enemy.getWeight());
             baseMonsterCards.add(card);
         }
+    }
 
-        List<EnemyEnums> miniBosses = Arrays.stream(EnemyEnums.values())
-                .filter(enemyEnums -> GameState.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired())
+    private static Stream<EnemyEnums> unlockedEnemies() {
+        return Arrays.stream(EnemyEnums.values())
+                .filter(enemyEnums -> GameState.getInstance().getStagesCompleted() >= enemyEnums.getMinimumStageLevelRequired());
+    }
+
+    public List<EnemyEnums> getAvailableMiniBosses() {
+        return unlockedEnemies()
                 .filter(enemyEnums -> enemyEnums.getEnemyCategory().equals(EnemyCategory.MiniBoss))
                 .toList();
-
-        miniBossMonsterCards.clear();
-        for (EnemyEnums enemy : miniBosses) {
-            MonsterCard card = new MonsterCard(enemy, enemy.getCreditCost(), enemy.getWeight());
-            miniBossMonsterCards.add(card);
-        }
     }
 
 

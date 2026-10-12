@@ -48,6 +48,7 @@ public class Director {
     private boolean active;
 
     private int miniBossessSpawned = 0;
+    private List<EnemyEnums> plannedMiniBosses = new ArrayList<>();
 
     public Director(DirectorType directorType, List<MonsterCard> availableCards) {
         this.directorType = directorType;
@@ -133,7 +134,7 @@ public class Director {
     }
 
     private void handleMiniBossDirectorSpawn() {
-        if (miniBossessSpawned < LevelManager.getInstance().getCurrentMiniBossConfig().getMiniBossesPerLevel()) {
+        if (miniBossessSpawned < plannedMiniBosses.size()) {
             spawnMiniBoss();
             this.miniBossessSpawned++;
         }
@@ -141,13 +142,7 @@ public class Director {
 
     private void spawnMiniBoss() {
         // Set parameters for spawning
-        MonsterCard selectedCard = selectMonsterCard();
-        if (selectedCard == null) {
-            //failed to select a boss
-            return;
-        }
-
-        EnemyEnums miniBossType = selectedCard.getEnemyType();
+        EnemyEnums miniBossType = plannedMiniBosses.get(miniBossessSpawned);
         Direction direction = getMiniBossDirection(miniBossType);
         float scale = miniBossType.getDefaultScale();
         float xMovementSpeed = miniBossType.getMovementSpeed();
@@ -600,15 +595,15 @@ public class Director {
     }
 
 
+    public void setPlannedMiniBosses(List<EnemyEnums> plannedMiniBosses) {
+        this.plannedMiniBosses = plannedMiniBosses;
+    }
+
     public void receiveCredits(float amount) {
         this.credits += amount;
     }
 
     private MonsterCard selectMonsterCard() {
-        if (this.directorType == DirectorType.MiniBoss) {
-            return availableCards.get(random.nextInt(availableCards.size()));
-        }
-
         List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameState.getInstance().getDifficultyCoefficient());
         if (!adjustedCards.isEmpty()) {
             return weightedRandomSelection(adjustedCards);

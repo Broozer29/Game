@@ -251,7 +251,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
 - Never build boss images during a level: prepare them at game start, run start or level start (Nelis, 2026-10-08)
   - Today `Game.preloadThings` prepares the Space Station, Red and Yellow bosses and all five mini bosses at startup; the Twin boss, the Striker boss and the final boss are not prepared, so their first appearance builds their images during play
   - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup can be dropped again and rebuilt when it appears, which freezes the game for a moment
-  - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level (boss levels are known in advance); prepare the possible mini bosses at level start and keep them from being dropped until the level ends; keep preparing every boss at startup, including the three missing ones
+  - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level, or its mini bosses if it is a regular level (the level plan, `LevelManager.planNextLevel()`, now decides both before the level starts) and keep them from being dropped until the level ends; keep preparing every boss at startup, including the three missing ones
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
 - Why the game uses so much memory but hardly any processor or graphics card (Nelis, 2026-10-08: the PC almost ran out of memory again)
   - The process reached 7.9 GB and 8.5 GB in the two stress runs of 2026-10-08. After a forced garbage collection the Java heap held 3.9 to 4.4 GB, of which the image cache is 2.5 GB; the rest is outside the heap
@@ -270,7 +270,7 @@ Why: on 2026-10-07 a 15-minute stress run used up all of the PC's memory and cra
 The slow motion in busy levels turned out to be a different problem: damage numbers piling up (see Menus & UI). The cache does not cause the slowdown, only the memory use.
 
 Decisions for the experiment:
-- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both
+- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; copies made during a level preload sit in a level section outside the budget until the level ends, then go back to the normal section
 - The budget is a constant at the top of that class, first set to about 2.5 GB, which is above what one level needs today. It can be lowered once each image takes less memory
 - Memory is counted as width × height × 4 bytes per image, each image counted once even if two entries point to it
 - When the budget is full, the image used longest ago is dropped and `flush()`ed, so its graphics card copy is freed too
