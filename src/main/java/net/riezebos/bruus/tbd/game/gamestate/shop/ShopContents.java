@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // The only copy of the shop's state: 3 rows of 8 slots, the free refreshes left, the refresh cost
-// and whether Bonus Kaart's double purchase was used. Jackson bean: it is saved in the save file.
+// whether Bonus Kaart's double purchase was used and whether the shop is frozen (its unbought items carry over to the next shop). Jackson bean: it is saved in the save file.
 public class ShopContents {
 
     public static final int ROW_COUNT = 3;
@@ -14,6 +14,7 @@ public class ShopContents {
     private int freeRefreshesLeft;
     private int refreshCost;
     private boolean bonusKaartUsed;
+    private boolean frozen;
 
     public List<List<ShopSlot>> getRows() {
         return rows;
@@ -45,5 +46,13 @@ public class ShopContents {
 
     public void setBonusKaartUsed(boolean bonusKaartUsed) {
         this.bonusKaartUsed = bonusKaartUsed;
+    }
+
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
     }
 }

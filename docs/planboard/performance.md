@@ -69,7 +69,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Item lookups stream and build a new list on every hit (`PlayerInventory.getItemsByApplicationMethod`)
   - On Carrier, the drone list is rebuilt for every enemy missile (`FriendlyManager.getAllProtossDrones`)
 - The save file is written to disk on the game thread on every purchase, shop refresh, relic pick and level change
-  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:63 and 84, ShopManager.java:200, MenuButton.java:123 and 161, and GameBoard.java:185 and 335
+  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:63 and 84, ShopManager.java:211, MenuButton.java:124, 130 and 168, and GameBoard.java:185 and 336
   - `PlayerProfileManager` does the same on boss deaths, `GameState`, `PlayerInventory` and several boons
   - Fix: one shared `ObjectMapper`, and write in the background or once when leaving the shop
 - When a frame takes longer than 15 ms the whole game runs in slow motion instead of skipping frames
@@ -106,7 +106,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - They come in two bursts. About 12,300 start while `AudioDatabase` builds its players, before the window appears. About 4,800 start at "Finishing initialization", when `initMainMenu` calls `gameBoard.resetGame()`, which calls `AudioDatabase.resetAudio()`
   - Every sound copy is a full JavaFX `MediaPlayer`: 189 players for 102 sounds (`clipSizeConfig` in AudioDatabase.java). `resetAudio()` seeks and stops every one of them, and each stop or seek starts and ends native threads
   - That is roughly 65 threads per player at startup. It likely accounts for most of the 2.7 s before the window appears (not measured separately)
-  - The same `resetAudio()` runs on every game reset (GameBoard.java:195 and 238)
+  - The same `resetAudio()` runs on every game reset (GameBoard.java:195 and 239)
   - Options: only reset players that actually played; create players for music only when needed; or play short sound effects through a lighter API (`javax.sound.sampled.Clip` or a mixer). A code comment says the game moved from `Clip` to `MediaPlayer` on purpose, so find out why first
   - New on 2026-10-07: the threads keep coming during play, not only at startup. A 13-minute stress run started about 228,000 of them (about 360 per second), and Windows counted 835 threads in the game against about 230 Java threads. Their native memory is invisible to the game's own memory tracking and may be part of the memory that crashed the PC (target/perf/STRESSRUN-2026-10-07-2104.md)
   - Another option: JavaFX `AudioClip` for short sound effects, which plays overlapping copies of one loaded sound without a player per copy; music stays on `MediaPlayer`
@@ -128,9 +128,9 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
 - Laser segments are each drawn as a separate animation, including the ones off screen
   - Laserbeam.java:84-106 builds one animation per segment; `drawAnimation` looks up the frame twice and switches transparency mode per segment
 - In-game animations advance their frames inside paint, so animation speed follows paint speed
-  - `drawAnimation` calls `getCurrentFrameImage(true)` (GameBoard.java:779)
+  - `drawAnimation` calls `getCurrentFrameImage(true)` (GameBoard.java:782)
 - Sprite-sheet frames are views into the whole sheet (`getSubimage`), so each frame keeps the full sheet in memory
-  - ImageDatabase.java:3084, ImageCropper and ImageRotator; not measured
+  - ImageDatabase.java:3118, ImageCropper and ImageRotator; not measured
 - `-Xms4g` reserves 4 GB at launch, which slows startup slightly; no pause-time setting (`-XX:MaxGCPauseMillis`) is set for G1
 - Every moving object builds its whole route up front as up to a few thousand points, then removes the first point each step
   - RegularPathFinder.java:45-68 (up to twice the window width divided by the step size) and StraightLinePathFinder; `GameObjectMover.handleNextWaypointRemoval` does `getWaypoints().remove(0)`, which shifts the whole list every time

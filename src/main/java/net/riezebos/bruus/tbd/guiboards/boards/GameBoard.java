@@ -202,6 +202,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         textManager.resetManager();
         playerStats.resetPlayerStats();
         gameState.resetGameState();
+        ShopManager.getInstance().resetContents();
         this.bossHealthBars.clear();
         BoonManager.getInstance().resetManager();
         ThornsDamageDealer.getInstance().resetThornsDamageDealer();

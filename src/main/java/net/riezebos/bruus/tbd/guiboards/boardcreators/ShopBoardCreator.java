@@ -224,8 +224,45 @@ public class ShopBoardCreator {
         spriteConfiguration.setImageType(ImageEnums.Square_Card);
 
         GUIComponent backgroundCard = new GUIComponent(spriteConfiguration);
+        //Half the width of the description card below it, so the Freeze card fits beside it
+        backgroundCard.setImageDimensions(Math.round(boardWidth * (350 / 1440f) / 2), backgroundCard.getHeight());
         backgroundCard.setYCoordinate(yCoordinate + Math.round(backgroundCard.getHeight() * 0.1f));
         return backgroundCard;
+    }
+
+    public GUIComponent createFreezeBackgroundCard(GUIComponent rerollBackgroundCard) {
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
+                rerollBackgroundCard.getXCoordinate() + rerollBackgroundCard.getWidth(),
+                rerollBackgroundCard.getYCoordinate(),
+                1, ImageEnums.Square_Card);
+        GUIComponent backgroundCard = new GUIComponent(spriteConfiguration);
+        backgroundCard.setImageDimensions(rerollBackgroundCard.getWidth(), rerollBackgroundCard.getHeight());
+        return backgroundCard;
+    }
+
+    public GUIComponent createFreezeButton(GUIComponent backgroundCard) {
+        int xCoordinate = backgroundCard.getCenterXCoordinate();
+        int yCoordinate = backgroundCard.getCenterYCoordinate();
+
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.GUIFreeze);
+        GUIComponent freezeButton = new MenuButton(spriteConfiguration);
+        freezeButton.setMenuFunctionality(MenuFunctionEnums.FreezeShop);
+
+        int freezeButtonDimensions = Math.round((backgroundCard.getWidth() / 4) * objectScale);
+        freezeButton.setImageDimensions(freezeButtonDimensions, freezeButtonDimensions);
+        freezeButton.setCenterCoordinates(xCoordinate, yCoordinate);
+        freezeButton.setDescriptionOfComponent("Freezes the shop. Items you don't buy come back in the same slots in the next shop. Bought slots get new items. Free, and you can toggle it any time. Refreshing unfreezes the shop.");
+        return freezeButton;
+    }
+
+    public GUITextCollection createFreezeText(GUIComponent backgroundCard) {
+        int xCoordinate = backgroundCard.getXCoordinate() + Math.round(backgroundCard.getWidth() * 0.15f);
+        int yCoordinate = backgroundCard.getYCoordinate();
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate + Math.round(backgroundCard.getHeight() * 0.2f), "FREEZE SHOP");
+        textCollection.setScale(1.1f * objectScale);
+        textCollection.setStartingXCoordinate(backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2));
+        return textCollection;
     }
 
     public GUIComponent createRerollButton(GUIComponent backgroundCard) {
@@ -239,7 +276,7 @@ public class ShopBoardCreator {
         int rerollButonDimensions = Math.round((backgroundCard.getWidth() / 4) * objectScale);
         refreshButton.setImageDimensions(rerollButonDimensions, rerollButonDimensions);
         refreshButton.setCenterCoordinates(xCoordinate, yCoordinate);
-        refreshButton.setDescriptionOfComponent("Refreshes all items in the shop, allowing you to purchase new items. Cost is equal to 15% of minerals you entered the shop with.");
+        refreshButton.setDescriptionOfComponent("Refreshes all items in the shop, allowing you to purchase new items. Cost is equal to 15% of minerals you entered the shop with. Refreshing also unfreezes the shop.");
         return refreshButton;
     }
 

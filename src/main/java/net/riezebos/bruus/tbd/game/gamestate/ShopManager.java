@@ -51,14 +51,25 @@ public class ShopManager {
         this.contents = contents;
     }
 
+    //Called when a run is reset, so a frozen shop never carries into a new run
+    public void resetContents() {
+        contents = null;
+    }
+
     public boolean hasContents() {
         return contents != null;
     }
 
     //Called once per shop visit: rolls the shop, pays finished contracts, fills the free refreshes and computes the refresh cost
+    //A frozen shop carries its unbought items over to the new shop; the new shop starts unfrozen
     public void enterShop() {
+        ShopContents previous = contents;
         contents = new ShopContents();
-        ShopRoller.rollShop(contents);
+        if (previous != null && previous.isFrozen()) {
+            ShopRoller.rollShop(contents, previous);
+        } else {
+            ShopRoller.rollShop(contents);
+        }
         activateFinishedContracts();
         resetFreeRerolls();
         calculateRerollCost();

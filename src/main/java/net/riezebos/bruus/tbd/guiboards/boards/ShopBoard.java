@@ -90,6 +90,9 @@ public class ShopBoard extends MenuBoard {
     private GUITextCollection rerollCostText;
     private GUITextCollection rerollCost;
     private GUIComponent rerollBackgroundCard;
+    private GUIComponent freezeButton;
+    private GUITextCollection freezeText;
+    private GUIComponent freezeBackgroundCard;
 
 
     private GUITextCollection moneyIcon;
@@ -187,6 +190,9 @@ public class ShopBoard extends MenuBoard {
 
         offTheGridObjects.add(rerollBackgroundCard);
         rerollButton = shopBoardCreator.createRerollButton(rerollBackgroundCard);
+        freezeBackgroundCard = shopBoardCreator.createFreezeBackgroundCard(rerollBackgroundCard);
+        freezeButton = shopBoardCreator.createFreezeButton(freezeBackgroundCard);
+        freezeText = shopBoardCreator.createFreezeText(freezeBackgroundCard);
         nextLevelDifficultyIcon = shopBoardCreator.createNextLevelDifficultyIcon(nextLevelDifficultyBackground);
 
         // Setup buttons and cursor
@@ -262,6 +268,9 @@ public class ShopBoard extends MenuBoard {
             regularGridFirstRow.add(rerollButton);
 //            regularGridFirstRow.add(rerollButton);
         }
+        if (!regularGridFirstRow.contains(freezeButton)) {
+            regularGridFirstRow.add(freezeButton);
+        }
 
         regularGridFifthRow.clear();
 
@@ -313,6 +322,8 @@ public class ShopBoard extends MenuBoard {
         offTheGridObjects.add(rerollBackgroundCard);
         offTheGridObjects.addAll(rerollCostText.getComponents());
         offTheGridObjects.addAll(rerollCost.getComponents());
+        offTheGridObjects.add(freezeBackgroundCard);
+        offTheGridObjects.addAll(freezeText.getComponents());
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             additionalTextCollection = shopBoardCreator.createProtossCapacityText(itemRowsBackgroundCard);
@@ -358,6 +369,7 @@ public class ShopBoard extends MenuBoard {
     public void rerollShop() {
         ShopContents contents = ShopManager.getInstance().getContents();
         ShopRoller.rollShop(contents);
+        contents.setFrozen(false); //Refreshing rerolls every slot and unfreezes the shop
 
         List<ShopSlot> changedSlots = new ArrayList<>();
         WisdomBall wisdomball = (WisdomBall) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.WisdomBall);
@@ -673,8 +685,17 @@ public class ShopBoard extends MenuBoard {
             // Save the original composite
             Composite originalComposite = g.getComposite();
 
+            float alpha = component.getTransparancyAlpha();
+            if (component == freezeButton) {
+                if (isShopFrozen()) {
+                    drawFrostGlow(g, component.getXCoordinate(), component.getYCoordinate(), component.getWidth(), component.getHeight(), 6);
+                } else {
+                    alpha *= 0.65f; //The icon is dimmed until the shop is frozen
+                }
+            }
+
             // Set the alpha composite
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, component.getTransparancyAlpha()));
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 
             // Draw the image
             g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
@@ -684,12 +705,56 @@ public class ShopBoard extends MenuBoard {
         }
     }
 
-    private void drawItemsInShop(Graphics g, ShopItem object) {
+    private boolean isShopFrozen() {
+        ShopContents contents = ShopManager.getInstance().getContents();
+        return contents != null && contents.isFrozen();
+    }
+
+    // An ice-blue border with a soft glow outside and inside it, around the given rectangle
+    private void drawFrostGlow(Graphics2D g, int x, int y, int width, int height, int glowSize) {
+        Stroke originalStroke = g.getStroke();
+        Color originalColor = g.getColor();
+        Shape originalClip = g.getClip();
+        Object originalAntialiasing = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        //Outer glow: wide, faint strokes that get narrower and stronger towards the border
+        for (int i = glowSize; i >= 1; i--) {
+            g.setStroke(new BasicStroke(i * 2));
+            g.setColor(new Color(127, 220, 255, 90 / glowSize));
+            g.drawRoundRect(x - 1, y - 1, width + 2, height + 2, 8, 8);
+        }
+
+        //Inner glow, kept inside the rectangle
+        g.clipRect(x, y, width, height);
+        for (int i = glowSize / 2; i >= 1; i--) {
+            g.setStroke(new BasicStroke(i * 2));
+            g.setColor(new Color(127, 220, 255, 70 / glowSize));
+            g.drawRoundRect(x, y, width, height, 8, 8);
+        }
+        g.setClip(originalClip);
+
+        //The border
+        g.setStroke(new BasicStroke(2));
+        g.setColor(new Color(127, 220, 255));
+        g.drawRoundRect(x, y, width, height, 8, 8);
+
+        g.setStroke(originalStroke);
+        g.setColor(originalColor);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, originalAntialiasing);
+    }
+
+    private void drawItemsInShop(Graphics2D g, ShopItem object) {
 
         int xCoordinate = object.getXCoordinate();
         int yCoordinate = object.getYCoordinate();
         String textFont = DataClass.getInstance().getTextFont();
         g.drawImage(object.getImage(), xCoordinate, yCoordinate, this);
+        if (isShopFrozen() && object.getShopItemInformation().isAvailable()) {
+            int framePadding = Math.round(3 * DataClass.getInstance().getResolutionFactor());
+            drawFrostGlow(g, xCoordinate - framePadding, yCoordinate - framePadding,
+                    object.getWidth() + framePadding * 2, object.getHeight() + framePadding * 2, 5);
+        }
         g.setColor(object.getShopItemInformation().getItemRarity().getColor());
 
         if (object.getShopItemInformation().isAvailable()) {

@@ -4,7 +4,11 @@ All notable changes on the `Nelis` branch.
 
 ## 2026-10-12
 
+### Added
+- A free Freeze button next to Refresh in the shop. Items you don't buy in a frozen shop come back in the same slots in the next shop, at the same price. Bought slots get new items. The frozen state is saved.
+
 ### Changed
+- Refreshing the shop also unfreezes it.
 - The shop's refresh cost is now worked out when you enter the shop, instead of when the level ends. It is still 15% of your minerals.
 - Internal: the shop's items, prices, bought slots, free refreshes and refresh cost now live in one saved data model (ShopContents), and the shop is saved after entering it, after every purchase and after every refresh.
 
