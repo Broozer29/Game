@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import java.util.List;
 
 // The freeze logic of the shop: the toggle with the cooldown after an unfreeze, the thaw marks and the thaw clock. It draws nothing (see ShopFreezeEffect).
-public class ShopFreezeService {
+public class ShopFreezer {
 
     // How long the whole thaw takes (ms); the cooldown and the end of the thaw are measured from it
     public static final int THAW_TOTAL_MS = 600;
@@ -16,16 +16,16 @@ public class ShopFreezeService {
     private static final int UNFREEZE_COOLDOWN_MS = THAW_TOTAL_MS + 100;
 
     // When the thaw of the carried items, or of the items just unfrozen, started (ms); 0 when none is playing
-    private long thawStartMillis = 0;
+    private long unfreezeAnimationStartMillis = 0;
     private long lastUnfreezeMillis = 0;
 
-    private static ShopFreezeService instance = new ShopFreezeService();
+    private static ShopFreezer instance = new ShopFreezer();
 
-    private ShopFreezeService() {
+    private ShopFreezer() {
 
     }
 
-    public static ShopFreezeService getInstance() {
+    public static ShopFreezer getInstance() {
         return instance;
     }
 
@@ -34,11 +34,13 @@ public class ShopFreezeService {
         return contents != null && contents.isFrozen();
     }
 
-    public long getThawStartMillis() {
-        return thawStartMillis;
+    public long getUnfreezeAnimationStartMillis() {
+        return unfreezeAnimationStartMillis;
     }
 
     // Freezes or unfreezes the whole shop, for the Freeze button
+    //todo only freeze the rows that are currently available. If rows 2 and 3 are disabled because the last difficulty wasn't high enough, do NOT freeze them.
+    // We only want to freeze rows that are actually interactable. Otherwise, players will be heavily disincentivized to freeze the shop and increase the difficulty
     public void toggleFreeze() {
         ShopContents contents = ShopManager.getInstance().getContents();
         long now = System.currentTimeMillis();
@@ -47,15 +49,10 @@ public class ShopFreezeService {
         }
         if (contents.isFrozen()) {
             lastUnfreezeMillis = now;
-            //Unfreezing plays the same thaw as a new shop does on its kept items, on every item that was frozen
-            for (List<ShopSlot> row : contents.getRows()) {
-                for (ShopSlot slot : row) {
-                    if (slot.getStatus() == ShopSlotStatusEnums.Available) {
-                        slot.setCarried(true);
-                    }
-                }
-            }
-            thawStartMillis = now;
+            contents.getRows().stream()
+                    .flatMap(List::stream)
+                    .forEach(shopSlot -> shopSlot.setFrozen(true));
+            unfreezeAnimationStartMillis = now;
         }
         contents.setFrozen(!contents.isFrozen());
         AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
@@ -63,37 +60,30 @@ public class ShopFreezeService {
     }
 
     // Called when the shop screen opens: the thaw of the carried items starts now, or is off when none is carried
-    public void startThawIfCarried() {
-        thawStartMillis = anySlotCarried() ? System.currentTimeMillis() : 0;
+    public void startUnfreezeAnimationIfFrozen() {
+        unfreezeAnimationStartMillis = anySlotFrozen() ? System.currentTimeMillis() : 0;
     }
 
     // Forgets the carried marks once the thaw is over, so nothing is drawn or checked for it any more
-    public void clearThawIfOver() {
+    public void clearFrozenStatusOnShopItems() {
         ShopContents contents = ShopManager.getInstance().getContents();
-        if (thawStartMillis != 0 && (contents == null || System.currentTimeMillis() - thawStartMillis >= THAW_TOTAL_MS)) {
+        if (unfreezeAnimationStartMillis != 0 && (contents == null || System.currentTimeMillis() - unfreezeAnimationStartMillis >= THAW_TOTAL_MS)) {
             if (contents != null) {
-                for (List<ShopSlot> row : contents.getRows()) {
-                    for (ShopSlot slot : row) {
-                        slot.setCarried(false);
-                    }
-                }
+                contents.getRows().stream()
+                        .flatMap(List::stream)
+                        .forEach(shopSlot -> shopSlot.setFrozen(false));
             }
-            thawStartMillis = 0;
+            unfreezeAnimationStartMillis = 0;
         }
     }
 
-    private boolean anySlotCarried() {
+    private boolean anySlotFrozen() {
         ShopContents contents = ShopManager.getInstance().getContents();
         if (contents == null) {
             return false;
         }
-        for (List<ShopSlot> row : contents.getRows()) {
-            for (ShopSlot slot : row) {
-                if (slot.isCarried()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return contents.getRows().stream()
+                .flatMap(List::stream)
+                .anyMatch(ShopSlot::isFrozen);
     }
 }

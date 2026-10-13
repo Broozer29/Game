@@ -145,6 +145,9 @@ public enum ItemEnums {
 
     public static ItemEnums getRandomItemByRarity(ItemRarityEnums category) {
         List<ItemEnums> matchingItems = new ArrayList<>();
+        if(category.equals(ItemRarityEnums.Locked)) {
+            return ItemEnums.Locked;
+        }
 
         // Loop through all ItemEnums and add those that match the given category
         for (ItemEnums item : ItemEnums.values()) {

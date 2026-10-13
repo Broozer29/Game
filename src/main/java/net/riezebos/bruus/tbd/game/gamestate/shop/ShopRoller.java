@@ -34,7 +34,7 @@ public class ShopRoller {
         List<ShopSlot> slots = new ArrayList<>();
         boolean rowLocked = ShopManager.getInstance().getRowsUnlocked() < row + 1;
         //A carried Rare counts as the row's Rare, so a fresh slot left of it can't roll a second one
-        boolean rolledRare = !rowLocked && previousRow != null && previousRow.stream().anyMatch(ShopRoller::isCarriedRare);
+        boolean rolledRare = !rowLocked && previousRow != null && previousRow.stream().anyMatch(ShopRoller::hasAvailableRareSlot);
 
         for (int i = 0; i < ShopContents.SLOTS_PER_ROW; i++) {
             if (rowLocked) {
@@ -46,15 +46,18 @@ public class ShopRoller {
             if (previousSlot != null && previousSlot.getStatus() == ShopSlotStatusEnums.Available && isItemAvailable(previousSlot.getItem())) {
                 //Carried over in the same slot, with its old rarity and price (a free item stays free)
                 ShopSlot carriedSlot = new ShopSlot(previousSlot.getItem(), previousSlot.getRarity(), previousSlot.getCost(), ShopSlotStatusEnums.Available);
-                carriedSlot.setCarried(true);
+                carriedSlot.setFrozen(true);
                 slots.add(carriedSlot);
                 continue;
             }
 
+
             ItemRarityEnums slotType = !rolledRare ? ItemRarityEnums.getCommonOrRareEnum() : ItemRarityEnums.Common;
-            if (previousSlot != null && previousSlot.getStatus() == ShopSlotStatusEnums.Available) {
-                //A carried item that is no longer offered is replaced by a roll of the same rarity slot
-                slotType = previousSlot.getRarity() == ItemRarityEnums.Rare && rolledRare ? ItemRarityEnums.Common : previousSlot.getRarity();
+            if (previousSlot != null) {
+                slotType = previousSlot.getRarity();
+                if(previousSlot.getStatus().equals(ShopSlotStatusEnums.Locked)) {
+                    slotType = ItemRarityEnums.Locked;
+                }
             }
             ShopSlot slot = rollSlot(slotType);
             if (slot.getRarity() == ItemRarityEnums.Rare) {
@@ -76,14 +79,15 @@ public class ShopRoller {
             case Rare -> ItemRarityEnums.getRandomRareItemSlot();
             case Legendary -> ItemRarityEnums.Legendary;
             case Relic -> ItemRarityEnums.Relic;
+            case Locked -> ItemRarityEnums.Locked;
             default -> ItemRarityEnums.getRandomCommonItemSlot();
         };
 
         ItemEnums item = getRandomAvailableItemByRarity(actualItemRarity);
-        return new ShopSlot(item, item.getItemRarity(), item.getItemRarity().getItemCost(), ShopSlotStatusEnums.Available);
+        return new ShopSlot(item, item.getItemRarity(), item.getItemRarity().getItemCost(), actualItemRarity.equals(ItemRarityEnums.Locked) ? ShopSlotStatusEnums.Locked : ShopSlotStatusEnums.Available);
     }
 
-    private static boolean isCarriedRare(ShopSlot slot) {
+    private static boolean hasAvailableRareSlot(ShopSlot slot) {
         return slot.getStatus() == ShopSlotStatusEnums.Available && slot.getRarity() == ItemRarityEnums.Rare && isItemAvailable(slot.getItem());
     }
 
@@ -98,6 +102,9 @@ public class ShopRoller {
 
         while (attempts < MAX_ATTEMPTS) {
             ItemEnums randomItem = ItemEnums.getRandomItemByRarity(category);
+            if(randomItem == ItemEnums.Locked && category.equals(ItemRarityEnums.Locked)){
+                return randomItem;
+            }
 
             if (isItemAvailable(randomItem)) {
                 return randomItem;

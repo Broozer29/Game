@@ -1,8 +1,8 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.controllerInput.MenuAction;
 import net.riezebos.bruus.tbd.controllerInput.MenuInput;
-import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -863,7 +863,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         int yCoordinate = object.getYCoordinate();
         String textFont = DataClass.getInstance().getTextFont();
         g.drawImage(object.getImage(), xCoordinate, yCoordinate, this);
-        ShopFreezeEffect.getInstance().drawFreezeEffect((Graphics2D) g, object);
+        ShopFreezeEffect.getInstance().updateFreezeEffect((Graphics2D) g, object);
         yCoordinate += Math.round(8 * DataClass.getInstance().getResolutionFactor());
         g.setColor(object.getShopItemInformation().getItemRarity().getColor());
 
