@@ -8,7 +8,6 @@ import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezeService;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -90,9 +89,6 @@ public class MenuButton extends GUIComponent {
                 SettingsWindow.getInstance().discardAndClose();
                 break;
             case Open_Shop_Window:
-                if (!ShopManager.getInstance().hasContents()) {
-                    ShopManager.getInstance().enterShop();
-                }
                 boardManager.openShopWindow();
                 break;
             case OpenBoonSelectionBoard:
@@ -122,9 +118,6 @@ public class MenuButton extends GUIComponent {
             case RerollShop:
                 handleShopRefresh();
                 SaveManager.getInstance().exportCurrentSave();
-                break;
-            case FreezeShop:
-                ShopFreezeService.getInstance().toggleFreeze();
                 break;
             case SelectCaptainClass:
                 PlayerStats.getInstance().setPlayerClass(PlayerClass.Captain);
@@ -159,12 +152,7 @@ public class MenuButton extends GUIComponent {
 
                 if (Objects.requireNonNull(GameState.getInstance().getGameState()) == GameStatusEnums.Shopping) {
                     ShopManager.getInstance().setRowsUnlockedByDifficulty(LevelManager.getInstance().getDifficultyScore());
-                    if (!ShopManager.getInstance().hasContents()) {
-                        //The save has no (readable) shop, so this counts as entering the shop
-                        ShopManager.getInstance().enterShop();
-                        SaveManager.getInstance().exportCurrentSave();
-                    }
-                    boardManager.getShopBoard().recreateWindow();
+                    boardManager.getShopBoard().initShopBoardGUIComponents();
                     boardManager.openShopWindow();
                 } else {
                     boardManager.initGame();

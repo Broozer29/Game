@@ -2,7 +2,6 @@ package net.riezebos.bruus.tbd.game.UI;
 
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopRoller;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.DisplayOnly;
@@ -109,16 +108,16 @@ public class GameBoardCreator {
         int yCoordinate = Math.round(backgroundCard.getYCoordinate() + backgroundCard.getHeight() * 0.4f);
         SpriteConfiguration config = new SpriteConfiguration(xCoordinate, yCoordinate, cardScale, ImageEnums.GlassCannon);
 
-        ShopItem shopItem = new ShopItem(config, ShopRoller.rollSlot(ItemRarityEnums.Relic));
+        ShopItem shopItem = new ShopItem(config, ItemRarityEnums.Relic);
 
         int attempts = 0;
         while (alreadySelectedRelics.contains(shopItem.getShopItemInformation().getItem()) && attempts < 10) {
-            shopItem = new ShopItem(config, ShopRoller.rollSlot(ItemRarityEnums.Relic));
+            shopItem = new ShopItem(config, ItemRarityEnums.Relic);
             attempts++;
         }
 
         if (attempts >= 150) {
-            shopItem = new ShopItem(config, ShopRoller.rollSlot(ItemRarityEnums.Legendary));
+            shopItem = new ShopItem(config, ItemRarityEnums.Legendary);
             shopItem.getShopItemInformation().setItem(ItemEnums.getRandomItemByRarity(ItemRarityEnums.Legendary));
         }
 

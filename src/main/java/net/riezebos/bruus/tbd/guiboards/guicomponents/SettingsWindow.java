@@ -42,16 +42,16 @@ public class SettingsWindow {
     private static final int CURSOR_GAP = 15; //Space between the ship cursor and the label
 
     private static final int VOLUME_STEP = 10;
-    private static final int BOTTOM_ROW_INDEX = 4; //In the CONTROLS rows: RESET, with SAVE after it
+    private static final int BOTTOM_ROW_INDEX = 3; //In the CONTROLS rows: RESET, with SAVE after it
 
     private enum SettingsTab {CONTROLS, SOUND}
 
-    private enum SettingsRow {MUSIC, EFFECTS, SAVE, FIRE, SPECIAL_ATTACK, AUTO_FIRE, FREEZE_SHOP, RESET}
+    private enum SettingsRow {MUSIC, EFFECTS, SAVE, FIRE, SPECIAL_ATTACK, AUTO_FIRE, RESET}
 
     private static final Map<SettingsTab, List<SettingsRow>> TAB_ROWS = new EnumMap<>(SettingsTab.class);
 
     static {
-        TAB_ROWS.put(SettingsTab.CONTROLS, List.of(SettingsRow.FIRE, SettingsRow.SPECIAL_ATTACK, SettingsRow.AUTO_FIRE, SettingsRow.FREEZE_SHOP, SettingsRow.RESET, SettingsRow.SAVE));
+        TAB_ROWS.put(SettingsTab.CONTROLS, List.of(SettingsRow.FIRE, SettingsRow.SPECIAL_ATTACK, SettingsRow.AUTO_FIRE, SettingsRow.RESET, SettingsRow.SAVE));
         TAB_ROWS.put(SettingsTab.SOUND, List.of(SettingsRow.MUSIC, SettingsRow.EFFECTS, SettingsRow.SAVE));
     }
 
@@ -117,7 +117,6 @@ public class SettingsWindow {
         labels.put(SettingsRow.FIRE, controlsTab.getLabel(BindableAction.FIRE));
         labels.put(SettingsRow.SPECIAL_ATTACK, controlsTab.getLabel(BindableAction.SPECIAL_ATTACK));
         labels.put(SettingsRow.AUTO_FIRE, controlsTab.getLabel(BindableAction.HOLD_FIRE));
-        labels.put(SettingsRow.FREEZE_SHOP, controlsTab.getLabel(BindableAction.FREEZE_SHOP));
         labels.put(SettingsRow.RESET, controlsTab.getResetLabel());
         GUITextCollection saveText = MenuText.createText("SAVE", centerX + scaled(SAVE_X), cardTop + scaled(SAVE_Y), textScale, MenuText.ALIGN_CENTER);
         saveText.setMenuFunctionality(MenuFunctionEnums.Save_Settings); //Makes the first letter the button
@@ -175,8 +174,6 @@ public class SettingsWindow {
                 return BindableAction.SPECIAL_ATTACK;
             case AUTO_FIRE:
                 return BindableAction.HOLD_FIRE;
-            case FREEZE_SHOP:
-                return BindableAction.FREEZE_SHOP;
             default:
                 return null;
         }
@@ -321,7 +318,7 @@ public class SettingsWindow {
 
     private void selectNextRow () {
         if (selectedTab == SettingsTab.CONTROLS) {
-            //The bottom row (RESET and SAVE) is one stop: down from FREEZE SHOP lands on RESET, down from the bottom row goes back to FIRE
+            //The bottom row (RESET and SAVE) is one stop: down from AUTO FIRE lands on RESET, down from the bottom row goes back to FIRE
             selectedRowIndex = selectedRowIndex >= BOTTOM_ROW_INDEX ? 0 : Math.min(selectedRowIndex + 1, BOTTOM_ROW_INDEX);
             placeCursor();
             return;

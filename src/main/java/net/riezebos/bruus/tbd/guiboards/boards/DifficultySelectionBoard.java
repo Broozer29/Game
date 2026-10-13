@@ -1,21 +1,37 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
+import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
+import net.riezebos.bruus.tbd.game.util.OnScreenText;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.DifficultySelectionBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuGrid;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DifficultySelectionBoard extends MenuBoard {
+public class DifficultySelectionBoard extends JPanel implements TimerHolder {
+
+    private BackgroundManager backgroundManager = BackgroundManager.getInstance();
+    private AnimationManager animationManager = AnimationManager.getInstance();
 
 
     private GUIComponent chooseDifficultyText;
@@ -46,15 +62,32 @@ public class DifficultySelectionBoard extends MenuBoard {
 
     private GUIComponent descriptionBoxBackgroundCard;
 
-    private final MenuGrid grid = new MenuGrid();
+    private List<GUIComponent> firstColumn = new ArrayList<>(); //back to class selection, select pirates
+    private List<GUIComponent> secondColumn = new ArrayList<>(); //select zerg
+    private List<GUIComponent> thirdColumn = new ArrayList<>(); //select royal gyard
+    private List<GUIComponent> fourthColumn = new ArrayList<>(); //select 0 mini bosses
+    private List<GUIComponent> fifthColumn = new ArrayList<>(); //select 1 mini bosses
+    private List<GUIComponent> sixthColumn = new ArrayList<>(); //select 2 mini bosses, start game
+
+
+    private List<List<GUIComponent>> grid = new ArrayList<>();
+    private List<GUIComponent> offTheGridObjects = new ArrayList<>();
+    private MenuCursor menuCursor;
+    private Timer timer;
+    private int selectedRow = 0;
+    private int selectedColumn = 0;
     private boolean initializedMenuObjects = false;
 
 
     public DifficultySelectionBoard() {
-        grids.add(grid);
+        setFocusable(true);
+        setBackground(Color.BLACK);
+        setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+
 
         initMenuTiles();
-        getTimer().start();
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
+        timer.start();
     }
 
     public void initMenuTiles() {
@@ -94,17 +127,24 @@ public class DifficultySelectionBoard extends MenuBoard {
         updateSelectedDifficultyIcons();
     }
 
-    @Override
     public void recreateWindow() {
         if (initializedMenuObjects) {
             //Clear all existing columns/rows/grid then re-add them
             recreateList();
-            grid.reset();
-            grid.placeCursor(menuCursor);
+            selectedColumn = 0;
+            selectedRow = 0;
+            updateCursor();
         }
     }
 
     private void recreateList() {
+        firstColumn.clear();
+        secondColumn.clear();
+        thirdColumn.clear();
+        fourthColumn.clear();
+        fifthColumn.clear();
+        sixthColumn.clear();
+
         grid.clear();
         offTheGridObjects.clear();
         updateSelectedDifficultyIcons();
@@ -141,9 +181,16 @@ public class DifficultySelectionBoard extends MenuBoard {
         addAllButFirstComponent(manModeButton);
         secondRow.add(startGameButton.getComponents().get(0));
         addAllButFirstComponent(startGameButton);
-        grid.addRow(firstRow);
-        grid.addRow(secondRow);
-        grid.placeCursor(menuCursor);
+        grid.add(firstRow);
+        grid.add(secondRow);
+        updateCursor();
+    }
+
+    private void addToGrid(List<GUIComponent> gridList, GUIComponent component, int column, int row) {
+        //Crosswired for this board, temporary fix of a bigger problem also present in ShopBoard
+        component.setColumn(row);
+        component.setRow(column);
+        gridList.add(component);
     }
 
     private void addAllButFirstComponent(GUITextCollection textCollection) {
@@ -211,33 +258,260 @@ public class DifficultySelectionBoard extends MenuBoard {
     }
 
 
-    /*------------------------Menu hooks--------------------------------*/
+    /*------------------------Navigation methods--------------------------------*/
 
     // Activate the functionality of the specific menutile
-    @Override
-    protected void onConfirm() {
-        GUIComponent selectedTile = grid.getSelected();
-        selectedTile.activateComponent();
-        if (selectedTile.getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
+    private void selectMenuTile() {
+        grid.get(selectedRow).get(selectedColumn).activateComponent();
+        if (grid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
             PlayerInventory.getInstance().resetInventory();
-            getTimer().stop();
+            timer.stop();
         }
     }
 
-    @Override
-    protected void onBack() {
-        BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
+
+    private void navigateLeft() {
+        if (isGridEmpty()) {
+            return; // Do nothing if the grid is empty
+        }
+        selectedColumn--;
+        if (selectedColumn < 0) {
+            selectedColumn = grid.get(selectedRow).size() - 1; // Wrap around to the rightmost column
+        }
+
     }
 
-    // Update the GUI only if there was an action that requires it
-    @Override
-    protected void onInputHandled() {
-        recreateList();
+    // Go one menu tile right
+    private void navigateRight() {
+        if (isGridEmpty()) {
+            return; // Do nothing if the grid is empty
+        }
+
+        selectedColumn++;
+        if (selectedColumn >= grid.get(selectedRow).size()) {
+            selectedColumn = 0; // Wrap around to the leftmost column
+        }
     }
 
-    // The description sits right after the grid and before the cursor
+    // Go one menu tile to the left
+    private void navigateUp() {
+        int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
+
+        do {
+            selectedRow--;
+            if (selectedRow < 0) {
+                selectedRow = grid.size() - 1; // Wrap around to the bottom row
+            }
+        } while (grid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+        // found or we've checked all rows
+
+        // Adjust column to be within the new row
+        if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
+            selectedColumn = grid.get(selectedRow).size() - 1;
+        }
+    }
+
+    // Go one menu tile to the right
+    private void navigateDown() {
+        int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
+
+        do {
+            selectedRow++;
+            if (selectedRow >= grid.size()) {
+                selectedRow = 0; // Wrap around to the top row
+            }
+        } while (grid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+        // found or we've checked all rows
+
+        // Adjust column to be within the new row
+        if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
+            selectedColumn = grid.get(selectedRow).size() - 1;
+        }
+    }
+
+    // Check if the grid is empty
+    private boolean isGridEmpty() {
+        for (List<GUIComponent> row : grid) {
+            if (!row.isEmpty()) {
+                return false; // Return false as soon as a non-empty row is found
+            }
+        }
+        return true; // If no non-empty rows are found, the grid is empty
+    }
+
+    // Update the cursor's position and selected menu tile
+    private void updateCursor() {
+        if (grid.get(selectedRow).isEmpty()) { // Check if the selected row is empty
+            menuCursor.setSelectedMenuTile(null); // Need to decide how you want to handle this situation
+        } else {
+            GUIComponent selectedTile = grid.get(selectedRow).get(selectedColumn);
+            menuCursor.setSelectedMenuTile(selectedTile);
+            menuCursor.setCenterYCoordinate(selectedTile.getCenterYCoordinate() + menuCursor.getYDistanceModification());
+            menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
+        }
+    }
+
+    // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
+    public void executeMenuInput() {
+        boolean needsUpdate = false;
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            switch (action) {
+                case LEFT:
+                    navigateLeft();
+                    needsUpdate = true;
+                    break;
+                case RIGHT:
+                    navigateRight();
+                    needsUpdate = true;
+                    break;
+                case UP:
+                    navigateUp();
+                    needsUpdate = true;
+                    break;
+                case DOWN:
+                    navigateDown();
+                    needsUpdate = true;
+                    break;
+                case CONFIRM:
+                    selectMenuTile();
+                    recreateList();
+                    return; // selecting can change the screen
+                case BACK:
+                    BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
+                    recreateList();
+                    return; // the screen has changed
+            }
+        }
+
+        if (needsUpdate) {
+            recreateList(); // Update the GUI only if there was an action that requires it
+        }
+    }
+
+    /*-----------------------------End of navigation methods--------------------------*/
+
+    /*---------------------------Drawing methods-------------------------------*/
     @Override
-    protected void drawScreenContent(Graphics2D g) {
-        drawClassDescriptionText(g);
+    public void paintComponent(Graphics g) {
+        try {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
+
+            try {
+                // Draws all background objects
+                for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                    drawImage(g2d, bgObject);
+                }
+
+                for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                drawObjects(g2d);
+                drawClassDescriptionText(g2d);
+                drawImage(g2d, menuCursor);
+
+                for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
+                    drawText(g2d, text);
+                }
+
+                ControllerNotices.getInstance().draw(g2d);
+            } finally {
+                g2d.dispose(); // Ensure resources are released
+            }
+
+            animationManager.updateGameTick();
+            backgroundManager.updateGameTick();
+            Toolkit.getDefaultToolkit().sync();
+
+            // readControllerState();
+            executeMenuInput();
+        } catch (Exception ex) {
+            try {
+                java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);
+                java.io.PrintWriter pw = new java.io.PrintWriter(fw);
+                pw.println("=== Error at " + java.time.LocalDateTime.now() + " ===");
+                ex.printStackTrace(pw);
+                pw.println();
+                pw.close();
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
+            ex.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+
+    private void drawObjects(Graphics2D g) {
+        for (GUIComponent component : offTheGridObjects) {
+            if (component != null) {
+                drawGUIComponent(g, component);
+            }
+        }
+
+
+        for (List<GUIComponent> list : grid) {
+            for (GUIComponent component : list) {
+                drawGUIComponent(g, component);
+            }
+        }
+
+    }
+
+    private void drawGUIComponent(Graphics2D g, GUIComponent component) {
+        g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
+    }
+
+    private void drawImage(Graphics g, Sprite sprite) {
+        if (sprite.getImage() != null) {
+            g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+        }
+    }
+
+    private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
+        if (animation.getCurrentFrameImage(false) != null) {
+            g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
+        }
+    }
+
+    private void drawText(Graphics2D g, OnScreenText text) {
+        // Ensure that transparency value is within the appropriate bounds.
+        float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
+        Color originalColor = g.getColor(); // store the original color
+        Font originalFont = g.getFont();
+
+        // Set the color with the specified transparency.
+        Color colorWithTransparency = new Color(
+                text.getColor().getRed(),
+                text.getColor().getGreen(),
+                text.getColor().getBlue(),
+                (int) (transparency * 255) // alpha value must be between 0 and 255
+        );
+
+//        g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
+        g.setColor(colorWithTransparency);
+        g.setFont(new Font("Helvetica", Font.PLAIN, text.getFontSize()));
+        // Draw the text at the current coordinates.
+        g.drawString(text.getText(), text.getXCoordinate(), text.getYCoordinate());
+
+        // Update the Y coordinate of the text to make it scroll upwards.
+        text.setYCoordinate(text.getYCoordinate() - 1);
+
+        // Decrease the transparency for the next draw
+        text.setTransparency(transparency - text.getTransparancyStepSize()); // decrease transparency
+
+        g.setColor(originalColor); // restore the original color
+        g.setFont(originalFont);
+    }
+
+    /*------------------------------End of Drawing methods-------------------------------*/
+
+    public Timer getTimer() {
+        return this.timer;
     }
 }

@@ -1,13 +1,12 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
 import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopRoller;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlot;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezeService;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -18,30 +17,40 @@ import net.riezebos.bruus.tbd.game.items.items.util.WisdomBallRollManager;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public class ShopBoard extends MenuBoard {
+public class ShopBoard extends JPanel implements TimerHolder {
+
+    private BackgroundManager backgroundManager = BackgroundManager.getInstance();
+    private AnimationManager animationManager = AnimationManager.getInstance();
+    private ShopManager shopManager = ShopManager.getInstance();
 
     private List<GUIComponent> regularGridFirstRow = new ArrayList<>();
     private List<GUIComponent> regularGridSecondRow = new ArrayList<>();
     private List<GUIComponent> regularGridThirdRow = new ArrayList<>();
     private List<GUIComponent> regularGridFourthRow = new ArrayList<>();
     private List<GUIComponent> regularGridFifthRow = new ArrayList<>();
-    private final MenuGrid regularMenuGrid = new MenuGrid();
+    private List<List<GUIComponent>> regularGrid = new ArrayList<>();
+    private List<GUIComponent> offTheGridObjects = new ArrayList<>();
 
 
     private List<GUIComponent> inventoryGridFirstRow = new ArrayList<>();
@@ -50,13 +59,10 @@ public class ShopBoard extends MenuBoard {
     private List<GUIComponent> inventoryGridFourthRow = new ArrayList<>();
     private List<GUIComponent> inventoryGridFifthRow = new ArrayList<>();
     private List<GUIComponent> inventoryGridSixthRow = new ArrayList<>();
-    private final MenuGrid inventoryMenuGrid = new MenuGrid();
+    private List<List<GUIComponent>> inventoryGrid = new ArrayList<>();
 
     private List<GUIComponent> allInventoryGUIComponents = new ArrayList<>();
-    // The grid the cursor is in; the inventory grid is not in grids (it is drawn only while the inventory is open)
-    private MenuGrid activeGrid = regularMenuGrid;
-    // Set by every input that changes the screen; onInputHandled rebuilds only then (BACK on a closed inventory changes nothing)
-    private boolean rebuildNeeded = false;
+    private List<List<GUIComponent>> selectedGrid = regularGrid;
 
     private List<GUIComponent> popGUIComponentList = new ArrayList<>();
 
@@ -82,6 +88,7 @@ public class ShopBoard extends MenuBoard {
     private GUITextCollection additionalTextCollection;
 
 
+    private MenuCursor menuCursor;
     private GUITextCollection returnToMainMenu;
     private GUITextCollection nextLevelButton;
     private GUITextCollection playerInventoryButton;
@@ -94,6 +101,9 @@ public class ShopBoard extends MenuBoard {
 
 
     private GUITextCollection moneyIcon;
+    private Timer timer;
+    private int selectedRow = 0;
+    private int selectedColumn = 0;
     private boolean showInventory;
     private ShopBoardCreator shopBoardCreator;
 
@@ -108,16 +118,16 @@ public class ShopBoard extends MenuBoard {
 
 
     public ShopBoard() {
-        grids.add(regularMenuGrid);
+        setFocusable(true);
         showInventory = false;
         shopBoardCreator = new ShopBoardCreator();
 
-        getTimer().start();
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
+        timer.start();
     }
 
-    @Override
-    public void recreateWindow() {
-        for (List<GUIComponent> row : regularMenuGrid.getRows()) {
+    public void initShopBoardGUIComponents() {
+        for (List<GUIComponent> row : regularGrid) {
             for (GUIComponent component : row) {
                 component.setVisible(false);
             }
@@ -125,7 +135,7 @@ public class ShopBoard extends MenuBoard {
         }
 
         allInventoryGUIComponents.clear();
-        regularMenuGrid.clear();
+        regularGrid.clear();
         for (GUIComponent component : offTheGridObjects) {
             component.setVisible(false);
         }
@@ -142,8 +152,13 @@ public class ShopBoard extends MenuBoard {
         descriptionBackgroundCard = shopBoardCreator.createDescriptionRowsBackgroundCard(rerollBackgroundCard);
         nextLevelDifficultyBackground = shopBoardCreator.createShowNextLevelDifficultyBackground(songLengthBackgroundCard);
         nextLevelModifiersTextCollection = shopBoardCreator.createLevelModifiersText(songLengthBackgroundCard);
-        // Create items from the shop contents
-        buildItemRows();
+        // Create items
+        regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
+        regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
+        regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
+
+        //Activate any contracts if there are any:
+        shopManager.activateFinishedContracts();
 
         // Create difficulty and song length settings using the respective background cards
         selectPirateTribe = shopBoardCreator.createSelectPirateTribe(songDifficultyBackgroundCard);
@@ -200,14 +215,15 @@ public class ShopBoard extends MenuBoard {
         inventoryButtonBackgroundCard = shopBoardCreator.createInventoryButtonBackgroundCard(nextLevelDifficultyBackground);
         playerInventoryButton = shopBoardCreator.createPlayerInventoryButton(inventoryButtonBackgroundCard);
 
+        shopManager.resetFreeRerolls();
         rerollCostText = shopBoardCreator.createRerollText(rerollBackgroundCard);
         rerollCost = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
 
         itemDescription = shopBoardCreator.createDescriptionBox(descriptionBackgroundCard);
         menuCursor = shopBoardCreator.createCursor(returnToMainMenu);
 
-        regularMenuGrid.reset();
-        inventoryMenuGrid.reset();
+        selectedRow = 0;
+        selectedColumn = 0;
 
         // Money and Difficulty indicators
         moneyIcon = shopBoardCreator.createMoneyObject(itemRowsBackgroundCard);
@@ -254,23 +270,23 @@ public class ShopBoard extends MenuBoard {
 
 
     private void recreateList() {
-        regularMenuGrid.clear();
+        regularGrid.clear();
         offTheGridObjects.clear();
 
         updateSelectedDifficultyIcons();
 
         if (!regularGridFirstRow.contains(rerollButton)) {
-            regularGridFirstRow.add(rerollButton);
+            addToGrid(regularGridFirstRow, rerollButton, 0, 8);
 //            regularGridFirstRow.add(rerollButton);
         }
 
         regularGridFifthRow.clear();
 
-        regularMenuGrid.addRow(regularGridFirstRow);
-        regularMenuGrid.addRow(regularGridSecondRow);
-        regularMenuGrid.addRow(regularGridThirdRow);
-        regularMenuGrid.addRow(regularGridFourthRow);
-        regularMenuGrid.addRow(regularGridFifthRow);
+        regularGrid.add(regularGridFirstRow);
+        regularGrid.add(regularGridSecondRow);
+        regularGrid.add(regularGridThirdRow);
+        regularGrid.add(regularGridFourthRow);
+        regularGrid.add(regularGridFifthRow);
 
         offTheGridObjects.add(returnToMainMenuBackgroundCard);
         offTheGridObjects.add(inventoryButtonBackgroundCard);
@@ -314,7 +330,6 @@ public class ShopBoard extends MenuBoard {
         offTheGridObjects.add(rerollBackgroundCard);
         offTheGridObjects.addAll(rerollCostText.getComponents());
         offTheGridObjects.addAll(rerollCost.getComponents());
-        ShopFreezeEffect.getInstance().addToBoard(shopBoardCreator, rerollBackgroundCard, regularGridFirstRow, offTheGridObjects);
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             additionalTextCollection = shopBoardCreator.createProtossCapacityText(itemRowsBackgroundCard);
@@ -330,58 +345,49 @@ public class ShopBoard extends MenuBoard {
     }
 
 
+    private void addToGrid(List<GUIComponent> gridList, GUIComponent component, int column, int row) {
+        //Crosswired for this board, temporary fix of a bigger problem also present in ShopBoard
+        component.setColumn(row);
+        component.setRow(column);
+        gridList.add(component);
+    }
+
+
     private void createInventoryGrid() {
         allInventoryGUIComponents.clear();
 
-        for (List<GUIComponent> listInGrid : inventoryMenuGrid.getRows()) {
+        for (List<GUIComponent> listInGrid : inventoryGrid) {
             listInGrid.clear(); //Clear all existing rows before repopulating them in createPlayerInventory()
         }
 
-        inventoryMenuGrid.clear();
+        inventoryGrid.clear();
         inventoryGridSixthRow.clear();
         inventoryGridSixthRow.add(playerInventoryButton.getComponents().get(0));
-        inventoryMenuGrid.addRow(inventoryGridFirstRow);
-        inventoryMenuGrid.addRow(inventoryGridSecondRow);
-        inventoryMenuGrid.addRow(inventoryGridThirdRow);
-        inventoryMenuGrid.addRow(inventoryGridFourthRow);
-        inventoryMenuGrid.addRow(inventoryGridFifthRow);
-        inventoryMenuGrid.addRow(inventoryGridSixthRow);
+        inventoryGrid.add(inventoryGridFirstRow);
+        inventoryGrid.add(inventoryGridSecondRow);
+        inventoryGrid.add(inventoryGridThirdRow);
+        inventoryGrid.add(inventoryGridFourthRow);
+        inventoryGrid.add(inventoryGridFifthRow);
+        inventoryGrid.add(inventoryGridSixthRow);
 
         allInventoryGUIComponents.add(inventoryBackgroundCard);
     }
 
-    private void buildItemRows() {
-        ShopContents contents = ShopManager.getInstance().getContents();
-        regularGridFirstRow = shopBoardCreator.createRowOfItems(0, contents);
-        regularGridSecondRow = shopBoardCreator.createRowOfItems(1, contents);
-        regularGridThirdRow = shopBoardCreator.createRowOfItems(2, contents);
-    }
-
     public void rerollShop() {
-        ShopContents contents = ShopManager.getInstance().getContents();
-        ShopRoller.rollShop(contents);
+        regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
+        regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
+        regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
 
-        List<ShopSlot> changedSlots = new ArrayList<>();
         WisdomBall wisdomball = (WisdomBall) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.WisdomBall);
 
         if (wisdomball != null) {
             if (wisdomball.shouldActivate()) {
-                changedSlots = WisdomBallRollManager.getInstance().applyWisdomBallRoll(contents);
+                List<List<GUIComponent>> shopRows = new ArrayList<>();
+                shopRows.add(regularGridFirstRow);
+                shopRows.add(regularGridSecondRow);
+                shopRows.add(regularGridThirdRow);
+                WisdomBallRollManager.getInstance().applyWisdomBallRoll(shopRows);
             }
-        }
-
-        buildItemRows();
-
-        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
-        for (List<GUIComponent> row : List.of(regularGridFirstRow, regularGridSecondRow, regularGridThirdRow)) {
-            for (GUIComponent component : row) {
-                if (changedSlots.contains(((ShopItem) component).getSlot())) {
-                    itemsToShowAnimAt.add(component);
-                }
-            }
-        }
-        if (!itemsToShowAnimAt.isEmpty()) {
-            playWisdomBallAnimation(itemsToShowAnimAt);
         }
     }
 
@@ -508,71 +514,166 @@ public class ShopBoard extends MenuBoard {
     }
 
 
+    public Timer getTimer() {
+        return timer;
+    }
+
     /*------------------------Navigation methods--------------------------------*/
 
-    @Override
-    protected void onConfirm() {
-        activeGrid.getSelected().activateComponent();
-        // Read again: activating the inventory button switches the grid
-        if (activeGrid.getSelected().getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
-            getTimer().stop();
-        }
-        rebuildNeeded = true;
-    }
-
-    @Override
-    protected void onBack() {
-        if (showInventory) {
-            setShowInventory(false);
-            rebuildNeeded = true;
+    // Activate the functionality of the specific menutile
+    private void selectMenuTile() {
+        selectedGrid.get(selectedRow).get(selectedColumn).activateComponent();
+        if (selectedGrid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
+            timer.stop();
         }
     }
 
-    @Override
-    protected void onInputHandled() {
-        if (rebuildNeeded) {
-            rebuildNeeded = false;
-            recreateList();
+    private void navigateUp() {
+        if (isGridEmpty()) {
+            return; // Do nothing if the grid is empty
+        }
+
+        int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
+
+        do {
+            selectedRow--;
+            if (selectedRow < 0) {
+                selectedRow = selectedGrid.size() - 1; // Wrap around to the bottom row
+            }
+        } while (selectedGrid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+        // found or we've checked all rows
+
+        // Adjust column to be within the new row
+        if (!selectedGrid.get(selectedRow).isEmpty() && selectedColumn >= selectedGrid.get(selectedRow).size()) {
+            selectedColumn = selectedGrid.get(selectedRow).size() - 1;
         }
     }
 
-    @Override
-    protected boolean handleHostedInput(List<MenuAction> actions) {
-        return ShopFreezeService.getInstance().handleBindingInput(actions, showInventory);
-    }
-
-    @Override
-    protected MenuGrid activeGrid() {
-        return activeGrid;
-    }
-
-    @Override
-    protected void onDirection(MenuAction action) {
-        rebuildNeeded = true;
-        if (action == MenuAction.RIGHT && jumpToRerollButton()) {
-            return;
+    // Go one menu tile downwards
+    private void navigateDown() {
+        if (isGridEmpty()) {
+            return; // Do nothing if the grid is empty
         }
-        super.onDirection(action);
+
+        int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
+
+        do {
+            selectedRow++;
+            if (selectedRow >= selectedGrid.size()) {
+                selectedRow = 0; // Wrap around to the top row
+            }
+        } while (selectedGrid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+        // found or we've checked all rows
+
+        // Adjust column to be within the new row
+        if (!selectedGrid.get(selectedRow).isEmpty() && selectedColumn >= selectedGrid.get(selectedRow).size()) {
+            selectedColumn = selectedGrid.get(selectedRow).size() - 1;
+        }
     }
 
-    private boolean jumpToRerollButton() {
-        // The cursor tile is the one from the start of the poll, as before
-        GUIComponent cursorTile = menuCursor.getSelectedMenuTile();
-        if (cursorTile.equals(this.regularGridFirstRow.get(7))  //The last item of the first row
-                || cursorTile.equals(this.regularGridSecondRow.get(7))  //The last item of the second row
-                || cursorTile.equals(this.regularGridThirdRow.get(7))) { //The last item of the third row
-            regularMenuGrid.select(rerollButton);
+    // Check if the grid is empty
+    private boolean isGridEmpty() {
+        for (List<GUIComponent> row : selectedGrid) {
+            if (!row.isEmpty()) {
+                return false; // Return false as soon as a non-empty row is found
+            }
+        }
+        return true; // If no non-empty rows are found, the grid is empty
+    }
+
+    // Go one menu tile to the left
+    private void navigateLeft() {
+        selectedColumn--;
+        if (selectedColumn < 0) {
+            selectedColumn = selectedGrid.get(selectedRow).size() - 1; // Wrap around to the rightmost column
+        }
+    }
+
+    // Go one menu tile to the right
+    private void navigateRight() {
+        if (handleRightNavigationOverwrites()) {
+            return; //We overwrote the navigation
+        }
+
+        selectedColumn++;
+        if (selectedColumn >= selectedGrid.get(selectedRow).size()) {
+            selectedColumn = 0; // Wrap around to the leftmost column
+        }
+    }
+
+    private boolean handleRightNavigationOverwrites() {
+        //If overwritten a navigation, return true, if not return false
+        if (menuCursor.getSelectedMenuTile().equals(this.regularGridFirstRow.get(7))) { //The last item of the first row
+            selectedColumn = rerollButton.getColumn();
+            selectedRow = rerollButton.getRow();
             return true;
         }
+
+        if (menuCursor.getSelectedMenuTile().equals(this.regularGridSecondRow.get(7))) { //The last item of the second row
+            selectedColumn = rerollButton.getColumn();
+            selectedRow = rerollButton.getRow();
+            return true;
+        }
+
+        if (menuCursor.getSelectedMenuTile().equals(this.regularGridThirdRow.get(7))) { //The last item of the third row
+            selectedColumn = rerollButton.getColumn();
+            selectedRow = rerollButton.getRow();
+            return true;
+        }
+
+
         return false;
     }
 
     // Update the cursor's position and selected menu tile
     private void updateCursor() {
-        activeGrid.placeCursor(menuCursor);
-        GUIComponent selectedComponent = activeGrid.getSelected();
-        if (selectedComponent != null) {
+        if (selectedGrid.get(selectedRow).isEmpty()) {
+            menuCursor.setSelectedMenuTile(null);
+        } else {
+            GUIComponent selectedComponent = selectedGrid.get(selectedRow).get(selectedColumn);
+            menuCursor.setSelectedMenuTile(selectedComponent);
+            menuCursor.setCenterYCoordinate(selectedComponent.getCenterYCoordinate() + menuCursor.getYDistanceModification());
+            menuCursor.setXCoordinate(selectedComponent.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
             currentDescriptionInfo = prepareDescriptionText(selectedComponent);
+        }
+    }
+
+    // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
+    public void executeMenuInput() {
+        boolean needsUpdate = false;
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            switch (action) {
+                case LEFT:
+                    navigateLeft();
+                    needsUpdate = true;
+                    break;
+                case RIGHT:
+                    navigateRight();
+                    needsUpdate = true;
+                    break;
+                case UP:
+                    navigateUp();
+                    needsUpdate = true;
+                    break;
+                case DOWN:
+                    navigateDown();
+                    needsUpdate = true;
+                    break;
+                case CONFIRM:
+                    selectMenuTile();
+                    recreateList();
+                    return; // selecting can change the screen
+                case BACK:
+                    if (showInventory) {
+                        setShowInventory(false);
+                        needsUpdate = true;
+                    }
+                    break;
+            }
+        }
+
+        if (needsUpdate) {
+            recreateList(); // Update the GUI only if there was an action that requires it
         }
     }
 
@@ -580,29 +681,47 @@ public class ShopBoard extends MenuBoard {
 
     /*---------------------------Drawing methods-------------------------------*/
     @Override
-    protected boolean drawsOnScreenTexts() {
-        return false;
-    }
-
-    @Override
-    protected void drawScreenContent(Graphics2D g) {
-        //Show the inventory grid if it's open
-        if (showInventory) {
-            for (GUIComponent component : allInventoryGUIComponents) {
-                drawGUIComponent(g, component);
+    public void paintComponent(Graphics g) {
+        try {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+            // Draws all background objects
+            for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                drawImage(g2d, bgObject);
             }
-        }
-    }
 
-    @Override
-    protected void drawScreenOverlay(Graphics2D g) {
-        for (GUIComponent component : popGUIComponentList) {
-            if (component != null && component.isVisible()) {
-                drawGUIComponent(g, component);
-                component.setYCoordinate(component.getYCoordinate() - 1);
+            for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+                drawAnimation(g2d, animation);
             }
+
+            drawObjects(g2d);
+            drawDescriptionInfo(g2d, currentDescriptionInfo);
+
+            for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+                drawAnimation(g2d, animation);
+            }
+
+            ControllerNotices.getInstance().draw(g2d);
+            animationManager.updateGameTick();
+            backgroundManager.updateGameTick();
+            Toolkit.getDefaultToolkit().sync();
+
+            // Reading controller input
+            executeMenuInput();
+        } catch (Exception ex) {
+            try {
+                java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);
+                java.io.PrintWriter pw = new java.io.PrintWriter(fw);
+                pw.println("=== Error at " + java.time.LocalDateTime.now() + " ===");
+                ex.printStackTrace(pw);
+                pw.println();
+                pw.close();
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
+            ex.printStackTrace();
+            System.exit(1);
         }
-        drawDescriptionInfo(g, currentDescriptionInfo);
     }
 
 
@@ -671,17 +790,50 @@ public class ShopBoard extends MenuBoard {
     }
 
 
-    @Override
-    protected void drawGUIComponent(Graphics2D g, GUIComponent component) {
-        if (component instanceof ShopItem shopItem) {
-            drawItemsInShop(g, shopItem);
+    private void drawObjects(Graphics2D g) {
+        for (GUIComponent component : offTheGridObjects) {
+            if (component != null) {
+                drawGUIComponent(g, component);
+            }
         }
+
+
+        //Always show the regular grid
+        for (List<GUIComponent> list : regularGrid) {
+            for (GUIComponent component : list) {
+                if (component instanceof ShopItem shopItem) {
+                    drawItemsInShop(g, shopItem);
+                }
+                drawGUIComponent(g, component);
+            }
+        }
+
+
+        //Show the inventory grid if it's open
+        if (showInventory) {
+            for (GUIComponent component : allInventoryGUIComponents) {
+                drawGUIComponent(g, component);
+            }
+        }
+
+        drawGUIComponent(g, menuCursor);
+
+        for (GUIComponent component : popGUIComponentList) {
+            if (component != null && component.isVisible()) {
+                drawGUIComponent(g, component);
+                component.setYCoordinate(component.getYCoordinate() - 1);
+            }
+        }
+    }
+
+
+    private void drawGUIComponent(Graphics2D g, GUIComponent component) {
         if (component.getImage() != null) {
             // Save the original composite
             Composite originalComposite = g.getComposite();
 
             // Set the alpha composite
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ShopFreezeEffect.getInstance().drawButtonGlow(g, component)));
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, component.getTransparancyAlpha()));
 
             // Draw the image
             g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
@@ -697,8 +849,6 @@ public class ShopBoard extends MenuBoard {
         int yCoordinate = object.getYCoordinate();
         String textFont = DataClass.getInstance().getTextFont();
         g.drawImage(object.getImage(), xCoordinate, yCoordinate, this);
-        ShopFreezeEffect.getInstance().drawFreezeEffect((Graphics2D) g, object);
-        yCoordinate += Math.round(8 * DataClass.getInstance().getResolutionFactor());
         g.setColor(object.getShopItemInformation().getItemRarity().getColor());
 
         if (object.getShopItemInformation().isAvailable()) {
@@ -730,6 +880,18 @@ public class ShopBoard extends MenuBoard {
         }
     }
 
+    private void drawImage(Graphics g, Sprite sprite) {
+        if (sprite.getImage() != null) {
+            g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+        }
+    }
+
+    private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
+        if (animation.getCurrentFrameImage(false) != null) {
+            g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
+        }
+    }
+
     /*------------------------------End of Drawing methods-------------------------------*/
 
     public boolean isShowInventory() {
@@ -740,11 +902,14 @@ public class ShopBoard extends MenuBoard {
         this.showInventory = showInventory;
 
         if (this.showInventory) {
-            activeGrid = inventoryMenuGrid;
-            inventoryMenuGrid.select(playerInventoryButton.getComponents().get(0));
+            selectedGrid = inventoryGrid;
+            selectedColumn = 0;
+            selectedRow = 5;
         } else {
-            activeGrid = regularMenuGrid;
-            regularMenuGrid.select(playerInventoryButton.getComponents().get(0));
+            selectedGrid = regularGrid;
+            selectedColumn = 1;
+            selectedRow = 4;
+
         }
         updateCursor();  //update the cursor because we move it
     }

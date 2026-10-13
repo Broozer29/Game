@@ -24,7 +24,7 @@ public class MenuInput {
     private static final MenuAction[] CONTROLLER_ACTIONS = MenuAction.values();
 
     private final Deque<MenuAction> keyActions = new ArrayDeque<>();
-    private final Deque<Integer> pressedKeyCodes = new ArrayDeque<>(); // every first key press, for the CONTROLS tab to bind and the shop's Freeze shop key
+    private final Deque<Integer> pressedKeyCodes = new ArrayDeque<>(); // every first key press, for the CONTROLS tab to bind
     private InputDevice lastDevice = InputDevice.KEYBOARD; // the device that gave the last input
     private final Set<Integer> heldKeys = new HashSet<>();
     private final Set<Integer> ignoredKeys = new HashSet<>(); // held when the screen opened, ignored until released once

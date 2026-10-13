@@ -801,8 +801,6 @@ public class ImageLoader {
                 return "/images/Icons/Pepeicons/skillissue.png";
             case GUIRefresh:
                 return "/images/Icons/refresh.png";
-            case GUIFreeze:
-                return "/images/Icons/FreezeShop.png";
             case ThornWeaver:
                 return "/images/Icons/Thornweaver.png";
             case Thornedplates:

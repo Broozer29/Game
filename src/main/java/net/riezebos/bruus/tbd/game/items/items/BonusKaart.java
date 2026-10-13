@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class BonusKaart extends Item {
+    private boolean usedThisShop = false;
     public BonusKaart() {
         super(ItemEnums.BonusKaart, 1, ItemApplicationEnum.CustomActivation);
     }
@@ -18,6 +19,14 @@ public class BonusKaart extends Item {
 
     @Override
     public void applyEffectToObject(GameObject gameObject) {
+    }
+
+    public boolean isUsedThisShop() {
+        return usedThisShop;
+    }
+
+    public void setUsedThisShop(boolean usedThisShop) {
+        this.usedThisShop = usedThisShop;
     }
 
     @Override

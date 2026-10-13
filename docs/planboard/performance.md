@@ -68,15 +68,15 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
 - Smaller per-hit and per-frame costs
   - Item lookups stream and build a new list on every hit (`PlayerInventory.getItemsByApplicationMethod`)
   - On Carrier, the drone list is rebuilt for every enemy missile (`FriendlyManager.getAllProtossDrones`)
-- The save file is written to disk on the game thread on every purchase, shop refresh, relic pick and level change
-  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:63 and 84, ShopManager.java:211, MenuButton.java:124 and 165, ShopFreezeService.java:69, and GameBoard.java:185 and 336
+- The save file is written to disk on the game thread on every purchase, relic pick and level change
+  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:92 and 111, ShopManager.java:168, MenuButton.java:96 and GameBoard.java:164 and 303
   - `PlayerProfileManager` does the same on boss deaths, `GameState`, `PlayerInventory` and several boons
   - Fix: one shared `ObjectMapper`, and write in the background or once when leaving the shop
 - When a frame takes longer than 15 ms the whole game runs in slow motion instead of skipping frames
   - Game time is ticks times the timer delay (GameState.java:157), and the tick and the drawing share the Swing thread (`GameBoard` timer, `actionPerformed`)
   - Fix: advance game time from the real clock, or use a fixed-step loop that can skip drawing
 - Menu screens update their animations and poll the controller inside the paint method; since 2026-10-10 a 15 ms controller clock reads the controllers and the screens only read the result
-  - Since 2026-10-11 all five menu screens share this paint step in `MenuBoard.paintComponent`, which also calls `Toolkit.sync()` every paint, so menu speed depends on paint speed
+  - ShopBoard.java:783-788 and the boon, class, difficulty and main menu boards; each also calls `Toolkit.sync()` every paint, so menu speed depends on paint speed
 - Shop and relic cards rebuild fonts and re-wrap description text every frame
   - `ShopBoard.drawDescriptionInfo` and `drawItemsInShop` (about 3 fonts per item per frame), duplicated in BoonSelectionBoard and GameBoard relic cards
   - Fix: keep fonts as constants and cache the wrapped lines when the selection changes
@@ -106,7 +106,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - They come in two bursts. About 12,300 start while `AudioDatabase` builds its players, before the window appears. About 4,800 start at "Finishing initialization", when `initMainMenu` calls `gameBoard.resetGame()`, which calls `AudioDatabase.resetAudio()`
   - Every sound copy is a full JavaFX `MediaPlayer`: 189 players for 102 sounds (`clipSizeConfig` in AudioDatabase.java). `resetAudio()` seeks and stops every one of them, and each stop or seek starts and ends native threads
   - That is roughly 65 threads per player at startup. It likely accounts for most of the 2.7 s before the window appears (not measured separately)
-  - The same `resetAudio()` runs on every game reset (GameBoard.java:195 and 239)
+  - The same `resetAudio()` runs on every game reset (GameBoard.java:174 and 219)
   - Options: only reset players that actually played; create players for music only when needed; or play short sound effects through a lighter API (`javax.sound.sampled.Clip` or a mixer). A code comment says the game moved from `Clip` to `MediaPlayer` on purpose, so find out why first
   - New on 2026-10-07: the threads keep coming during play, not only at startup. A 13-minute stress run started about 228,000 of them (about 360 per second), and Windows counted 835 threads in the game against about 230 Java threads. Their native memory is invisible to the game's own memory tracking and may be part of the memory that crashed the PC (target/perf/STRESSRUN-2026-10-07-2104.md)
   - Another option: JavaFX `AudioClip` for short sound effects, which plays overlapping copies of one loaded sound without a player per copy; music stays on `MediaPlayer`
@@ -123,14 +123,14 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
 - Small per-frame allocations in GameBoard drawing
   - New `Color` objects per laser indicator and per player bar every frame; fix: constants
 - The low-health overlay searches the player list every frame and may draw a full-screen transparent image every frame
-  - `GameBoard.drawLowHealthPlayerOverlay` (GameBoard.java:673-707), below 40% health; the overlay image size is not checked yet
+  - `GameBoard.drawLowHealthPlayerOverlay` (GameBoard.java:639-672), below 40% health; the overlay image size is not checked yet
   - Fix: find the lowest-health player once per tick, and draw the overlay as a transparent `fillRect` or a pre-sized image
 - Laser segments are each drawn as a separate animation, including the ones off screen
   - Laserbeam.java:84-106 builds one animation per segment; `drawAnimation` looks up the frame twice and switches transparency mode per segment
 - In-game animations advance their frames inside paint, so animation speed follows paint speed
-  - `drawAnimation` calls `getCurrentFrameImage(true)` (GameBoard.java:782)
+  - `drawAnimation` calls `getCurrentFrameImage(true)` (GameBoard.java:750)
 - Sprite-sheet frames are views into the whole sheet (`getSubimage`), so each frame keeps the full sheet in memory
-  - ImageDatabase.java:3118, ImageCropper and ImageRotator; not measured
+  - ImageDatabase.java:3084, ImageCropper and ImageRotator; not measured
 - `-Xms4g` reserves 4 GB at launch, which slows startup slightly; no pause-time setting (`-XX:MaxGCPauseMillis`) is set for G1
 - Every moving object builds its whole route up front as up to a few thousand points, then removes the first point each step
   - RegularPathFinder.java:45-68 (up to twice the window width divided by the step size) and StraightLinePathFinder; `GameObjectMover.handleNextWaypointRemoval` does `getWaypoints().remove(0)`, which shifts the whole list every time
@@ -192,7 +192,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Every draw and every upload to the graphics card pays a format conversion
   - Fix: convert once at load time and after each resize, rotate or crop; measure before and after, this could speed up every draw
 - The background draws about 50 nebula tiles every frame, most of them off screen
-  - `BackgroundManager.initBackgroundObjects` builds 25 tiles per row in two rows (each image is 1229x1229), plus up to 105 stars and the planets; GameBoard.java:497 draws all of them, each with a transparency-mode switch
+  - `BackgroundManager.initBackgroundObjects` builds 25 tiles per row in two rows (each image is 1229x1229), plus up to 105 stars and the planets; GameBoard.java:477-479 draws all of them, each with a transparency-mode switch
   - Fix: skip sprites outside the visible area (`g.hitClip`) and keep only a few nebula tiles that wrap around
 - The background list is copied and sorted every frame
   - `BackgroundManager.getAllBGO()` builds and sorts a new list on every paint, in the game and every menu; the order never changes

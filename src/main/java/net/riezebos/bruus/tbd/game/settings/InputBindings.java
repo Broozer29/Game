@@ -28,11 +28,9 @@ public class InputBindings {
         DEFAULT_KEYS.put(BindableAction.FIRE, KeyEvent.VK_SPACE);
         DEFAULT_KEYS.put(BindableAction.SPECIAL_ATTACK, KeyEvent.VK_Q);
         DEFAULT_KEYS.put(BindableAction.HOLD_FIRE, KeyEvent.VK_E);
-        DEFAULT_KEYS.put(BindableAction.FREEZE_SHOP, KeyEvent.VK_F);
         DEFAULT_BUTTONS.put(BindableAction.FIRE, ControllerButton.A);
         DEFAULT_BUTTONS.put(BindableAction.SPECIAL_ATTACK, ControllerButton.B);
         DEFAULT_BUTTONS.put(BindableAction.HOLD_FIRE, ControllerButton.LEFTBUMPER);
-        DEFAULT_BUTTONS.put(BindableAction.FREEZE_SHOP, ControllerButton.RIGHTBUMPER);
     }
 
     private Map<String, Object> keyboard = new LinkedHashMap<>();

@@ -11,7 +11,6 @@ public enum MenuFunctionEnums {
 	SelectSongDifficulty,
 	SelectSongLength,
 	RerollShop,
-	FreezeShop,
 	SelectMacOSMediaPlayer,
 	SelectDefaultMediaPlayer,
 	SelectWindowsOSMediaPlayer,

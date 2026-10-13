@@ -1,20 +1,15 @@
 package net.riezebos.bruus.tbd.game.gamestate.save;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlot;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class SaveManager {
 
@@ -55,13 +50,7 @@ public class SaveManager {
                 return;
             }
 
-            // The shop is read apart from the rest, so a shop that can't be read (or names an item that no longer exists) doesn't stop the run from loading
-            JsonNode rootNode = objectMapper.readTree(new File(SAVE_FILE_PATH));
-            if (!(rootNode instanceof ObjectNode root)) {
-                throw new IOException("Save file is empty or not a JSON object");
-            }
-            JsonNode shopNode = root.remove("shopContents");
-            SaveFile saveFile = objectMapper.treeToValue(root, SaveFile.class);
+            SaveFile saveFile = objectMapper.readValue(new File(SAVE_FILE_PATH), SaveFile.class);
             PlayerStats.getInstance().loadInSaveFile(saveFile);
             GameState.getInstance().loadInSaveFile(saveFile);
             BoonManager.getInstance().loadInSaveFile(saveFile);
@@ -71,7 +60,6 @@ public class SaveManager {
             ShopManager.getInstance().setLastLevelDifficultyScore(saveFile.getLastKnownDifficultyScore());
             ShopManager.getInstance().setLastLevelDifficulty(saveFile.getLastKnownLevelDifficulty());
             ShopManager.getInstance().setLastMiniBossConfig(saveFile.getLastKnownMiniBossConfig());
-            ShopManager.getInstance().setContents(readShopContents(objectMapper, shopNode));
 
 
             System.out.println("Game successfully loaded!");
@@ -79,42 +67,6 @@ public class SaveManager {
             e.printStackTrace();
             System.err.println("Error loading save file!");
         }
-    }
-
-    /**
-     * Reads the shop from its part of the save file.
-     * @return the shop, or null when it is missing or can't be read, in which case a fresh shop is rolled.
-     */
-    private ShopContents readShopContents(ObjectMapper objectMapper, JsonNode shopNode) {
-        if (shopNode == null || shopNode.isNull()) {
-            return null;
-        }
-
-        ShopContents contents;
-        try {
-            contents = objectMapper.treeToValue(shopNode, ShopContents.class);
-        } catch (Exception e) {
-            System.err.println("Shop in the save file can't be read, a new shop is rolled (" + e.getClass().getSimpleName() + "): " + e.getMessage());
-            return null;
-        }
-
-        if (contents == null || contents.getRows() == null || contents.getRows().size() != ShopContents.ROW_COUNT) {
-            System.err.println("Shop in the save file is rejected, a new shop is rolled: it does not have " + ShopContents.ROW_COUNT + " rows");
-            return null;
-        }
-        for (List<ShopSlot> row : contents.getRows()) {
-            if (row == null || row.size() != ShopContents.SLOTS_PER_ROW) {
-                System.err.println("Shop in the save file is rejected, a new shop is rolled: a row does not have " + ShopContents.SLOTS_PER_ROW + " slots");
-                return null;
-            }
-            for (ShopSlot slot : row) {
-                if (slot == null || slot.getItem() == null || slot.getRarity() == null || slot.getStatus() == null) {
-                    System.err.println("Shop in the save file is rejected, a new shop is rolled: a slot is missing its item, rarity or status");
-                    return null;
-                }
-            }
-        }
-        return contents;
     }
 
     /**

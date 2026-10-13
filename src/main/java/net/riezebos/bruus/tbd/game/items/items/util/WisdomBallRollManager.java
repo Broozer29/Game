@@ -1,13 +1,15 @@
 package net.riezebos.bruus.tbd.game.items.items.util;
 
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlot;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlotStatusEnums;
 import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.GUIComponentItemInformation;
+import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 
 import java.util.*;
 
@@ -23,13 +25,11 @@ public class WisdomBallRollManager {
         return instance;
     }
 
-    //Returns the slots that were changed, so the shop board can play the animation at them
-    public List<ShopSlot> applyWisdomBallRoll(ShopContents shopContents) {
-        //The shop contents are rolled BEFORE this, so here we modify whatever the result of the refresh was
+    public void applyWisdomBallRoll(List<List<GUIComponent>> shopItems) {
+        //Shoprows enter AFTER being refreshed, so here we modify whatever the result of the refresh was
         WisdomBallRolls selectedEffect = WisdomBallRolls.getRandomEffect();
 
-        List<List<ShopSlot>> shopItems = shopContents.getRows();
-        List<ShopSlot> modifiedItems = new ArrayList<>();
+        List<GUIComponent> modifiedItems = new ArrayList<>();
 
         switch (selectedEffect) {
             case Copy_Inventory:
@@ -52,24 +52,11 @@ public class WisdomBallRollManager {
                 break;
         }
 
-        return modifiedItems;
+        playWisdomBallAnimation(modifiedItems);
     }
 
-    //Makes the slot a regular available slot with the given item at its normal price
-    private void setSlotToItem(ShopSlot slot, ItemEnums itemEnum) {
-        slot.setItem(itemEnum);
-        slot.setRarity(itemEnum.getItemRarity());
-        slot.setCost(itemEnum.getItemRarity().getItemCost());
-        slot.setStatus(ShopSlotStatusEnums.Available);
-    }
-
-    //If it is NOT available after a refresh, the row is NOT unlocked so we skip it
-    private boolean isRowUnlocked(List<ShopSlot> shopRow) {
-        return !shopRow.isEmpty() && shopRow.get(0).getStatus() != ShopSlotStatusEnums.Locked;
-    }
-
-    private List<ShopSlot> handleCopyInventory(List<List<ShopSlot>> shopItems) {
-        List<ShopSlot> itemsToShowAnimAt = new ArrayList<>();
+    private Collection<? extends GUIComponent> handleCopyInventory(List<List<GUIComponent>> shopItems) {
+        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
         Random random = new Random();
 
         // Get available items from player inventory
@@ -104,15 +91,28 @@ public class WisdomBallRollManager {
         }
 
         // For each item in each row, replace with a random item from player inventory
-        for (List<ShopSlot> shopRow : shopItems) {
-            if (!isRowUnlocked(shopRow)) {
+        for (List<GUIComponent> shopRow : shopItems) {
+            if (shopRow.isEmpty()) {
                 continue;
             }
 
-            for (ShopSlot item : shopRow) {
+            // If it is NOT available after a refresh, the row is NOT unlocked so we skip it
+            if (!shopRow.get(0).getShopItemInformation().isAvailable()) {
+                continue;
+            }
+
+            for (GUIComponent item : shopRow) {
                 ItemEnums selectedItemEnum = weightedItemList.get(random.nextInt(weightedItemList.size()));
 
-                setSlotToItem(item, selectedItemEnum);
+                item.setShopItemInformation(new GUIComponentItemInformation(
+                        selectedItemEnum,
+                        selectedItemEnum.getItemRarity(),
+                        ItemDescriptionRetriever.getDescriptionOfItem(selectedItemEnum),
+                        true,
+                        selectedItemEnum.getItemRarity().getItemCost()
+                ));
+                item.setImage(selectedItemEnum.getItemIcon());
+                item.setImageDimensions(ShopBoardCreator.shopItemIconDimensions, ShopBoardCreator.shopItemIconDimensions);
                 itemsToShowAnimAt.add(item);
             }
         }
@@ -121,7 +121,7 @@ public class WisdomBallRollManager {
     }
 
     //Choose a random legendary from the players inventory and modify 1 item in the shop to become a copy of it
-    private List<ShopSlot> handleCopyALegendary(List<List<ShopSlot>> shopItems) {
+    private List<GUIComponent> handleCopyALegendary(List<List<GUIComponent>> shopItems) {
         List<ItemEnums> legendaryEnums = PlayerInventory.getInstance().getItems().keySet().stream()
                 .filter(itemEnum -> itemEnum.getItemRarity() == ItemRarityEnums.Legendary)
                 .toList();
@@ -136,38 +136,63 @@ public class WisdomBallRollManager {
 
 
 
-        List<ShopSlot> eligibleShopItems = new ArrayList<>();
+        List<GUIComponent> eligibleShopItems = new ArrayList<>();
 
-        for (List<ShopSlot> shopRow : shopItems) {
-            if (!isRowUnlocked(shopRow)) {
+        for (List<GUIComponent> shopRow : shopItems) {
+            if (shopRow.isEmpty()) {
+                continue;
+            }
+
+            // If it is NOT available after a refresh, the row is NOT unlocked so we skip it
+            if (!shopRow.get(0).getShopItemInformation().isAvailable()) {
                 continue;
             }
 
             eligibleShopItems.addAll(shopRow);
         }
 
-        ShopSlot selectedItem = eligibleShopItems.get(random.nextInt(eligibleShopItems.size()));
+        GUIComponent selectedItem = eligibleShopItems.get(random.nextInt(eligibleShopItems.size()));
 
-        setSlotToItem(selectedItem, itemEnum);
+        selectedItem.setShopItemInformation(new GUIComponentItemInformation(
+                itemEnum,
+                itemEnum.getItemRarity(),
+                ItemDescriptionRetriever.getDescriptionOfItem(itemEnum),
+                true,
+                itemEnum.getItemRarity().getItemCost()
+        ));
+        selectedItem.setImage(itemEnum.getItemIcon());
+        selectedItem.setImageDimensions(ShopBoardCreator.shopItemIconDimensions, ShopBoardCreator.shopItemIconDimensions);
 
-        List<ShopSlot> itemsToShowAnimAt = new ArrayList<>();
+        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
         itemsToShowAnimAt.add(selectedItem);
 
         return itemsToShowAnimAt;
     }
 
-    private List<ShopSlot> handleAllRare(List<List<ShopSlot>> shopItems) {
-        List<ShopSlot> itemsToShowAnimAt = new ArrayList<>();
+    private List<GUIComponent> handleAllRare(List<List<GUIComponent>> shopItems) {
+        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
 
-        for (List<ShopSlot> shopRow : shopItems) {
-            if (!isRowUnlocked(shopRow)) {
+        for (List<GUIComponent> shopRow : shopItems) {
+            if (shopRow.isEmpty()) {
                 continue;
             }
 
-            for (ShopSlot item : shopRow) {
+            if (!shopRow.get(0).getShopItemInformation().isAvailable()) {
+                continue;
+            }
+
+            for (GUIComponent item : shopRow) {
                 ItemEnums itemEnum = getRandomAvailableItemByRarity(ItemRarityEnums.Rare);
 
-                setSlotToItem(item, itemEnum);
+                item.setShopItemInformation(new GUIComponentItemInformation(
+                        itemEnum,
+                        itemEnum.getItemRarity(),
+                        ItemDescriptionRetriever.getDescriptionOfItem(itemEnum),
+                        true,
+                        itemEnum.getItemRarity().getItemCost()
+                ));
+                item.setImage(itemEnum.getItemIcon());
+                item.setImageDimensions(ShopBoardCreator.shopItemIconDimensions, ShopBoardCreator.shopItemIconDimensions);
                 itemsToShowAnimAt.add(item);
             }
         }
@@ -177,13 +202,18 @@ public class WisdomBallRollManager {
 
 
     //Change the price of X amount of items to be free
-    private List<ShopSlot> handleFreeItems(List<List<ShopSlot>> shopItems) {
-        List<ShopSlot> eligibleShopItems = new ArrayList<>();
-        List<ShopSlot> itemsToShowAnimAt = new ArrayList<>();
+    private List<GUIComponent> handleFreeItems(List<List<GUIComponent>> shopItems) {
+        List<GUIComponent> eligibleShopItems = new ArrayList<>();
+        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
         Random random = new Random();
 
-        for (List<ShopSlot> shopRow : shopItems) {
-            if (!isRowUnlocked(shopRow)) {
+        for (List<GUIComponent> shopRow : shopItems) {
+            if (shopRow.isEmpty()) {
+                continue;
+            }
+
+            // If it is NOT available after a refresh, the row is NOT unlocked so we skip it
+            if (!shopRow.get(0).getShopItemInformation().isAvailable()) {
                 continue;
             }
 
@@ -191,8 +221,8 @@ public class WisdomBallRollManager {
         }
 
         for (int i = 0; i < 1 + ShopManager.getInstance().getRowsUnlocked(); i++) {
-            ShopSlot selectedItem = eligibleShopItems.get(random.nextInt(eligibleShopItems.size()));
-            selectedItem.setCost(0);
+            GUIComponent selectedItem = eligibleShopItems.get(random.nextInt(eligibleShopItems.size()));
+            selectedItem.getShopItemInformation().setCost(0);
             itemsToShowAnimAt.add(selectedItem);
         }
 
@@ -201,48 +231,78 @@ public class WisdomBallRollManager {
 
 
     //Add a random relic that is available to the shop
-    private List<ShopSlot> handleAddARelic(List<List<ShopSlot>> shopItems) {
-        List<ShopSlot> eligibleShopItems = new ArrayList<>();
-        List<ShopSlot> itemsToShowAnimAt = new ArrayList<>();
+    private List<GUIComponent> handleAddARelic(List<List<GUIComponent>> shopItems) {
+        List<GUIComponent> eligibleShopItems = new ArrayList<>();
+        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
         Random random = new Random();
 
         ItemEnums itemEnum = getRandomAvailableItemByRarity(ItemRarityEnums.Relic);
 
-        for (List<ShopSlot> shopRow : shopItems) {
-            if (!isRowUnlocked(shopRow)) {
+        for (List<GUIComponent> shopRow : shopItems) {
+            if (shopRow.isEmpty()) {
+                continue;
+            }
+
+            // If it is NOT available after a refresh, the row is NOT unlocked so we skip it
+            if (!shopRow.get(0).getShopItemInformation().isAvailable()) {
                 continue;
             }
 
             eligibleShopItems.addAll(shopRow);
         }
 
-        ShopSlot selectedItem = eligibleShopItems.get(random.nextInt(eligibleShopItems.size()));
-        setSlotToItem(selectedItem, itemEnum);
+        GUIComponent selectedItem = eligibleShopItems.get(random.nextInt(eligibleShopItems.size()));
+        selectedItem.setShopItemInformation(new GUIComponentItemInformation(
+                itemEnum,
+                itemEnum.getItemRarity(),
+                ItemDescriptionRetriever.getDescriptionOfItem(itemEnum),
+                true,
+                itemEnum.getItemRarity().getItemCost()
+        ));
+        selectedItem.setImage(itemEnum.getItemIcon());
+        selectedItem.setImageDimensions(ShopBoardCreator.shopItemIconDimensions, ShopBoardCreator.shopItemIconDimensions);
         itemsToShowAnimAt.add(selectedItem);
 
         return itemsToShowAnimAt;
     }
 
     //Change all items in the shop to be a single common item
-    private List<ShopSlot> handleSingleCommon(List<List<ShopSlot>> shopItems) {
-        List<ShopSlot> eligibleShopItems = new ArrayList<>();
-        List<ShopSlot> itemsToShowAnimAt = new ArrayList<>();
+    private List<GUIComponent> handleSingleCommon(List<List<GUIComponent>> shopItems) {
+        List<GUIComponent> eligibleShopItems = new ArrayList<>();
+        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
         ItemEnums itemEnum = getRandomAvailableItemByRarity(ItemRarityEnums.Common);
 
-        for (List<ShopSlot> shopRow : shopItems) {
-            if (!isRowUnlocked(shopRow)) {
+        for (List<GUIComponent> shopRow : shopItems) {
+            if (shopRow.isEmpty()) {
+                continue;
+            }
+
+            // If it is NOT available after a refresh, the row is NOT unlocked so we skip it
+            if (!shopRow.get(0).getShopItemInformation().isAvailable()) {
                 continue;
             }
 
             eligibleShopItems.addAll(shopRow);
         }
 
-        for (ShopSlot item : eligibleShopItems) {
-            setSlotToItem(item, itemEnum);
+        for (GUIComponent item : eligibleShopItems) {
+            item.setShopItemInformation(new GUIComponentItemInformation(
+                    itemEnum,
+                    itemEnum.getItemRarity(),
+                    ItemDescriptionRetriever.getDescriptionOfItem(itemEnum),
+                    true,
+                    itemEnum.getItemRarity().getItemCost()
+            ));
+            item.setImage(itemEnum.getItemIcon());
+            item.setImageDimensions(ShopBoardCreator.shopItemIconDimensions, ShopBoardCreator.shopItemIconDimensions);
             itemsToShowAnimAt.add(item);
         }
 
         return itemsToShowAnimAt;
+    }
+
+    private void playWisdomBallAnimation(List<GUIComponent> itemsToShowAnimAt) {
+        BoardManager.getInstance().getShopBoard().playWisdomBallAnimation(itemsToShowAnimAt);
     }
 
     //Helper method to filter out unavailable items, originally taken from ShopManager
