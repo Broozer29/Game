@@ -32,10 +32,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.items.BonusKaart;
 import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
 import net.riezebos.bruus.tbd.game.items.items.WisdomBall;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
@@ -202,6 +202,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         textManager.resetManager();
         playerStats.resetPlayerStats();
         gameState.resetGameState();
+        ShopManager.getInstance().resetContents();
         this.bossHealthBars.clear();
         BoonManager.getInstance().resetManager();
         ThornsDamageDealer.getInstance().resetThornsDamageDealer();
@@ -252,10 +253,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 stuiversBestFriend.setHasActivatedThisRound(false);
             }
 
-            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart) != null) {
-                BonusKaart bonusKaart = (BonusKaart) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart);
-                bonusKaart.setUsedThisShop(false);
-            }
 //            LevelManager.getInstance().setLastSelectedDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty());
 //            LevelManager.getInstance().setLastSelectedMiniBossConfig(LevelManager.getInstance().getCurrentMiniBossConfig());
 
@@ -324,8 +321,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             resetManagersForNextLevel();
 
             drawTimer.stop();
-            SaveManager.getInstance().exportCurrentSave();
-            BoardManager.getInstance().openShopWindow();
+            ShopManager.getInstance().enterShop(); //Rolls the shop, pays finished contracts, fills the free refreshes and computes the refresh cost, once per shop visit
 
 //            if (PlayerInventory.getInstance().getCashMoney() >= CompoundWealth.mineralUnlockRequirement && PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() < 1) {
 //                PlayerProfileManager.getInstance().getLoadedProfile().setCompoundWealthLevel(1);
@@ -335,6 +331,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 //            }
             BoonManager.getInstance().activateBoons(BoonActivationEnums.Whenever_Entering_Shop);
 
+            //The boons (Compound Wealth's interest) change the minerals, so the refresh cost and the entry save come after them
+            ShopManager.getInstance().calculateRerollCost();
+            SaveManager.getInstance().exportCurrentSave();
+            BoardManager.getInstance().openShopWindow();
 
             GameStatsTracker.getInstance().resetStatsForNextRound();
 

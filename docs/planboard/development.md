@@ -3,7 +3,7 @@ Settings, startup, Discord status, builds, packaging and dev tooling.
 
 ## Bugs
 - Any error during a game tick closes the whole game
-  - `GameBoard.actionPerformed` catches every exception, writes error_log.txt and calls `System.exit(1)` (GameBoard.java:1097-1109), so every null pointer below ends the run
+  - `GameBoard.actionPerformed` catches every exception, writes error_log.txt and calls `System.exit(1)` (GameBoard.java:1128-1140), so every null pointer below ends the run
   - Fix: log the error and skip that tick, or go to a game-over screen instead of exiting
 - Null pointer risks that would close the game
   - `PlayerManager.getClosestSpaceShip` returns null with no ships; FinalBoss.java:135, Enemy.java:236-238 and MissileManager.java around 495-520 use it unchecked. `getRandomSpaceShip` throws on an empty list (ExplosiveGreed.java:40, FriendlyStation.java:103)
