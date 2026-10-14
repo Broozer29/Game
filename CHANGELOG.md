@@ -5,6 +5,7 @@ All notable changes on the `Nelis` branch.
 ## 2026-10-14
 
 ### Changed
+- Internal: all dev test switches in DevTestSettings are off again (mute mode, infinite money, free reroll, portal cheat key, player immunity, direct shop access).
 - Internal: macOS .DS_Store files are no longer tracked by git and are removed from the repository. They were already in .gitignore.
 
 ## 2026-10-13
