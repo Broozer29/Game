@@ -11,6 +11,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class CalmInChaosStorm extends SpecialAttack {
 
+
+    private float originalDamage = 0;
     private CalmInChaosStorm(SpriteAnimationConfiguration spriteAnimationConfiguration, SpecialAttackConfiguration missileConfiguration, SpaceShip owner) {
         super(spriteAnimationConfiguration, missileConfiguration);
         this.setObjectType("FireShield");
@@ -22,6 +24,7 @@ public class CalmInChaosStorm extends SpecialAttack {
         this.setTransparancyAlpha(true, 0.05f, 0.025f);
         this.ownerOrCreator = owner;
         this.centeredAroundObject = true;
+        this.originalDamage = this.getDamage();
     }
 
 
@@ -32,6 +35,10 @@ public class CalmInChaosStorm extends SpecialAttack {
         }
         if ((ownerOrCreator == null || ownerOrCreator.getCurrentShieldPoints() < (ownerOrCreator.getMaxShieldPoints() * CalmInChaos.hitPointRequirement)) && !isDissipating) {
             startDissipation();
+        }
+
+        if(!isDissipating && ownerOrCreator != null && ownerOrCreator.getCurrentShieldPoints() >= (ownerOrCreator.getMaxShieldPoints() * CalmInChaos.hitPointRequirement)){
+            this.setDamage(this.originalDamage * (ownerOrCreator.getCurrentShieldPoints() / ownerOrCreator.getMaxShieldPoints()));
         }
 
     }

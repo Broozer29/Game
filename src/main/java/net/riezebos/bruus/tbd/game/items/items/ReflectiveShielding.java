@@ -10,7 +10,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 import java.util.Random;
 
 public class ReflectiveShielding extends Item {
-    public static float buffAmount = 2f;
+    public static float buffAmount = 4f;
     public static float procChance = 0.25f;
     public static float procChanceIncrease = 0.05f;
     private boolean shouldApply;
@@ -51,8 +51,8 @@ public class ReflectiveShielding extends Item {
                 return false;
             }
             else {
-                return true;
-//                return random.nextFloat() < (procChance + (procChanceIncrease * quantity));
+//                return true;
+                return random.nextFloat() < (procChance + (procChanceIncrease * quantity));
             }
         }
         return false; //if it aint a non-explosive missile, we cant reflect it

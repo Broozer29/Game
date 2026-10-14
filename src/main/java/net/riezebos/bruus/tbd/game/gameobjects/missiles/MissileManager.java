@@ -17,10 +17,14 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAt
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.ItemEnums;
+import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.ReflectiveShielding;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.PathFinder;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
+import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionDetector;
 import net.riezebos.bruus.tbd.game.util.collision.CollisionInfo;
@@ -306,13 +310,12 @@ public class MissileManager {
             CollisionInfo collisionInfo = collisionDetector.detectCollision(missile, spaceship);
             if (collisionInfo != null) {
 
-                //todo reflective shielding staat disabled, als ik deze nooit ga enablen, gewoon verwijderen nu multiplayer hem kapot maakt
-//                ReflectiveShielding reflectiveShielding = (ReflectiveShielding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ReflectiveShielding);
-//                if (reflectiveShielding != null && reflectiveShielding.attemptToReflectMissile(missile)
-//                        && spaceship.getCurrentShieldPoints() > 0) {
-//                    ThornsDamageDealer.getInstance().reflectMissile(collisionInfo.getCollisionPoint(), missile);
-////                return; //don't want to continue since we reflected/blocked the missile
-//                }
+                ReflectiveShielding reflectiveShielding = (ReflectiveShielding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ReflectiveShielding);
+                if (reflectiveShielding != null && reflectiveShielding.attemptToReflectMissile(missile)
+                        && spaceship.getCurrentShieldPoints() > 0) {
+                    ThornsDamageDealer.getInstance().reflectMissile(spaceship, missile);
+                    return; //don't want to continue since we reflected/blocked the missile
+                }
 
                 missile.handleCollision(spaceship);
 

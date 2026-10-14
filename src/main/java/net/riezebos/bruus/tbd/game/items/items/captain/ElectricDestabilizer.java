@@ -46,7 +46,6 @@ public class ElectricDestabilizer extends Item {
             SpriteAnimation spriteAnimation = new SpriteAnimation(spriteAnimationConfiguration);
 
             FreezeEffect freezeEffect = new FreezeEffect(duration * quantity, spriteAnimation);
-
             target.addEffect(freezeEffect);
         }
     }

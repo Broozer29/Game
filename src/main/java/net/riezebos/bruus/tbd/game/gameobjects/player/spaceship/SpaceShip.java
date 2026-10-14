@@ -32,6 +32,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.items.BombasticBarrier;
 import net.riezebos.bruus.tbd.game.items.items.CalmInChaos;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
@@ -235,15 +236,15 @@ public class SpaceShip extends GameObject {
         this.effects = new CopyOnWriteArrayList<>();
         this.hasAttack = true;
 
-        this.currentHitpoints = playerStats.getMaxHitPoints();
-        this.maxHitPoints = playerStats.getMaxHitPoints();
+        this.currentHitpoints = playerStats.getMaxHitPoints() * this.maxHitpointsModifier;
+        this.maxHitPoints = playerStats.getMaxHitPoints() * this.maxShieldModifier;
         this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
         this.maxShieldPoints = playerStats.getMaxShieldHitPoints();
         applyOnCreationEffects();
 
         //Again cause Glass Cannon modifies this, so we need to recalculate it if this item exists. Obvious code smell
-        this.currentHitpoints = playerStats.getMaxHitPoints();
-        this.currentShieldPoints = playerStats.getMaxShieldHitPoints();
+        this.currentHitpoints = playerStats.getMaxHitPoints() * this.maxHitpointsModifier;
+        this.maxHitPoints = playerStats.getMaxHitPoints() * this.maxShieldModifier;
     }
 
     private void applyOnCreationEffects() {
@@ -264,7 +265,7 @@ public class SpaceShip extends GameObject {
             AnimationManager.getInstance().addUpperAnimation(focusCrystalAnimation);
         }
 
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
+        if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)) {
             PassiveHealthRegeneration mutaliskPassiveHealingEffect = new PassiveHealthRegeneration(PlayerStats.mutaliskHealthRegeneration, EffectIdentifiers.MutaliskPassiveHealing);
             this.addEffect(mutaliskPassiveHealingEffect);
         }
@@ -359,8 +360,12 @@ public class SpaceShip extends GameObject {
                 if (currentShieldPoints > 0) {
                     addShieldDamageAnimation();
                 }
-                currentShieldPoints = 0;
 
+                BombasticBarrier bombasticBarrier = (BombasticBarrier) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BombasticBarrier);
+                if(bombasticBarrier != null && currentShieldPoints > 0) {
+                    bombasticBarrier.applyEffectToObject(this);
+                }
+                currentShieldPoints = 0;
             } else {
                 // Shield absorbs all damage
                 changeShieldHitpoints(-damageTaken);
@@ -435,19 +440,18 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    private void updateItemEffects(){
+    private void updateItemEffects() {
         CalmInChaos calmInChaos = (CalmInChaos) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CalmInChaos);
-        if(calmInChaos != null){
-            if(currentShieldPoints >= (playerStats.getMaxShieldHitPoints() * CalmInChaos.hitPointRequirement) && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)){
-                if(calmInChaosStorm == null){
+        if (calmInChaos != null) {
+            if (currentShieldPoints >= (playerStats.getMaxShieldHitPoints() * CalmInChaos.hitPointRequirement) && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)) {
+                if (calmInChaosStorm == null) {
                     calmInChaosStorm = CalmInChaosStorm.createEffect(this);
                 }
                 this.objectsFollowingThis.add(calmInChaosStorm);
                 this.playerFollowingSpecialAttacks.add(calmInChaosStorm);
                 MissileManager.getInstance().getSpecialAttacks().add(calmInChaosStorm);
-            }
-            else {
-                if(calmInChaosStorm != null && (calmInChaosStorm.isDissipating() && calmInChaosStorm.getTransparancyAlpha() <= 0.05f)){
+            } else {
+                if (calmInChaosStorm != null && (calmInChaosStorm.isDissipating() && calmInChaosStorm.getTransparancyAlpha() <= 0.05f)) {
                     calmInChaosStorm.setVisible(false);
                     calmInChaosStorm = null;
                 }
@@ -706,7 +710,7 @@ public class SpaceShip extends GameObject {
         }
     }
 
-    public float getCritModifier(){
+    public float getCritModifier() {
         return this.critDamageModifier;
     }
 
@@ -796,7 +800,7 @@ public class SpaceShip extends GameObject {
     //Cheat code method
     private void spawnPortal() {
         DirectorManager.getInstance().setEnabled(false);
-        if(LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)){
+        if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             GameState.getInstance().setGameState(GameStatusEnums.Show_Level_Score_Card);
         } else {
             GameState.getInstance().setGameState(GameStatusEnums.Level_Finished);
@@ -908,7 +912,7 @@ public class SpaceShip extends GameObject {
         directiony = 0;
     }
 
-    public EffectInterface initIgniteEffect(){
+    public EffectInterface initIgniteEffect() {
         SpaceShip spaceShip = PlayerManager.getInstance().getRandomSpaceShip();
         float duration = PlayerStats.getInstance().getIgniteDuration() * spaceShip.getIgniteDurationModifier();
         float damage = PlayerStats.getInstance().getIgniteDamage() * spaceShip.getIgniteDamageModifier();
@@ -968,7 +972,7 @@ public class SpaceShip extends GameObject {
     @Override
     public float getMaxHitPoints() {
         float bonus = 0;
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Consume) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Consume) != null) {
             bonus = Consume.currentMaxHpBonus;
         }
 
