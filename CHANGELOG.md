@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-14
+
+### Changed
+- Internal: macOS .DS_Store files are no longer tracked by git and are removed from the repository. They were already in .gitignore.
+
 ## 2026-10-13
 
 ### Added
