@@ -122,7 +122,6 @@ public class LevelManager {
         shopManager.setLastMiniBossConfig(this.currentMiniBossConfig);
         shopManager.setLastLevelDifficultyScore(this.currentLevelDifficultyScore);
         shopManager.setRowsUnlockedByDifficulty(this.currentLevelDifficultyScore);
-        shopManager.calculateRerollCost();
 
         for (SpaceShip spaceShip : PlayerManager.getInstance().getAllSpaceShips()) {
             spaceShip.setImmune(true);

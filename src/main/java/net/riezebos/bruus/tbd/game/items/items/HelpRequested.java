@@ -9,6 +9,7 @@ import net.riezebos.bruus.tbd.game.items.items.util.ContractType;
 
 public class HelpRequested extends Item {
 
+    //todo chance Contract discount from 100% to 50%
     public static int miniBossesRequired = 2;
     public HelpRequested() {
         super(ItemEnums.HelpRequested, 1, ItemApplicationEnum.UponAcquiring);

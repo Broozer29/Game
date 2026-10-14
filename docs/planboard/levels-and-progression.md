@@ -2,6 +2,8 @@
 Level flow, portals, the structure of a run and saved progress.
 
 ## Bugs
+- At the start of a level the song progress bar shows full for a moment before it resets (Nelis, 2026-10-12)
+  - `GameBoard.drawSongProgressBar` only skips drawing when both the progression and the song length are negative (`&&`); before the new level's start time and song end are set it divides old values
 - Enemies flying down (and formations flying down or up) appear inside the screen instead of entering from outside it (Nelis, 2026-10-08)
   - Single enemies: `SpawningCoordinator.getUpBlockYCoordinate` returns a y between -150 and 0, the top edge of the sprite, so most of a tall enemy is already on screen when it spawns
   - Formations: `Director.calculateBaseY` keeps only 10 pixels between the top or bottom edge and the formation's first row, and enemies are placed by their center, so the first row starts half visible
@@ -17,8 +19,8 @@ Level flow, portals, the structure of a run and saved progress.
   - `SettingsManager` writes `settings.json` the same way: the file is emptied and then rewritten, so a crash in that moment loses every volume and binding (Nelis, 2026-10-11)
   - Fix: write to a temp file and rename it, keep the bad file aside, and use a per-user data folder
 - Some run state is not saved, so "Continue" resets it
-  - Consume's kill count and max-HP bonus, Explosive Greed's coins, contract type and progress, Wisdom Ball's bonus chance, the shop contents and rerolls, and the monster level
-  - Contracts re-added on load start counting from a stale kill count, because `GameStatsTracker.loadInSaveFile` runs last (SaveManager.java:54-58)
+  - Consume's kill count and max-HP bonus, Explosive Greed's coins, contract type and progress, Wisdom Ball's bonus chance, and the monster level
+  - Contracts re-added on load start counting from a stale kill count, because `GameStatsTracker.loadInSaveFile` runs last (SaveManager.java:65-69)
   - Boon "already applied this run" flags (Bounty Hunter, Treasure Hunter, Club Access) are not reset on load (not confirmed)
 - Not every route back to the menu resets the run
   - `GameBoard.resetGame()` doesn't reset `TwinBossManager`, `InteractableManager` or `GameStatsTracker`; the stats tracker only resets on the death screen's key or controller path and on EXIT RUN in the pause window (since 2026-10-11)
@@ -42,11 +44,11 @@ Level flow, portals, the structure of a run and saved progress.
 - God-run spawn speed bonuses are only calculated when the level starts
   - `updateSpawnInterval` is only called from the Director constructor (Director.java:57)
 - A spawn that fails to find a free spot still costs credits, and a skipped cash carrier still starts its 45-second lockout
-  - LevelManager.java:319 and Director.java:176-177
+  - LevelManager.java:318 and Director.java:176-177
 - Edge cases that can crash or misbehave
-  - Director.java:241 and LevelManager.java:254 pick from lists that can be empty
+  - Director.java:241 and LevelManager.java:253 pick from lists that can be empty
   - `calculateLevelProgression` (Director.java:62-64) divides by the predicted level length, which can be 0 or stale with local music
   - `isBossAlive()` also counts `FinalBossLaserbeamClone`, which may keep a boss level open
 - Unreachable or unused flow
   - `LevelTypes.Special` is never assigned; the final boss needs 99999 kills and its portal is commented out (FriendlyManager.java:103), so runs are endless
-  - `getMineralPenaltyModifier` has no band for 301 to 500 (may be intended); in Man Mode or `onlyBossLevels`, the selected difficulty is overwritten with Hard on later levels (LevelManager.java:193)
+  - `getMineralPenaltyModifier` has no band for 301 to 500 (may be intended); in Man Mode or `onlyBossLevels`, the selected difficulty is overwritten with Hard on later levels (LevelManager.java:194)

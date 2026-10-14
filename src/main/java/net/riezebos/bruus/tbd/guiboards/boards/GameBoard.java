@@ -32,10 +32,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.items.BonusKaart;
 import net.riezebos.bruus.tbd.game.items.items.StuiversBestFriend;
 import net.riezebos.bruus.tbd.game.items.items.WisdomBall;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractHelper;
@@ -48,6 +48,7 @@ import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
+import net.riezebos.bruus.tbd.game.util.performancelogger.GameLoadLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
@@ -201,6 +202,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         textManager.resetManager();
         playerStats.resetPlayerStats();
         gameState.resetGameState();
+        ShopManager.getInstance().resetContents();
         this.bossHealthBars.clear();
         BoonManager.getInstance().resetManager();
         ThornsDamageDealer.getInstance().resetThornsDamageDealer();
@@ -212,6 +214,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         this.hasExportedLogs = false;
         this.showRelicSelection = false;
         hasChosenRelic = false;
+        relicSelectionEnabled = false;
         selectedComponent = null;
         BoardManager.getInstance().getShopBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
         BoardManager.getInstance().getDifficultySelectionBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
@@ -250,10 +253,6 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 stuiversBestFriend.setHasActivatedThisRound(false);
             }
 
-            if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart) != null) {
-                BonusKaart bonusKaart = (BonusKaart) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart);
-                bonusKaart.setUsedThisShop(false);
-            }
 //            LevelManager.getInstance().setLastSelectedDifficulty(LevelManager.getInstance().getCurrentLevelDifficulty());
 //            LevelManager.getInstance().setLastSelectedMiniBossConfig(LevelManager.getInstance().getCurrentMiniBossConfig());
 
@@ -269,6 +268,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     @Override
     public void paintComponent(Graphics g) {
+        long loadDrawStart = System.nanoTime();
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         drawObjects(g2d);
@@ -303,6 +303,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         ControllerNotices.getInstance().draw(g2d);
 
         Toolkit.getDefaultToolkit().sync();
+        if (GameLoadLogger.getInstance().isEnabled()) {
+            GameLoadLogger.getInstance().logDraw(loadDrawStart);
+        }
     }
 
     private void goToNextLevel() {
@@ -318,8 +321,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             resetManagersForNextLevel();
 
             drawTimer.stop();
-            SaveManager.getInstance().exportCurrentSave();
-            BoardManager.getInstance().openShopWindow();
+            ShopManager.getInstance().enterShop(); //Rolls the shop, pays finished contracts, fills the free refreshes and computes the refresh cost, once per shop visit
 
 //            if (PlayerInventory.getInstance().getCashMoney() >= CompoundWealth.mineralUnlockRequirement && PlayerProfileManager.getInstance().getLoadedProfile().getCompoundWealthLevel() < 1) {
 //                PlayerProfileManager.getInstance().getLoadedProfile().setCompoundWealthLevel(1);
@@ -329,6 +331,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 //            }
             BoonManager.getInstance().activateBoons(BoonActivationEnums.Whenever_Entering_Shop);
 
+            //The boons (Compound Wealth's interest) change the minerals, so the refresh cost and the entry save come after them
+            ShopManager.getInstance().calculateRerollCost();
+            SaveManager.getInstance().exportCurrentSave();
+            BoardManager.getInstance().openShopWindow();
 
             GameStatsTracker.getInstance().resetStatsForNextRound();
 
@@ -1080,6 +1086,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     // Called on every action/input. Essentially the infinite loop that plays the game
     public void actionPerformed(ActionEvent e) {
+        GameLoadLogger gameLoadLogger = GameLoadLogger.getInstance();
+        long loadTickStart = gameLoadLogger.isEnabled() ? gameLoadLogger.startTick() : 0;
         try {
             if (gameState.getGameState() == GameStatusEnums.Zoning_In) {
                 if (this.zoningInAlpha <= 0.05) {
@@ -1115,6 +1123,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             if (lastKnownState == null || lastKnownState != gameState.getGameState()) {
                 lastKnownState = gameState.getGameState();
                 System.out.println("Last known gamestate: " + lastKnownState);
+            }
+            if (gameLoadLogger.isEnabled()) {
+                gameLoadLogger.endTick(loadTickStart);
             }
             repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5);
         } catch (Exception ex) {
@@ -1440,6 +1451,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private boolean isUsersFirstInputForRelicselection = false;
     private double gameSecondsSinceBossDied = 0;
     private boolean relicSelectionEnabled = false;
+
+    // A boss died and its relic has not been chosen yet
+    public boolean isRelicSelectionPending() {
+        return relicSelectionEnabled && !hasChosenRelic;
+    }
 
     private boolean shouldShowRelicSelection() {
         if (relicSelectionEnabled && gameSecondsSinceBossDied + 1 < GameState.getInstance().getGameSeconds()) {

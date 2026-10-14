@@ -38,7 +38,7 @@ public class UpgradeFocusFire extends Item {
             return false;
         }
 
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
+        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier) || PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.FireFighter)){
             return false;
         }
 

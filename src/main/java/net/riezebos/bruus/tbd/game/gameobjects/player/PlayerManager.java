@@ -182,7 +182,15 @@ public class PlayerManager {
 
 
         //Remove the spaceship and conversely the player if his spaceship is not visible (dead)
-        allSpaceShips.removeIf(spaceShip -> !spaceShip.isVisible() && allSpaceShips.size() > 1);
+        //If every ship died in the same tick, keep one so the dying check below still fires
+        boolean anyShipAlive = allSpaceShips.stream().anyMatch(SpaceShip::isVisible);
+        if (anyShipAlive) {
+            allSpaceShips.removeIf(spaceShip -> !spaceShip.isVisible());
+        } else {
+            while (allSpaceShips.size() > 1) {
+                allSpaceShips.remove(allSpaceShips.size() - 1);
+            }
+        }
 
 
         //if there are no players left, we have created them AND we are currently playing, the player "died"

@@ -2,8 +2,11 @@ package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
-import net.riezebos.bruus.tbd.game.items.Item;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlot;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlotStatusEnums;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -22,66 +25,34 @@ import static net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator.sh
 
 public class ShopItem extends GUIComponent {
 
-    private ItemRarityEnums itemRarity;
+    private final ShopSlot slot;
 
-    public ShopItem(SpriteConfiguration spriteConfiguration, ItemRarityEnums itemRarity) {
+    public ShopItem(SpriteConfiguration spriteConfiguration, ShopSlot slot) {
         super(spriteConfiguration);
-        this.itemRarity = itemRarity;
+        this.slot = slot;
         this.menuFunctionality = MenuFunctionEnums.PurchaseItem;
-        initShopItem(spriteConfiguration);
+        applySlot();
     }
 
-    private void initShopItem(SpriteConfiguration spriteConfiguration) {
-        ItemRarityEnums actualItemRarity = switch (this.itemRarity) {
-            case Common -> ItemRarityEnums.getRandomCommonItemSlot();
-            case Rare -> ItemRarityEnums.getRandomRareItemSlot();
-            case Legendary -> ItemRarityEnums.Legendary;
-            case Relic -> ItemRarityEnums.Relic;
-            default -> ItemRarityEnums.getRandomCommonItemSlot();
-        };
-
-        ItemEnums item = getRandomAvailableItemByRarity(actualItemRarity);
-
-        this.imageEnum = item.getItemIcon();
-        spriteConfiguration.setImageType(imageEnum);
-
-        String itemDesc = ItemDescriptionRetriever.getDescriptionOfItem(item);
-        this.shopItemInformation = new GUIComponentItemInformation(
-                item, item.getItemRarity(), itemDesc, true, item.getItemRarity().getItemCost()
-        );
-
-        super.setImage(imageEnum);
+    public ShopSlot getSlot() {
+        return slot;
     }
 
-
-    private ItemEnums getRandomAvailableItemByRarity(ItemRarityEnums category) {
-        int MAX_ATTEMPTS = 20;
-        int attempts = 0;
-
-        while (attempts < MAX_ATTEMPTS) {
-            ItemEnums randomItem = ItemEnums.getRandomItemByRarity(category);
-
-            Item tempItem = PlayerInventory.getInstance().getItemForAvailabilityCheck(randomItem);
-
-            if (tempItem != null && tempItem.isAvailable()) {
-                return randomItem;
-            }
-
-            attempts++;
+    //Draws this button from its slot; a bought or locked slot looks locked
+    public void applySlot() {
+        if (slot.getStatus() == ShopSlotStatusEnums.Available) {
+            this.imageEnum = slot.getItem().getItemIcon();
+            this.shopItemInformation = new GUIComponentItemInformation(
+                    slot.getItem(), slot.getRarity(), ItemDescriptionRetriever.getDescriptionOfItem(slot.getItem()), true, slot.getCost()
+            );
+        } else {
+            this.imageEnum = ImageEnums.LockedIcon;
+            this.shopItemInformation = new GUIComponentItemInformation(
+                    ItemEnums.Locked, ItemRarityEnums.Locked, "Locked", false, 0
+            );
         }
 
-        // If no item was found after MAX_ATTEMPTS, return an overclock
-        return ItemEnums.Overclock;
-    }
-
-    public void lockItemInShop() {
-        spriteConfiguration.setImageType(ImageEnums.LockedIcon);
-        this.imageEnum = ImageEnums.LockedIcon;
-        shopItemInformation.setItemDescription("Locked");
-        shopItemInformation.setCost(0);
-        shopItemInformation.setAvailable(false);
-        shopItemInformation.setItemRarity(ItemRarityEnums.Locked);
-        shopItemInformation.setItem(ItemEnums.Locked);
+        spriteConfiguration.setImageType(imageEnum);
         super.setImage(imageEnum);
         super.setImageDimensions(shopItemIconDimensions, shopItemIconDimensions);
     }
@@ -96,10 +67,11 @@ public class ShopItem extends GUIComponent {
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
 
             BonusKaart bonusKaart = (BonusKaart) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BonusKaart);
+            ShopContents contents = ShopManager.getInstance().getContents();
             int amountOfTimes = 1;
-            if (bonusKaart != null && !bonusKaart.isUsedThisShop()) {
+            if (bonusKaart != null && !contents.isBonusKaartUsed()) {
                 amountOfTimes += 1;
-                bonusKaart.setUsedThisShop(true);
+                contents.setBonusKaartUsed(true);
             }
 
             for(int i = 0; i < amountOfTimes; i++){
@@ -107,7 +79,8 @@ public class ShopItem extends GUIComponent {
             }
 
             PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
-            lockItemInShop();
+            slot.setStatus(ShopSlotStatusEnums.Locked);
+            applySlot();
             SaveManager.getInstance().exportCurrentSave();
         } else if (shopItemInformation.isAvailable() && !shopItemInformation.canAfford()) {
             AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
