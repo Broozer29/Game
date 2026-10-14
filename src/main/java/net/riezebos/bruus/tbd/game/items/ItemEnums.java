@@ -29,7 +29,8 @@ public enum ItemEnums {
     //Shield package: remove this comment before pushing
     BombasticBarrier(ItemRarityEnums.Rare, ImageEnums.BombasticBarrier, "Bombastic Barrier", true),
     BarrierBooster(ItemRarityEnums.Common, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", true),
-    ReflectiveShielding(ItemRarityEnums.Legendary, ImageEnums.ReflectiveShielding, "Reflective Shielding", true),
+    ReflectiveShielding(ItemRarityEnums.Legendary, ImageEnums.ReflectiveShielding, "Barrier Backfire", true),
+    CalmInChaos(ItemRarityEnums.Legendary, ImageEnums.CalmInChaos, "Blizzard Barrier", true),
 
     //Relics 2.0
     //generic relics
@@ -83,7 +84,6 @@ public enum ItemEnums {
 
     //-----------------------------
     LeechingLasers(ItemRarityEnums.Rare, ImageEnums.LeechingLasers, "Leeching Lasers", false),
-    CalmInChaos(ItemRarityEnums.Legendary, ImageEnums.CalmInChaos, "Calm in chaos", true),
     ElectroShredding(ItemRarityEnums.Legendary, ImageEnums.Electroshedding, "Electro Shredding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
     Recycler(ItemRarityEnums.Rare, ImageEnums.Recycler, "Recycler", true),

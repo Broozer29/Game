@@ -11,7 +11,7 @@ public class DevTestSettings {
                                                                     // screen
     public static boolean devTestMuteMode = false; // if true: mutes all audio after starting a level
     public static boolean onlyBossLevels = false; // if true: all levels are boss levels
-    public static boolean infiniteMoney = true; // if true: add 9999999 money to the inventory
+    public static boolean infiniteMoney = false; // if true: add 9999999 money to the inventory
     public static boolean freeReroll = false; // if true; set reroll discount to 99
     public static boolean spawnTargetDummy = false; // if true, spawns a target dummy at the start of a level
     public static boolean instantlySpawnPortal = false; // spawns a portla at the start of the level

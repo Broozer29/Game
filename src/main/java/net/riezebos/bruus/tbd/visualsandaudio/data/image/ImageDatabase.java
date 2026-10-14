@@ -331,6 +331,7 @@ public class ImageDatabase {
     private List<BufferedImage> playerMutaliskMissile = new ArrayList<>();
     private List<BufferedImage> mutaliskChargingUp = new ArrayList<>();
     private List<BufferedImage> mutaliskExplosion = new ArrayList<>();
+    private List<BufferedImage> bombasticBarrierExplosion = new ArrayList<>();
     private List<BufferedImage> mutaliskMissileExplosion = new ArrayList<>();
     private List<BufferedImage> alienLaserBeamAnimated = new ArrayList<>();
     private List<BufferedImage> barrierProjectile = new ArrayList<>();
@@ -1753,6 +1754,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case BombasticBarrierExplosion:
+                return bombasticBarrierExplosion;
             case MutaliskExplosion:
                 return mutaliskExplosion;
             case MutaliskChargeUp:
@@ -2719,6 +2722,13 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP/doubled/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             electroShredImproved.add(image);
+        }
+
+
+        for (int i = 0; i < 24; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/BombasticBarrier/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            bombasticBarrierExplosion.add(image);
         }
 
         for (int i = 1; i < 10; i++) {

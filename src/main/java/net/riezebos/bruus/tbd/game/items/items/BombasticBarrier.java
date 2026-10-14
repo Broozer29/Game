@@ -34,12 +34,12 @@ public class BombasticBarrier extends Item {
 
         float baseDamage = gameObject.getDamage() * (modifierBonus * quantity);
         SpriteConfiguration explosionSpriteConfig = new SpriteConfiguration();
-        explosionSpriteConfig.setImageType(ImageEnums.CarrierWarpExplosion); //todo placeholder
+        explosionSpriteConfig.setImageType(ImageEnums.BombasticBarrierExplosion); //todo placeholder
         explosionSpriteConfig.setxCoordinate(gameObject.getCenterXCoordinate());
         explosionSpriteConfig.setyCoordinate(gameObject.getCenterYCoordinate());
-        explosionSpriteConfig.setScale(2);
+        explosionSpriteConfig.setScale(4f);
 
-        SpriteAnimationConfiguration explosionSpriteAnimationConfig = new SpriteAnimationConfiguration(explosionSpriteConfig, 2, false);
+        SpriteAnimationConfiguration explosionSpriteAnimationConfig = new SpriteAnimationConfiguration(explosionSpriteConfig, 0, false);
         ExplosionConfiguration explosionConfiguration = new ExplosionConfiguration(true, baseDamage,  false);
         Explosion explosion = new Explosion(explosionSpriteAnimationConfig, explosionConfiguration);
         explosion.setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
@@ -55,6 +55,7 @@ public class BombasticBarrier extends Item {
 
         FreezeEffect freezeEffect = new FreezeEffect(stunSeconds, spriteAnimation);
         explosion.addEffectToApply(freezeEffect);
+
         return explosion;
     }
 

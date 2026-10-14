@@ -98,8 +98,11 @@ public class ItemDescriptionRetriever {
                 double value = CalmInChaos.damageModifier
                         * (1.0 / SpecialAttack.defaultInternalTickCooldown)
                         * 100.0;
-                return "Whilst your shields are above " + Math.round(CalmInChaos.hitPointRequirement * 100) + "% health, they generate a storm of ice dealing "
-                        + Math.round(value) + "% (+" + Math.round(value) + "%) damage per second.";
+                return "Whilst your shields are above "
+                        + Math.round(CalmInChaos.hitPointRequirement * 100)
+                        + "% health, they generate a storm of ice dealing up to "
+                        + Math.round(value) + "% (+" + Math.round(value)
+                        + "%) damage per second based on the current hitpoints of your shield.";
             } //legendary
 
             //4
