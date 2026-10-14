@@ -8,6 +8,8 @@ import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatsTracker;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
@@ -40,6 +42,9 @@ public class SaveFile {
 
     private BoonEnums selectedBoon;
 
+    // The shop as the player left it. SaveManager.loadSaveFile reads this part of the file on its own, so a shop that can't be read doesn't stop the rest of the run from loading
+    private ShopContents shopContents;
+
 
     public SaveFile() {
         gameMode = GameState.getInstance().getGameMode();
@@ -55,6 +60,7 @@ public class SaveFile {
         lastKnownLevelDifficulty = LevelManager.getInstance().getCurrentLevelDifficulty();
         lastKnownMiniBossConfig = LevelManager.getInstance().getCurrentMiniBossConfig();
         enemiesKilled = GameStatsTracker.getInstance().getEnemiesKilled();
+        shopContents = ShopManager.getInstance().getContents();
 
         selectedBoon = BoonManager.getInstance().getActiveBoon() != null ? BoonManager.getInstance().getActiveBoon().getBoonEnum() : null;
 
@@ -184,6 +190,14 @@ public class SaveFile {
 
     public void setLastKnownMiniBossConfig(MiniBossConfig lastKnownMiniBossConfig) {
         this.lastKnownMiniBossConfig = lastKnownMiniBossConfig;
+    }
+
+    public ShopContents getShopContents() {
+        return shopContents;
+    }
+
+    public void setShopContents(ShopContents shopContents) {
+        this.shopContents = shopContents;
     }
 
     public int getEnemiesKilled() {

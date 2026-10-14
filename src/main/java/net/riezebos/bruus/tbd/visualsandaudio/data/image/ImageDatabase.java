@@ -532,6 +532,7 @@ public class ImageDatabase {
     private BufferedImage invisible;
     private List<BufferedImage> defaultPlayerEngine = new ArrayList<>();
     private BufferedImage guirefresh;
+    private BufferedImage guifreeze;
     private BufferedImage warcraft3HealingWave;
     private BufferedImage starcraft2LockOn;
     private BufferedImage bonusKaart;
@@ -856,6 +857,7 @@ public class ImageDatabase {
         this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
         this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
         this.guirefresh = imgLoader.getImage(ImageEnums.GUIRefresh);
+        this.guifreeze = imgLoader.getImage(ImageEnums.GUIFreeze);
         this.starcraft2Keystone = imgLoader.getImage(ImageEnums.Starcraft2Keystone);
         this.warcraft3HealingWave = imgLoader.getImage(ImageEnums.Starcraft2BouncingLaser);
         this.starcraft2LockOn = imgLoader.getImage(ImageEnums.Starcraft2LockOn);
@@ -1253,6 +1255,8 @@ public class ImageDatabase {
                 return starcraft2Keystone;
             case GUIRefresh:
                 return guirefresh;
+            case GUIFreeze:
+                return guifreeze;
             case peepoDeepFriedSadge:
                 return peepoDeepFriedSadge;
             case peepoFeelsCringeMan:

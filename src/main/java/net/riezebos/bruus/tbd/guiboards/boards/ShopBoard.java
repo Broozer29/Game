@@ -1,12 +1,15 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.controllerInput.MenuAction;
 import net.riezebos.bruus.tbd.controllerInput.MenuInput;
-import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopContents;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopRoller;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlot;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
@@ -42,7 +45,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
     private AnimationManager animationManager = AnimationManager.getInstance();
-    private ShopManager shopManager = ShopManager.getInstance();
 
     private List<GUIComponent> regularGridFirstRow = new ArrayList<>();
     private List<GUIComponent> regularGridSecondRow = new ArrayList<>();
@@ -152,13 +154,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
         descriptionBackgroundCard = shopBoardCreator.createDescriptionRowsBackgroundCard(rerollBackgroundCard);
         nextLevelDifficultyBackground = shopBoardCreator.createShowNextLevelDifficultyBackground(songLengthBackgroundCard);
         nextLevelModifiersTextCollection = shopBoardCreator.createLevelModifiersText(songLengthBackgroundCard);
-        // Create items
-        regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
-        regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
-        regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
-
-        //Activate any contracts if there are any:
-        shopManager.activateFinishedContracts();
+        // Create items from the shop contents
+        buildItemRows();
 
         // Create difficulty and song length settings using the respective background cards
         selectPirateTribe = shopBoardCreator.createSelectPirateTribe(songDifficultyBackgroundCard);
@@ -215,7 +212,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
         inventoryButtonBackgroundCard = shopBoardCreator.createInventoryButtonBackgroundCard(nextLevelDifficultyBackground);
         playerInventoryButton = shopBoardCreator.createPlayerInventoryButton(inventoryButtonBackgroundCard);
 
-        shopManager.resetFreeRerolls();
         rerollCostText = shopBoardCreator.createRerollText(rerollBackgroundCard);
         rerollCost = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
 
@@ -330,6 +326,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         offTheGridObjects.add(rerollBackgroundCard);
         offTheGridObjects.addAll(rerollCostText.getComponents());
         offTheGridObjects.addAll(rerollCost.getComponents());
+        ShopFreezeEffect.getInstance().addToBoard(shopBoardCreator, rerollBackgroundCard, regularGridFirstRow, offTheGridObjects);
 
         if (PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)) {
             additionalTextCollection = shopBoardCreator.createProtossCapacityText(itemRowsBackgroundCard);
@@ -373,21 +370,38 @@ public class ShopBoard extends JPanel implements TimerHolder {
         allInventoryGUIComponents.add(inventoryBackgroundCard);
     }
 
-    public void rerollShop() {
-        regularGridFirstRow = shopBoardCreator.createNewFirstRowOfItems();
-        regularGridSecondRow = shopBoardCreator.createNewSecondRowOfItems();
-        regularGridThirdRow = shopBoardCreator.createNewThirdRowOfItems();
+    private void buildItemRows() {
+        ShopContents contents = ShopManager.getInstance().getContents();
+        regularGridFirstRow = shopBoardCreator.createRowOfItems(0, contents);
+        regularGridSecondRow = shopBoardCreator.createRowOfItems(1, contents);
+        regularGridThirdRow = shopBoardCreator.createRowOfItems(2, contents);
+    }
 
+    public void rerollShop() {
+        ShopContents contents = ShopManager.getInstance().getContents();
+        ShopRoller.rollShop(contents);
+
+        List<ShopSlot> changedSlots = new ArrayList<>();
         WisdomBall wisdomball = (WisdomBall) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.WisdomBall);
 
         if (wisdomball != null) {
             if (wisdomball.shouldActivate()) {
-                List<List<GUIComponent>> shopRows = new ArrayList<>();
-                shopRows.add(regularGridFirstRow);
-                shopRows.add(regularGridSecondRow);
-                shopRows.add(regularGridThirdRow);
-                WisdomBallRollManager.getInstance().applyWisdomBallRoll(shopRows);
+                changedSlots = WisdomBallRollManager.getInstance().applyWisdomBallRoll(contents);
             }
+        }
+
+        buildItemRows();
+
+        List<GUIComponent> itemsToShowAnimAt = new ArrayList<>();
+        for (List<GUIComponent> row : List.of(regularGridFirstRow, regularGridSecondRow, regularGridThirdRow)) {
+            for (GUIComponent component : row) {
+                if (changedSlots.contains(((ShopItem) component).getSlot())) {
+                    itemsToShowAnimAt.add(component);
+                }
+            }
+        }
+        if (!itemsToShowAnimAt.isEmpty()) {
+            playWisdomBallAnimation(itemsToShowAnimAt);
         }
     }
 
@@ -833,7 +847,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
             Composite originalComposite = g.getComposite();
 
             // Set the alpha composite
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, component.getTransparancyAlpha()));
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ShopFreezeEffect.getInstance().drawButtonGlow(g, component)));
 
             // Draw the image
             g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
@@ -849,6 +863,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
         int yCoordinate = object.getYCoordinate();
         String textFont = DataClass.getInstance().getTextFont();
         g.drawImage(object.getImage(), xCoordinate, yCoordinate, this);
+        ShopFreezeEffect.getInstance().updateFreezeEffect((Graphics2D) g, object);
+        yCoordinate += Math.round(8 * DataClass.getInstance().getResolutionFactor());
         g.setColor(object.getShopItemInformation().getItemRarity().getColor());
 
         if (object.getShopItemInformation().isAvailable()) {

@@ -2,10 +2,32 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-14
+
+### Changed
+- Internal: macOS .DS_Store files are no longer tracked by git and are removed from the repository. They were already in .gitignore.
+
 ## 2026-10-13
+
+### Added
+- A free Freeze button next to Refresh in the shop. Items you don't buy in a frozen shop come back in the same slots in the next shop, at the same price. Bought slots get new items. The frozen state is saved.
+- A new snowflake icon on the Freeze button.
+- Frozen items get thin corner lines around the frost frame.
+- Kept items play a thaw animation when the next shop opens: the corner lines fly outward and fade, then the frost fades. It plays once per shop visit and not when you continue a saved run.
 
 ### Changed
 - Shop freeze, the remembered shop (quit and continue in the shop) and the menu rewrite (MenuBoard and MenuGrid) are taken back out of this branch. The menus and the shop work as they did before 2026-10-11. Shop freeze and the remembered shop move to their own branch, without the menu rewrite.
+- In the shop, the name, rarity and price under every item sit a little lower, so the frost no longer touches them.
+- Refreshing the shop also unfreezes it.
+- The thaw is faster: the corner lines and the frost break off together in 0.6 s. Unfreezing the shop plays the same thaw on every frozen item. After you unfreeze, the Freeze button waits 0.7 s before it works again; freezing has no wait.
+- Internal: the freeze code lives in ShopFreezeService (logic) and ShopFreezeEffect (drawing), not in ShopBoard.
+- The shop's refresh cost is now worked out when you enter the shop, instead of when the level ends. It is still 15% of your minerals.
+- Internal: the shop's items, prices, bought slots, free refreshes and refresh cost now live in one saved data model (ShopContents), and the shop is saved after entering it, after every purchase and after every refresh.
+
+### Fixed
+- The shop's refresh cost now includes Compound Wealth's interest, and quitting and continuing in the shop keeps that interest.
+- Quitting to the main menu and pressing CONTINUE RUN during shopping no longer rerolls the shop, refills your free refreshes, re-enables Bonus Kaart's double purchase, or pays out finished contracts again. You get the exact shop you left, including bought items, the refresh cost and the free refreshes you had left.
+- A save file from before this change, or one whose shop names an item that no longer exists, still continues the run and gets a freshly rolled shop.
 
 ## 2026-10-12
 
