@@ -52,7 +52,7 @@ public class ReflectiveShielding extends Item {
             }
             else {
 //                return true;
-                return random.nextFloat() < (procChance + (procChanceIncrease * quantity));
+                return random.nextFloat() < (procChance + (procChanceIncrease * (quantity - 1)));
             }
         }
         return false; //if it aint a non-explosive missile, we cant reflect it

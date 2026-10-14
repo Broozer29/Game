@@ -54,7 +54,7 @@ public class SpecialAttackDrone extends Drone {
             orbitingLingeringFlame.setScale(scale);
 
             SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
-            float damage = (PlayerStats.getInstance().getBaseDroneDamage() * 0.5f) + spaceship.getDroneDamageModifier();
+            float damage = (PlayerStats.getInstance().getBaseDroneDamage() * 0.5f) * spaceship.getDroneDamageModifier();
 
             SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(orbitingLingeringFlame, 0, true);
             SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, false, false);

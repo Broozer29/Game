@@ -39,8 +39,6 @@ public class ShopFreezer {
     }
 
     // Freezes or unfreezes the whole shop, for the Freeze button
-    //todo only freeze the rows that are currently available. If rows 2 and 3 are disabled because the last difficulty wasn't high enough, do NOT freeze them.
-    // We only want to freeze rows that are actually interactable. Otherwise, players will be heavily disincentivized to freeze the shop and increase the difficulty
     public void toggleFreeze() {
         ShopContents contents = ShopManager.getInstance().getContents();
         long now = System.currentTimeMillis();
@@ -51,6 +49,7 @@ public class ShopFreezer {
             lastUnfreezeMillis = now;
             contents.getRows().stream()
                     .flatMap(List::stream)
+                    .filter(shopSlot -> shopSlot.getStatus() == ShopSlotStatusEnums.Available)
                     .forEach(shopSlot -> shopSlot.setFrozen(true));
             unfreezeAnimationStartMillis = now;
         }

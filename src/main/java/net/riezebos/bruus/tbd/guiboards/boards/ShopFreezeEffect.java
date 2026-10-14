@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
 import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezer;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlotStatusEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
@@ -71,7 +72,7 @@ public class ShopFreezeEffect {
         service.clearFrozenStatusOnShopItems();
         int xCoordinate = item.getXCoordinate();
         int yCoordinate = item.getYCoordinate();
-        if (service.isFrozen()) {
+        if (service.isFrozen() && item.getSlot().getStatus() == ShopSlotStatusEnums.Available) {
             int framePadding = Math.round(3 * DataClass.getInstance().getResolutionFactor());
             drawFrostGlow(g2d, xCoordinate - framePadding, yCoordinate - framePadding,
                     item.getWidth() + framePadding * 2, item.getHeight() + framePadding * 2, 5);

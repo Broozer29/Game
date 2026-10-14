@@ -33,14 +33,18 @@ public class CalmInChaosStorm extends SpecialAttack {
         if(!isDissipating && this.getTransparancyAlpha() >= 0.4f){
             this.setTransparancyAlpha(false, 0.4f, 0);
         }
-        if ((ownerOrCreator == null || ownerOrCreator.getCurrentShieldPoints() < (ownerOrCreator.getMaxShieldPoints() * CalmInChaos.hitPointRequirement)) && !isDissipating) {
+        if ((ownerOrCreator == null || ownerOrCreator.getCurrentShieldPoints() < (getOwnerMaxShieldPoints() * CalmInChaos.hitPointRequirement)) && !isDissipating) {
             startDissipation();
         }
 
-        if(!isDissipating && ownerOrCreator != null && ownerOrCreator.getCurrentShieldPoints() >= (ownerOrCreator.getMaxShieldPoints() * CalmInChaos.hitPointRequirement)){
-            this.setDamage(this.originalDamage * (ownerOrCreator.getCurrentShieldPoints() / ownerOrCreator.getMaxShieldPoints()));
+        if(!isDissipating && ownerOrCreator != null && ownerOrCreator.getCurrentShieldPoints() >= (getOwnerMaxShieldPoints() * CalmInChaos.hitPointRequirement)){
+            this.setDamage(this.originalDamage * (ownerOrCreator.getCurrentShieldPoints() / getOwnerMaxShieldPoints()));
         }
 
+    }
+
+    private float getOwnerMaxShieldPoints() {
+        return ((SpaceShip) ownerOrCreator).getTotalMaxShieldPoints();
     }
 
     public void startDissipation() {

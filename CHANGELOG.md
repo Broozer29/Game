@@ -11,6 +11,16 @@ All notable changes on the `Nelis` branch.
 
 ### Fixed
 - Shop freeze: rows that unlock after you froze the shop now get items in the next shop. They used to stay empty, as if their items had been bought. Slots you bought in a frozen shop still stay empty.
+- Upgrade: Speed now makes drones fire faster. It used to make them fire slower.
+- Placeholder drones now use your drone upgrades: Upgrade: Overload and Upgrade: Speed count twice as strongly, as the description says, and the description shows the damage per second with your upgrades. Killing an enemy with Placeholder no longer crashes the game.
+- Upgrade: Overload now multiplies drone damage instead of adding a small number to it, for every drone shot and rocket.
+- Upgrade: Precision now works. Drones and Placeholder drones can land critical hits, and your own shots are not affected.
+- Electro Shredding now also makes the drone's Electroshred hit harder, the same way it does for your own Electroshred.
+- Firefighter: ignite now lasts 2.35 seconds, as intended, instead of 1.75.
+- Barrier Backfire: the first copy now gives a 25% chance to reflect a missile, and each extra copy adds 5%. The text no longer says the reflected damage bonus grows with each copy.
+- Blizzard Barrier now uses the same maximum shield value for starting and keeping its storm.
+- Shop freeze: locked rows and bought slots are no longer frozen or shown with frost. Only slots with an item for sale freeze.
+- Item texts: Recycler shows 7.5%, Bombastic Barrier shows its own stun time, and Barrier Booster is spelled "Increases".
 
 ## 2026-10-13
 

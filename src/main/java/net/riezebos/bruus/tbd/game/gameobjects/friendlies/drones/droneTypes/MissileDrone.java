@@ -58,7 +58,7 @@ public class MissileDrone extends Drone {
         float movementSpeed = 7.5f;
 
         SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
-        float damage = PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier();
+        float damage = PlayerStats.getInstance().getBaseDroneDamage() * spaceship.getDroneDamageModifier();
         Direction rotation = Direction.RIGHT;
         PathFinder pathFinder = selectPathFinder();
 
@@ -126,7 +126,7 @@ public class MissileDrone extends Drone {
         float movementSpeed = 10f; //10 ipv 7,5 om te helpen met de accuracy voor focusfire item
 
         SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
-        float damage = PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier();
+        float damage = PlayerStats.getInstance().getBaseDroneDamage() * spaceship.getDroneDamageModifier();
         Direction rotation = Direction.RIGHT;
         PathFinder pathFinder = selectPathFinder();
 
@@ -174,7 +174,7 @@ public class MissileDrone extends Drone {
 
         SpaceShip spaceship = (SpaceShip) this.ownerOrCreator;
         int quantity = PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.RocketLauncher).getQuantity();
-        float damage = (PlayerStats.getInstance().getBaseDroneDamage() + spaceship.getDroneDamageModifier()) * RocketLauncher.damagePerStack * quantity;
+        float damage = (PlayerStats.getInstance().getBaseDroneDamage() * spaceship.getDroneDamageModifier()) * RocketLauncher.damagePerStack * quantity;
         Direction rotation = Direction.RIGHT;
         PathFinder pathFinder = selectPathFinder();
 

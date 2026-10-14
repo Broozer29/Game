@@ -25,6 +25,7 @@ public class FriendlyStation extends GameObject {
     protected FriendlyObjectEnums friendlyObjectType;
     private GameObject target;
     private int attackRange = 250;
+    private float attackInterval;
 
     protected FriendlyStation(SpriteConfiguration spriteConfiguration, FriendlyObjectConfiguration droneConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration);
@@ -37,6 +38,7 @@ public class FriendlyStation extends GameObject {
         this.currentHitpoints = maxHitPoints;
 
         this.friendlyObjectType = droneConfiguration.getFriendlyType();
+        this.attackInterval = droneConfiguration.getAttackSpeedCooldown();
         this.setFriendly(true);
         if (movementConfiguration != null) {
             initMovementConfiguration(movementConfiguration);
@@ -69,7 +71,7 @@ public class FriendlyStation extends GameObject {
                 double currentTime = GameState.getInstance().getGameSeconds();
                 this.rotateGameObjectTowards(target.getCenterXCoordinate(), target.getCenterYCoordinate(), true);
                 this.setAllowedVisualsToRotate(false);
-                if (currentTime >= lastAttackTime + FriendlyStation.attackSpeed) {
+                if (currentTime >= lastAttackTime + attackInterval) {
                     fireAction();
                     lastAttackTime = currentTime;
                 }
@@ -91,6 +93,18 @@ public class FriendlyStation extends GameObject {
 
     public static float damageModifier = 0.15f;
     public static float attackSpeed = 0.15f;
+
+    //Placeholder drones count drone upgrades double: 1 + effectiveness * (modifier - 1). A null owner means no upgrades (modifiers of 1).
+    public static float getStationDamage(SpaceShip owner) {
+        float damageMod = owner == null ? 1f : owner.getDroneDamageModifier();
+        return PlayerStats.getInstance().getBaseDroneDamage() * damageModifier * (1 + Placeholder.placeHolderDroneEffectiveness * (damageMod - 1));
+    }
+
+    public static float getStationAttackInterval(SpaceShip owner) {
+        float speedMod = owner == null ? 1f : owner.getDroneSpeedModifier();
+        return attackSpeed / (1 + Placeholder.placeHolderDroneEffectiveness * (speedMod - 1));
+    }
+
     private void fireAction() {
         MissileEnums missileType = MissileEnums.PlayerLaserbeam;
         SpriteConfiguration missileSpriteConfiguration = new SpriteConfiguration();
@@ -102,7 +116,7 @@ public class FriendlyStation extends GameObject {
         float movementSpeed = 12f;
         SpaceShip owner = (SpaceShip) this.ownerOrCreator;
 
-        float damage = (PlayerStats.getInstance().getBaseDroneDamage() * damageModifier * (owner.getDroneDamageModifier() * Placeholder.placeHolderDroneEffectiveness)); //small increase in drone damage modifier to enable drone scaling because of the massive damage reduction
+        float damage = getStationDamage(owner);
         Direction rotation = Direction.RIGHT;
         PathFinder pathFinder = new StraightLinePathFinder();
 

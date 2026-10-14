@@ -393,6 +393,11 @@ public class SpaceShip extends GameObject {
         }
     }
 
+    //The ship's total maximum shield: its own maximum (raised by Barrier Booster) times the max shield modifier
+    public float getTotalMaxShieldPoints() {
+        return this.maxShieldPoints * this.maxShieldModifier;
+    }
+
     private void reduceOverloadedShieldPoints() {
         if (currentShieldPoints > playerStats.getMaxShieldHitPoints()) {
             currentShieldPoints -= playerStats.getOverloadedShieldDiminishAmount();
@@ -443,7 +448,7 @@ public class SpaceShip extends GameObject {
     private void updateItemEffects() {
         CalmInChaos calmInChaos = (CalmInChaos) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CalmInChaos);
         if (calmInChaos != null) {
-            if (currentShieldPoints >= (playerStats.getMaxShieldHitPoints() * CalmInChaos.hitPointRequirement) && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)) {
+            if (currentShieldPoints >= (getTotalMaxShieldPoints() * CalmInChaos.hitPointRequirement) && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)) {
                 if (calmInChaosStorm == null) {
                     calmInChaosStorm = CalmInChaosStorm.createEffect(this);
                 }

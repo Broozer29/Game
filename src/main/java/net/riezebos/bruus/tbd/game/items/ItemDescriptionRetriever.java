@@ -5,7 +5,9 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.prot
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossScout;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.drones.droneTypes.protoss.ProtossShuttle;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks.SpecialAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.items.*;
@@ -73,7 +75,8 @@ public class ItemDescriptionRetriever {
                 return "Cash carriers no longer spawn. Critical Strikes have a " + Math.round(CashInfusion.spawnChance * 100) + "% chance to drop a coin worth " + CashInfusion.mineralsPerPickup + " minerals.";
             } //relic
             case Placeholder -> {
-                double value = FriendlyStation.damageModifier * (1000f / 15f);
+                SpaceShip spaceShip = PlayerManager.getInstance().getSpaceship();
+                double value = FriendlyStation.getStationDamage(spaceShip) / FriendlyStation.getStationAttackInterval(spaceShip);
                 return "Killing an enemy spawns a temporary stationary drone dealing " + String.format("%.1f", value) + " damage per second. Drone upgrades are twice as effective on Placeholder drones. Maximum of " + Placeholder.maxStations + " drones can be spawned at once.";
             } //relic
             case WisdomBall -> {
@@ -130,7 +133,7 @@ public class ItemDescriptionRetriever {
                 return "Drones gain " + Math.round(UpgradePrecision.critChance * 100) + "% chance to critically strike, dealing double damage.";
             }
             case Recycler -> {
-                return "Enemies damaged by your Laserbeam or Electroshred gain a " + Math.round(Recycler.spawnChance * 100) + " % (+" + Math.round(Recycler.spawnChance * 100) + "%) chance to spawn a Recycle Part on death. Picking up a Recycle Part instantly restores a charge for your secondary attack.";
+                return "Enemies damaged by your Laserbeam or Electroshred gain a " + String.format("%.1f", Recycler.spawnChance * 100) + "% (+" + String.format("%.1f", Recycler.spawnChance * 100) + "%) chance to spawn a Recycle Part on death. Picking up a Recycle Part instantly restores a charge for your secondary attack.";
             }
             //6
             case EmergencyRepairBot -> {
@@ -412,16 +415,16 @@ public class ItemDescriptionRetriever {
                 return "Killing an enemy has a 10% chance to grant 2 (+2) additional minerals";  //disabled
             }
             case BarrierBooster -> {
-                return "Inceases maximum shield by " + Math.round(BarrierBooster.modifierBonus * 100) + "%";
+                return "Increases maximum shield by " + Math.round(BarrierBooster.modifierBonus * 100) + "%";
             }
             case PuncturingPierce -> { //different formula of *10 factor intead of 100, mathmatically no difference but this math perspective suits the user better
                 return "Your missiles now deal an additional " + Math.round(PuncturingPierce.damageIncreasePerMoveSpeedIncreaseModifier * 10) + "% additional damage for every 10% increased move speed.";
             }
             case ReflectiveShielding -> {
-                return "Missiles that strike your shield have a " + Math.round(ReflectiveShielding.procChance * 100) + "% (+" + Math.round(ReflectiveShielding.procChanceIncrease * 100) + "%) chance to instead reflect back to their owner. Reflected missiles deal " + Math.round(ReflectiveShielding.buffAmount * 100) + "% (+" + Math.round(ReflectiveShielding.buffAmount * 100) + "%) increased damage.";
+                return "Missiles that strike your shield have a " + Math.round(ReflectiveShielding.procChance * 100) + "% (+" + Math.round(ReflectiveShielding.procChanceIncrease * 100) + "%) chance to instead reflect back to their owner. Reflected missiles deal " + Math.round(ReflectiveShielding.buffAmount * 100) + "% increased damage.";
             }
             case BombasticBarrier -> {
-                return "Your shield explodes upon breaking creating an explosion dealing " + Math.round(BombasticBarrier.modifierBonus * 100) + "% (+" + Math.round(BombasticBarrier.modifierBonus * 100) + "%) damage and stuns non-boss enemies for " + Math.round(ElectricDestabilizer.duration) + " seconds.";
+                return "Your shield explodes upon breaking creating an explosion dealing " + Math.round(BombasticBarrier.modifierBonus * 100) + "% (+" + Math.round(BombasticBarrier.modifierBonus * 100) + "%) damage and stuns non-boss enemies for " + Math.round(BombasticBarrier.stunSeconds) + " seconds.";
             }
             case Thornweaver -> {
                 return "Colliding with enemies now applies 100% Thorns damage to them. You take " + Math.round(Thornweaver.collisionDamageReduction * 100) +
