@@ -5,6 +5,7 @@ All notable changes on the `Nelis` branch.
 ## 2026-10-14
 
 ### Changed
+- Patch notes skill: the notes cover the checked-out branch, the changed files are split over the agents by a folder-to-area table, added and removed pictures and sounds are listed, the run stops when a dev test switch is on, and the notes and the release log row are committed separately. The old docs/claude-changelog.md is removed; the patch notes replace it.
 - Internal: all dev test switches in DevTestSettings are off again (mute mode, infinite money, free reroll, portal cheat key, player immunity, direct shop access).
 - Internal: macOS .DS_Store files are no longer tracked by git and are removed from the repository. They were already in .gitignore.
 
