@@ -79,7 +79,7 @@ public class ShopItem extends GUIComponent {
             }
 
             PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
-            slot.setStatus(ShopSlotStatusEnums.Locked);
+            slot.setStatus(ShopSlotStatusEnums.Bought);
             applySlot();
             SaveManager.getInstance().exportCurrentSave();
         } else if (shopItemInformation.isAvailable() && !shopItemInformation.canAfford()) {

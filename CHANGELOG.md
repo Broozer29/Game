@@ -9,6 +9,9 @@ All notable changes on the `Nelis` branch.
 - Internal: all dev test switches in DevTestSettings are off again (mute mode, infinite money, free reroll, portal cheat key, player immunity, direct shop access).
 - Internal: macOS .DS_Store files are no longer tracked by git and are removed from the repository. They were already in .gitignore.
 
+### Fixed
+- Shop freeze: rows that unlock after you froze the shop now get items in the next shop. They used to stay empty, as if their items had been bought. Slots you bought in a frozen shop still stay empty.
+
 ## 2026-10-13
 
 ### Added

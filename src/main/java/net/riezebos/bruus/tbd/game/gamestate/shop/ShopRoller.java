@@ -53,12 +53,15 @@ public class ShopRoller {
 
 
             ItemRarityEnums slotType = !rolledRare ? ItemRarityEnums.getCommonOrRareEnum() : ItemRarityEnums.Common;
-            if (previousSlot != null) {
-                slotType = previousSlot.getRarity();
-                if(previousSlot.getStatus().equals(ShopSlotStatusEnums.Locked)) {
-                    slotType = ItemRarityEnums.Locked;
-                }
+            if (previousSlot != null && previousSlot.getStatus() == ShopSlotStatusEnums.Bought) {
+                //A slot bought empty in the frozen shop stays empty
+                slots.add(new ShopSlot(ItemEnums.Locked, ItemRarityEnums.Locked, 0, ShopSlotStatusEnums.Bought));
+                continue;
             }
+            if (previousSlot != null && previousSlot.getStatus() == ShopSlotStatusEnums.Available) {
+                slotType = previousSlot.getRarity();
+            }
+            //A slot of a row that was locked in the frozen shop gets a fresh roll now that its row is unlocked
             ShopSlot slot = rollSlot(slotType);
             if (slot.getRarity() == ItemRarityEnums.Rare) {
                 rolledRare = true;
