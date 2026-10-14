@@ -24,10 +24,13 @@ public enum ItemEnums {
     RocketLauncher(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Dual_Rockets, "Rocket Launcher", false),
     ArmorPiercingRounds(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", false),
     KineticDynamo(ItemRarityEnums.Legendary, ImageEnums.KineticDynamoIcon, "Kinetic Dynamo", false), //todo multiplayer update broke it and I never fixed it
-
-    ReflectiveShielding(ItemRarityEnums.Common, ImageEnums.Thornedplates, "Reflective Shielding", false),
     EnergySiphon(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
-    BarrierSuperSizer(ItemRarityEnums.Common, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", false),
+
+    //Shield package: remove this comment before pushing
+    BombasticBarrier(ItemRarityEnums.Rare, ImageEnums.BombasticBarrier, "Bombastic Barrier", true),
+    BarrierBooster(ItemRarityEnums.Common, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", true),
+    ReflectiveShielding(ItemRarityEnums.Legendary, ImageEnums.ReflectiveShielding, "Reflective Shielding", true),
+
     //Relics 2.0
     //generic relics
     Placeholder(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),

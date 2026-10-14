@@ -48,7 +48,7 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.PlasmaCoatedBullets);
+            addItem(ItemEnums.BombasticBarrier);
         } else {
             cashMoney = 0;
         }
@@ -207,8 +207,8 @@ public class PlayerInventory {
                 return new UpgradePrecision();
             case ConstructionKit:
                 return new ConstructionKit();
-            case BarrierSuperSizer:
-                return new BarrierSupersizer();
+            case BarrierBooster:
+                return new BarrierBooster();
             case PiercingMissiles:
                 return new PiercingMissiles();
             case BouncingLasers:
@@ -217,6 +217,8 @@ public class PlayerInventory {
                 return new VIPTicket();
             case ElectricDestabilizer:
                 return new ElectricDestabilizer();
+            case BombasticBarrier:
+                return new BombasticBarrier();
             case ModuleAccuracy:
                 return new ModuleAccuracy();
             case UpgradeFocusFire:

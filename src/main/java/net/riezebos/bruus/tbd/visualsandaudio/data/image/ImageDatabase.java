@@ -12,7 +12,8 @@ public class ImageDatabase {
     private static ImageDatabase instance = new ImageDatabase();
     private ImageLoader imgLoader = ImageLoader.getInstance();
 
-
+    private BufferedImage bombasticBarrier;
+    private BufferedImage reflectiveShielding;
     private BufferedImage bossHealthBarBackground;
     private BufferedImage bossHealthBarRed;
     private BufferedImage bossHealthBarFront;
@@ -586,6 +587,8 @@ public class ImageDatabase {
         this.spaceclouds2 = imgLoader.getImage(ImageEnums.SpaceClouds2);
         this.spaceclouds3 = imgLoader.getImage(ImageEnums.SpaceClouds3);
         this.spaceclouds4 = imgLoader.getImage(ImageEnums.SpaceClouds4);
+        this.bombasticBarrier = imgLoader.getImage(ImageEnums.BombasticBarrier);
+        this.reflectiveShielding = imgLoader.getImage(ImageEnums.ReflectiveShielding);
         this.bossHealthBarBackground = imgLoader.getImage(ImageEnums.BossHealthBarBackground);
         this.bossHealthBarFront = imgLoader.getImage(ImageEnums.BossHealthBarFront);
         this.bossHealthBarRed = imgLoader.getImage(ImageEnums.BossHealthBarRed);
@@ -1016,6 +1019,10 @@ public class ImageDatabase {
                 return this.chooseone;
             case BossHealthBarBackground:
                 return bossHealthBarBackground;
+            case ReflectiveShielding:
+                return reflectiveShielding;
+            case BombasticBarrier:
+                return bombasticBarrier;
             case BossHealthBarFront:
                 return bossHealthBarFront;
             case BossHealthBarRed:

@@ -6,14 +6,13 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-public class BarrierSupersizer extends Item {
+public class BarrierBooster extends Item {
     public static float modifierBonus = 0.2f;
 
-    public BarrierSupersizer(){
-        super(ItemEnums.BarrierSuperSizer, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
+    public BarrierBooster(){
+        super(ItemEnums.BarrierBooster, 1, ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
-    //Increases the maximum shield and overloaded shield by 20%
     @Override
     public void applyEffectToObject (GameObject gameObject) {
         if(gameObject instanceof SpaceShip spaceShip) {
