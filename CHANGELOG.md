@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-15
+
+### Changed
+- Bosses and mini bosses are prepared just before their level, so they stutter much less when they spawn. The game also starts faster, because it no longer prepares enemies and laser beams at startup.
+
 ## 2026-10-14
 
 ### Changed

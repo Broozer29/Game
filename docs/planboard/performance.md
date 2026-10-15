@@ -88,8 +88,9 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Measured on 2026-10-05, two runs each, from the timestamps in startup_log.txt. A "Preloading laserbeams..." line was added to Game.java to split the preload in two
   - Before any fix: 36 s total (window appears 2.7 s, images 13-15 s, enemy preload 7-8 s, laserbeam preload 11-12 s)
   - After the three fixes in this file: 19 s total (window 2.7 s, images 6.5 s, enemy preload 7-7.6 s, laserbeam preload 2 s)
-  - Image loading now starts on its own thread at the very start of `main`, so it runs while JavaFX, the controllers, the window and the audio start up. Measured: about 16 s total (15.8, 16.1 and 16.4 s; one outlier run took 22 s). The window still appears after about 2.8 s
+  - Image loading now starts on its own thread at the very start of `main`, so it runs while JavaFX, the controllers, the window and the audio start up. Measured on 2026-10-05, while startup still built enemies and laserbeams: about 16 s total (15.8, 16.1 and 16.4 s; one outlier run took 22 s). The window still appears after about 2.8 s
   - Still open: images are decoded on one thread, about 4,500 PNG files. Decoding on all CPU cores could cut the 6.5 s further; `ImageLoader`'s shared `bufferedImage` field must become a local variable first
+  - Profile the 6.5 s image decode before changing the asset format (council 2026-10-15)
   - Still open: audio loads before the window appears, because BoardManager's `AudioManager` field creates the whole `AudioDatabase`. Moving it to the loading thread shows the window sooner and lets a loading bar include audio
   - Audio measured on its own: building all 189 players takes about 1.25 s, of which the reset of every player takes 0.12 s. A player for a large music file takes as long to create as one for a short sound (about 5.7 ms each), so converting the music from WAV to MP3 would not speed up startup. It would only shrink the jar
 - Every image was copied to a temporary file before it was decoded
@@ -249,7 +250,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
   - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
 - Never build boss images during a level: prepare them at game start, run start or level start (Nelis, 2026-10-08)
-  - Startup (`Game.preloadThings`) now prepares only the cash carrier and the laserbeams; bosses, their summons and mini bosses are prepared just before their level by `LevelPreloader`
+  - Startup now builds no enemies and no laserbeams; bosses, their summons and mini bosses are prepared just before their level by `LevelPreloader`, which also builds the cash carrier and the laserbeams into the normal cache on every level preload
   - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup (before 2026-10-13) could be dropped again and rebuilt when it appears, which freezes the game for a moment
   - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level, or its mini bosses if it is a regular level (the level plan, `LevelManager.planNextLevel()`, now decides both before the level starts) and keep them from being dropped until the level ends (built on the branch boss-preload, 2026-10-13)
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
@@ -270,7 +271,7 @@ Why: on 2026-10-07 a 15-minute stress run used up all of the PC's memory and cra
 The slow motion in busy levels turned out to be a different problem: damage numbers piling up (see Menus & UI). The cache does not cause the slowdown, only the memory use.
 
 Decisions for the experiment:
-- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; copies made during a level preload sit in a level section outside the budget until the level ends, then go back to the normal section
+- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; only Generic bosses, mini bosses and their summons built during a level preload sit in a level section outside the budget, and that section is deleted when the level ends
 - The budget is a constant at the top of that class, first set to about 2.5 GB, which is above what one level needs today. It can be lowered once each image takes less memory
 - Memory is counted as width × height × 4 bytes per image, each image counted once even if two entries point to it
 - When the budget is full, the image used longest ago is dropped and `flush()`ed, so its graphics card copy is freed too

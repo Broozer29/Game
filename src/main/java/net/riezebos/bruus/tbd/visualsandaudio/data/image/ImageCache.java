@@ -15,9 +15,9 @@ import java.util.*;
 
 // One shared cache for rotated and resized images (single images and frame lists).
 // The normal section has a memory budget: least recently used entries are dropped first when its pixel data exceeds it.
-// The level section sits outside that budget and is never evicted. While a level preload runs (beginLevelPreload until
-// endLevelPreload), every put goes to the level section, and so does every lookup that hits the normal section, from any
-// thread. clearLevelEntries() hands the whole level section back to the normal section, where the budget applies again.
+// The level section sits outside that budget and is never evicted. While the preloader builds a Generic enemy
+// (beginLevelPreload until endLevelPreload), every put goes to the level section, from any thread. A lookup that hits
+// the normal section leaves the entry there. clearLevelEntries() deletes the whole level section; nothing moves between the sections.
 public class ImageCache {
 
     private static final long MEMORY_BUDGET_BYTES = 2_560L * 1024 * 1024;
@@ -30,7 +30,7 @@ public class ImageCache {
 
     // Normal section, access order: a lookup moves the entry to the end, so the first entry is the least recently used
     private final Section entries = new Section(true);
-    // Level section: outside the budget and never evicted, until clearLevelEntries() hands it back
+    // Level section: outside the budget and never evicted, until clearLevelEntries() deletes it
     private final Section levelEntries = new Section(false);
     private boolean levelPreload = false;
     private long hits = 0;
@@ -168,13 +168,12 @@ public class ImageCache {
         levelPreload = false;
     }
 
-    // Hands every level entry back to the normal section, then applies the budget to it
+    // Deletes every level entry, the same way an eviction releases it. Nothing is added to the normal section.
     public synchronized void clearLevelEntries() {
-        for (Map.Entry<String, CacheEntry> levelEntry : levelEntries.map.entrySet()) {
-            entries.put(levelEntry.getKey(), levelEntry.getValue());
+        for (CacheEntry levelEntry : levelEntries.map.values()) {
+            flush(levelEntry);
         }
         levelEntries.clear();
-        evictOverBudget();
     }
 
     public synchronized String getStatsLine() {
@@ -187,13 +186,11 @@ public class ImageCache {
                 + " levelMb=" + String.format("%.1f", levelEntries.countedBytes / (1024.0 * 1024.0));
     }
 
-    // Finds the entry in either section. During a level preload a hit in the normal section moves the entry to the level section.
+    // Finds the entry in either section, and leaves it in the section it was found in
     private CacheEntry lookup(String key, boolean wantFrames) {
         CacheEntry entry = null;
-        boolean inLevelSection = false;
         if (!levelEntries.map.isEmpty()) {
             entry = levelEntries.map.get(key);
-            inLevelSection = entry != null;
         }
         if (entry == null) {
             entry = entries.map.get(key);
@@ -203,11 +200,6 @@ public class ImageCache {
             return null;
         }
         hits++;
-        if (levelPreload && !inLevelSection) {
-            // Not through flush(): the images stay in use, only the section that counts them changes
-            entries.remove(key);
-            levelEntries.put(key, entry);
-        }
         return entry;
     }
 
@@ -228,8 +220,7 @@ public class ImageCache {
         if (DevTestSettings.disableImageCacheBudget) {
             return;
         }
-        // After a put the new entry is the most recently used one, and after clearLevelEntries() the handed-back entries
-        // are the newest ones, so the loop only reaches them when nothing else is left
+        // After a put the new entry is the most recently used one, so the loop only reaches it when nothing else is left
         Iterator<CacheEntry> eldest = entries.map.values().iterator();
         while (entries.countedBytes > MEMORY_BUDGET_BYTES && entries.map.size() > 1 && eldest.hasNext()) {
             CacheEntry evicted = eldest.next();

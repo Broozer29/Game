@@ -2,16 +2,8 @@ package net.riezebos.bruus.tbd;
 
 import javafx.application.Platform;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.level.SpawningCoordinator;
-import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
@@ -78,9 +70,6 @@ public class Game {
                             logDiagnostic("Loading assets...");
                             AudioDatabase loadingAudioInstance = AudioDatabase.getInstance();
                             ImageDatabase loadingImageInstance = ImageDatabase.getInstance();
-
-                            logDiagnostic("Preloading assets...");
-                            preloadThings();
 
                             exportItemDescriptions();
                             assetsLoaded = true;
@@ -204,59 +193,6 @@ public class Game {
             logDiagnostic("Error detecting hardware acceleration capabilities");
         }
     }
-
-    private static void preloadThings() {
-        // Load LARGE animations so it doesn't lag upon creation of them
-
-
-        Runtime runtime = Runtime.getRuntime();
-        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.printf("Before preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
-
-        // Bosses, mini bosses and their summons are built just before their level by LevelPreloader
-
-        EnemyEnums enemyEnum = EnemyEnums.CashCarrier;
-        Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        cashCarrier.deleteObject();
-
-        logDiagnostic("Preloading laserbeams...");
-        runtime = Runtime.getRuntime();
-        usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.printf("Before preloading laserbeams memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
-
-        simulateAttackAngles();
-
-        runtime = Runtime.getRuntime();
-        usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.printf("After complete preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
-
-    }
-
-	private static void simulateAttackAngles() {
-		LaserbeamConfiguration pinkLaserbeamConfig = new LaserbeamConfiguration(false, 0);
-        pinkLaserbeamConfig.setAmountOfLaserbeamSegments(50);
-        pinkLaserbeamConfig.setOriginPoint(new Point(0, 0));
-		Laserbeam pinkLaserBeam = new AngledLaserBeam(pinkLaserbeamConfig);
-
-        for(int degree = 0; degree < 360; degree++){
-            pinkLaserBeam.setAngleDegrees(degree);
-            pinkLaserBeam.update();
-        }
-
-
-        LaserbeamConfiguration blueLaserbeamConfig = new LaserbeamConfiguration(true, 0);
-        blueLaserbeamConfig.setAmountOfLaserbeamSegments(50);
-        blueLaserbeamConfig.setOriginPoint(new Point(0, 0));
-        Laserbeam blueLaserBeam = new AngledLaserBeam(blueLaserbeamConfig);
-
-
-        for(int degree = 0; degree < 360; degree++){
-            blueLaserBeam.setAngleDegrees(degree);
-            blueLaserBeam.update();
-        }
-    }
-
 
     /*
        The ideal version of this method does the following:
