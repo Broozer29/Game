@@ -43,9 +43,11 @@ public class ImageRotator {
 
         // The frames are cached as one list, not one by one
         double angle = rotation.toAngle();
+        long buildStart = System.nanoTime();
         ArrayList<BufferedImage> newFrames = frames.parallelStream()
                 .map(frame -> rotateOrFlipWithoutCaching(frame, angle, crop))
                 .collect(Collectors.toCollection(ArrayList::new));
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putFrames(keyString, newFrames);
         return newFrames;
     }
@@ -63,12 +65,14 @@ public class ImageRotator {
         }
 
         // Process each frame on all processor cores at once, without caching it separately; collect() keeps the frame order
+        long buildStart = System.nanoTime();
         ArrayList<BufferedImage> adjustedFrames = frames.parallelStream()
                 .map(frame -> rotateOrFlipWithoutCaching(frame, roundedDegrees, false))
                 .collect(Collectors.toCollection(ArrayList::new));
 
 
         ImageCropper.getInstance().cropFramesToUniformContent(adjustedFrames);
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putFrames(keyString, adjustedFrames);
         // Return the list of adjusted frames
         return adjustedFrames;
@@ -88,7 +92,9 @@ public class ImageRotator {
             return cachedImage;
         }
 
+        long buildStart = System.nanoTime();
         BufferedImage rotatedImage = rotateWithoutCaching(image, roundedDegrees, crop);
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putImage(keyString, rotatedImage);
         return rotatedImage;
     }
@@ -237,7 +243,9 @@ public class ImageRotator {
         }
 
         // Mirror the angle for rotation, then apply the vertical flip after rotation. Only the flipped result is cached.
+        long buildStart = System.nanoTime();
         BufferedImage flippedImage = flipVertically(rotateWithoutCaching(image, 360 - wholeDegree, crop));
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putImage(keyString, flippedImage);
         return flippedImage;
     }

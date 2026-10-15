@@ -37,6 +37,11 @@ public class ImageCache {
     private long misses = 0;
     private long evictions = 0;
     private Path statsFile = null;
+    // Builds on a cache miss since the last resetLevelBuilds(), for the level end log line
+    private long levelBuilds = 0;
+    private long levelBuildNanos = 0;
+    private long levelSlowestNanos = 0;
+    private String levelSlowestKey = null;
 
     // The entries of one section, with their own byte count
     private static class Section {
@@ -174,6 +179,33 @@ public class ImageCache {
             flush(levelEntry);
         }
         levelEntries.clear();
+    }
+
+    // Called by the resizer and rotator after they built an image or frame list on a cache miss
+    public synchronized void recordBuild(String key, long nanos) {
+        levelBuilds++;
+        levelBuildNanos += nanos;
+        if (nanos > levelSlowestNanos) {
+            levelSlowestNanos = nanos;
+            levelSlowestKey = key;
+        }
+    }
+
+    public synchronized void resetLevelBuilds() {
+        levelBuilds = 0;
+        levelBuildNanos = 0;
+        levelSlowestNanos = 0;
+        levelSlowestKey = null;
+    }
+
+    public synchronized String getLevelBuildSummary() {
+        String key = levelSlowestKey == null ? "-" : levelSlowestKey;
+        if (key.length() > 80) {
+            key = key.substring(0, 80) + "...";
+        }
+        return levelBuilds + " cache misses built in " + String.format("%.1f", levelBuildNanos / 1_000_000.0)
+                + " ms during the level, slowest " + String.format("%.1f", levelSlowestNanos / 1_000_000.0)
+                + " ms (" + key + ")";
     }
 
     public synchronized String getStatsLine() {

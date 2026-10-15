@@ -39,6 +39,14 @@ public class LevelPreloader {
     }
 
     public void preloadNextLevel() {
+        try {
+            preloadLevel();
+        } finally {
+            imageCache.resetLevelBuilds(); //builds of the preload itself are not counted for the level
+        }
+    }
+
+    private void preloadLevel() {
         long start = System.nanoTime();
         int built = 0;
         boolean failed = false;
@@ -133,6 +141,8 @@ public class LevelPreloader {
     }
 
     public void clearLevel() {
+        System.out.println("Level end: " + imageCache.getLevelBuildSummary() + ", " + imageCache.getStatsLine());
+        imageCache.resetLevelBuilds();
         imageCache.clearLevelEntries();
     }
 }
