@@ -27,3 +27,11 @@ Sprites, effects, explosions, music and sounds.
   - Track position and length are needed because the level ends when the song ends; whether the Windows session reports them reliably is not verified
 - Let players add their own music folder
   - Fixes the "local files" bug above. JavaFX plays WAV, MP3 and AAC (m4a), not OGG
+- A music list viewer that shows every track and where in the game it plays
+  - The list itself is written up in `docs/architecture/subjects/audio/music.md`
+
+## Ideas
+- Shrink the PNGs without changing how they look, to cut the download size further
+  - The 4,536 PNGs take 298 MB. A lossless optimiser such as `oxipng` usually saves 10 to 30% (not measured on these files)
+  - More could be saved if some GIF frame folders are stored at a much higher resolution than they are drawn on screen (not checked)
+  - `images/background/BlueNebula9 copy.png` is a byte-identical 3.1 MB copy of `BlueNebula9.png`, and only `BlueNebula9.png` is used in the code
