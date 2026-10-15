@@ -1,26 +1,26 @@
-5 seconds.wav
-Astral.wav
-Afterglow.wav
-Cosmos.wav
-Depth.wav
-Downtown Binary - 8MB.wav
-Downtown Binary - Fantasia.wav
-Downtown Binary - Light Cycles.wav
-Downtown Binary - Lost.wav
-Downtown Binary - Oort.wav
-Eclipse.wav
-Flux.wav
-Forhill-Iris.wav
-Kiss of the Creature.wav
-Memory-Uploaded.wav
-New Arcades - Solace.wav
-Nova.wav
-Painting the skies.wav
-Radium.wav
-Recompile.wav
-Rose.wav
-Severed.wav
-Turismo.wav
-VIQ - Girl from Nowhere.wav
-runner two.wav
-viq alison.wav
+5 seconds.mp3
+Astral.mp3
+Afterglow.mp3
+Cosmos.mp3
+Depth.mp3
+Downtown Binary - 8MB.mp3
+Downtown Binary - Fantasia.mp3
+Downtown Binary - Light Cycles.mp3
+Downtown Binary - Lost.mp3
+Downtown Binary - Oort.mp3
+Eclipse.mp3
+Flux.mp3
+Forhill-Iris.mp3
+Kiss of the Creature.mp3
+Memory-Uploaded.mp3
+New Arcades - Solace.mp3
+Nova.mp3
+Painting the skies.mp3
+Radium.mp3
+Recompile.mp3
+Rose.mp3
+Severed.mp3
+Turismo.mp3
+VIQ - Girl from Nowhere.mp3
+runner two.mp3
+viq alison.mp3

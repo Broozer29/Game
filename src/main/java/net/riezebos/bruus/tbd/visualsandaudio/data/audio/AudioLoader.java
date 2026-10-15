@@ -65,7 +65,7 @@ public class AudioLoader {
                         String line;
                         while ((line = reader.readLine()) != null) {
                             line = line.trim();
-                            if (!line.isEmpty() && line.toLowerCase().endsWith(".wav")) {
+                            if (!line.isEmpty() && (line.toLowerCase().endsWith(".mp3") || line.toLowerCase().endsWith(".wav"))) {
                                 availableTracks.add("/audio/music/custom/" + line);
                             }
                         }
@@ -218,7 +218,7 @@ public class AudioLoader {
             case Alien_Spaceship_Destroyed:
                 return "/audio/Alien Spaceship Destroyed.wav";
             case Furi_Wisdowm_Of_Rage:
-                return "/audio/music/Waveshaper wisdom of rage.wav";
+                return "/audio/music/Waveshaper wisdom of rage.mp3";
             case Alien_Bomb_Impact:
                 return "/audio/Alien Bomb Impact.wav";
             case Large_Ship_Destroyed:
@@ -237,25 +237,25 @@ public class AudioLoader {
             case Firewall:
                 return "/audio/Firewall.wav";
             case mainmenu:
-                return "/audio/music/mainmenu.wav";
+                return "/audio/music/mainmenu.mp3";
             case Filth:
-                return "/audio/music/Filth.wav";
+                return "/audio/music/Filth.mp3";
             case Blood_On_The_Dancefloor:
-                return "/audio/music/Blood_On_The_Dancefloor.wav";
+                return "/audio/music/Blood_On_The_Dancefloor.mp3";
             case FinalBossPhase1:
-                return "/audio/music/phase1.wav";
+                return "/audio/music/phase1.mp3";
             case FinalBossPhase2:
-                return "/audio/music/phase2.wav";
+                return "/audio/music/phase2.mp3";
             case FinalBossPhase3:
-                return "/audio/music/phase3.wav";
+                return "/audio/music/phase3.mp3";
             case MausoleumMash:
-                return "/audio/music/Mausoleum mash.wav";
+                return "/audio/music/Mausoleum mash.mp3";
             case Arisen:
-                return "/audio/music/Arisen.wav";
+                return "/audio/music/Arisen.mp3";
             case Enraged:
-                return "/audio/music/enraged.wav";
+                return "/audio/music/enraged.mp3";
             case Lemmino_Firecracker:
-                return "/audio/music/lemmino Firecracker.wav";
+                return "/audio/music/lemmino Firecracker.mp3";
             case NotEnoughMinerals:
                 return "/audio/Not Enough Minerals.wav";
             case ChargingLaserbeam:
@@ -268,10 +268,10 @@ public class AudioLoader {
                 return "/audio/ElectroShredFinishedCharging.wav";
             case ScarabExplosion:
                 return "/audio/scarabexplosion.wav";
-            case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).wav";
-            case nomad:return "/audio/music/nomad.wav";
-            case WaveshaperMonster: return "/audio/music/Waveshaper - Monster.wav";
-            case RMChase: return "/audio/music/RM Chase.wav";
+            case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).mp3";
+            case nomad:return "/audio/music/nomad.mp3";
+            case WaveshaperMonster: return "/audio/music/Waveshaper - Monster.mp3";
+            case RMChase: return "/audio/music/RM Chase.mp3";
         }
         return null;
     }

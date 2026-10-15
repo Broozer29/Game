@@ -2,6 +2,14 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-15
+
+### Changed
+- All music is now MP3 instead of WAV, so the game download shrinks from about 2 GB to about 560 MB. Sound effects are unchanged.
+
+### Fixed
+- A regular level can no longer get stuck when its song fails to load or never reports that it has ended.
+
 ## 2026-10-14
 
 ### Changed

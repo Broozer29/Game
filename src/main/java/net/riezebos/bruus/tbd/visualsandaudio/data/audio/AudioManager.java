@@ -26,6 +26,9 @@ public class AudioManager {
     private SpotifyMediaPlayer spotifyMediaPlayer = SpotifyMediaPlayer.getInstance();
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
+    private double musicStartGameSeconds = -1; // Game seconds when the current level's song was started
+    private static final double MUSIC_END_GRACE_SECONDS = 5; // How long past the predicted song end a level waits for the end-of-song signal
+    private static final double FALLBACK_LEVEL_SECONDS = 240; // Level length when the song failed to load
 
     private AudioManager() {
 
@@ -37,6 +40,7 @@ public class AudioManager {
         releaseBackgroundMusic();
         predictedEndGameSeconds = -1;
         lastSyncGameSeconds = -1;
+        musicStartGameSeconds = -1;
         audioDatabase.resetAudio();
         lastPlayTimeMap.clear();
     }
@@ -173,7 +177,10 @@ public class AudioManager {
                     synchronizePrediction();
                     lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
                 }
-                return backGroundMusic.isFinished();
+                if (backGroundMusic.isFinished()) {
+                    return true;
+                }
+                return !backGroundMusic.isLoop() && isLevelMusicOverdue();
             } else {
                 return false; //might never be reached but safetynet should music fail to play
             }
@@ -198,6 +205,20 @@ public class AudioManager {
         }
 
         return false; // If none of the conditions are met, the track hasn't finished
+    }
+
+    //Safety net so a regular level can't hang when its song never reports its end or fails to load
+    private boolean isLevelMusicOverdue() {
+        double gameSeconds = GameState.getInstance().getGameSeconds();
+        if (predictedEndGameSeconds > 0 && gameSeconds > predictedEndGameSeconds + MUSIC_END_GRACE_SECONDS) {
+            System.out.println("Level music did not report its end, ending the level after its predicted end");
+            return true;
+        }
+        if (backGroundMusic.hasFailedToLoad() && musicStartGameSeconds >= 0 && gameSeconds > musicStartGameSeconds + FALLBACK_LEVEL_SECONDS) {
+            System.out.println("Level music failed to load, ending the level after the fallback length");
+            return true;
+        }
+        return false;
     }
 
     // Abstracted methods to handle the media players
@@ -296,8 +317,9 @@ public class AudioManager {
 
             CustomAudioClip clip = new CustomAudioClip(AudioEnums.CustomMusicFile); //create a new customaudioclip as the database does NOT preload these, loop defaults to false
             clip.setMusic(true);
+            backGroundMusic = clip; //set before starting, so a clip that failed to load is still tracked by the level-end safety net
+            musicStartGameSeconds = GameState.getInstance().getGameSeconds();
             clip.startClip(); //fire & forget
-            backGroundMusic = clip;
 
             lastSyncGameSeconds = GameState.getInstance().getGameSeconds() - 9; //manually force a resync after 1 sec through the isLevelMusicFinished() method
         } else if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {

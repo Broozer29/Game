@@ -18,15 +18,15 @@ Settings, startup, Discord status, builds, packaging and dev tooling.
   - Maven keeps one version of the shared JavaFX modules, so media 21 probably runs on base and graphics 19 (not tested). Fix: one version property, 21.0.x
 - Stale build setup in pom.xml
   - The `repositories` block points at the dead `jcenter.bintray.com` under the id `central`; only JitPack is needed (for jDRPC)
-  - jpackage `appVersion` is fixed at 1.0 and there is no icon; `<resourceDir>` points at `src/main/resources`, which may copy all 2 GB of assets into the app image a second time (not verified)
+  - jpackage `appVersion` is fixed at 1.0 and there is no icon; `<resourceDir>` points at `src/main/resources`, which may copy all assets (about 560 MB) into the app image a second time (not verified)
   - Old libraries to bump when convenient: gson 2.8.9, jackson-databind 2.15.0, org.json 20230618 (versions up to this one have a known denial-of-service issue), shade plugin 3.2.4
 - The jar only runs on the operating system that built it, because JavaFX natives are picked from the build machine; CI builds one jar per OS, so CI downloads are fine
 - Runtime files are not ignored, and some junk is tracked
   - `playerprofile.json` is tracked and rewritten by the game; `savefile.json`, `error_log.txt` and `startup_log.txt` are not ignored (`.gitignore` has `*.log`, not `.txt`)
   - About 60 `.DS_Store` files, 6 `.idea` files and 2 `.settings` files are tracked
   - Untracking needs `git rm --cached`, which has to be done by hand outside Claude
-- The repository is 3.78 GiB because 133 music WAV files (1.7 GB) are stored as plain git objects; every music change adds a full copy. Converting the music (see Visuals & Audio) and deciding on Git LFS would fix it
-- CI runs 6 jobs (3 operating systems, 2 render profiles) that each upload a ~2 GB artifact kept 30 days, which uses a lot of GitHub storage
+- The repository is 3.78 GiB because 133 music WAV files (1.7 GB) are stored as plain git objects in its history. The music is MP3 now, so a music change adds a much smaller copy, but the old WAVs stay in the history. Git LFS would keep future music out of the repository
+- CI runs 6 jobs (3 operating systems, 2 render profiles) that each upload a ~560 MB artifact kept 30 days, which uses a lot of GitHub storage
 - README.md says the game "only uses JamePad and Java Swing"; it actually uses JavaFX, Jackson, Gson and jDRPC
 
 ## Features

@@ -91,7 +91,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Image loading now starts on its own thread at the very start of `main`, so it runs while JavaFX, the controllers, the window and the audio start up. Measured: about 16 s total (15.8, 16.1 and 16.4 s; one outlier run took 22 s). The window still appears after about 2.8 s
   - Still open: images are decoded on one thread, about 4,500 PNG files. Decoding on all CPU cores could cut the 6.5 s further; `ImageLoader`'s shared `bufferedImage` field must become a local variable first
   - Still open: audio loads before the window appears, because BoardManager's `AudioManager` field creates the whole `AudioDatabase`. Moving it to the loading thread shows the window sooner and lets a loading bar include audio
-  - Audio measured on its own: building all 189 players takes about 1.25 s, of which the reset of every player takes 0.12 s. A player for a large music file takes as long to create as one for a short sound (about 5.7 ms each), so converting the music from WAV to MP3 would not speed up startup. It would only shrink the jar
+  - Audio measured on its own: building all 189 players takes about 1.25 s, of which the reset of every player takes 0.12 s. A player for a large music file takes as long to create as one for a short sound (about 5.7 ms each), so the music format does not change startup time
 - Every image was copied to a temporary file before it was decoded
   - Java's image reader does this by default when reading from a stream. With about 4,500 PNGs this was half of the image loading time (shown by a Java Flight Recorder profile)
   - Fixed on 2026-10-05: `ImageIO.setUseCache(false)` at the start of loading in Game.java

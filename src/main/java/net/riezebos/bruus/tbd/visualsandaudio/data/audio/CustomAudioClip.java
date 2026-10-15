@@ -113,6 +113,9 @@ public class CustomAudioClip {
 
 
     public void startClip() {
+        if (mediaPlayer == null) {
+            return; //the file failed to load, there is nothing to play
+        }
         adjustVolume();
         mediaPlayer.play();
         startedSinceReset = true;
@@ -206,6 +209,11 @@ public class CustomAudioClip {
 
     public void clearStartedSinceReset() {
         startedSinceReset = false;
+    }
+
+    //True when the file could not be loaded or JavaFX stopped the player after a media error
+    public boolean hasFailedToLoad() {
+        return mediaPlayer == null || mediaPlayer.getStatus() == MediaPlayer.Status.HALTED;
     }
 
     public boolean isRunning() {

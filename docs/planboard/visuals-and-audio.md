@@ -27,5 +27,3 @@ Sprites, effects, explosions, music and sounds.
   - Track position and length are needed because the level ends when the song ends; whether the Windows session reports them reliably is not verified
 - Let players add their own music folder
   - Fixes the "local files" bug above. JavaFX plays WAV, MP3 and AAC (m4a), not OGG
-- Store the music as MP3 or AAC instead of WAV
-  - All music is WAV: 1.7 GB of the roughly 2 GB jar. MP3 or AAC at normal quality would shrink it to roughly a seventh to a tenth, and JavaFX plays both
