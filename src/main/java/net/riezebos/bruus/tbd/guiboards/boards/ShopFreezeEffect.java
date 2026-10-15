@@ -1,23 +1,29 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezeService;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezer;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlotStatusEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ShopItem;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 import java.awt.*;
 import java.util.List;
+//todo After entering the shop, an "unfreeze" animation plays on all frozen items, except "locked" items.
+// We also want to display this animation on locked rows specifically (see todo in shopfreezer lines 42/43) but I cannot quite find the code that creates the seperation between available and locked items yet
 
-// Everything the shop draws for the freeze: the frost on the items, the thaw, and the Freeze button with its glow. The logic is in ShopFreezeService.
+// Everything the shop draws for the freeze: the frost on the items, the thaw, and the Freeze button with its glow. The logic is in ShopFreezer.
 public class ShopFreezeEffect {
 
     private static final int THAW_HOLD_MS = 100;
-    private static final int THAW_TOTAL_MS = ShopFreezeService.THAW_TOTAL_MS;
+    private static final int THAW_TOTAL_MS = ShopFreezer.THAW_TOTAL_MS;
 
     private static ShopFreezeEffect instance = new ShopFreezeEffect();
 
-    private final ShopFreezeService service = ShopFreezeService.getInstance();
+    private final ShopFreezer service = ShopFreezer.getInstance();
 
+    //todo these GUIComponents belong in ShopBoard, not here
     private GUIComponent lastRerollCard;
     private GUIComponent freezeBackgroundCard;
     private GUIComponent freezeButton;
@@ -32,6 +38,7 @@ public class ShopFreezeEffect {
     }
 
     // Puts the Freeze card, button and text on the shop screen; they are built again when the shop screen was built again
+    //todo these GUIcomponents belong in shopboard and thus the creation and addition belongs in ShopBoard
     public void addToBoard(ShopBoardCreator creator, GUIComponent rerollCard, List<GUIComponent> firstRow, List<GUIComponent> offTheGridObjects) {
         if (rerollCard != lastRerollCard) {
             lastRerollCard = rerollCard;
@@ -61,16 +68,16 @@ public class ShopFreezeEffect {
     }
 
     // The frost of a frozen Available item, or the thaw of an item that was carried or just unfrozen
-    public void drawFreezeEffect(Graphics2D g2d, ShopItem item) {
-        service.clearThawIfOver();
+    public void updateFreezeEffect(Graphics2D g2d, ShopItem item) {
+        service.clearFrozenStatusOnShopItems();
         int xCoordinate = item.getXCoordinate();
         int yCoordinate = item.getYCoordinate();
-        if (service.isFrozen() && item.getShopItemInformation().isAvailable()) {
+        if (service.isFrozen() && item.getSlot().getStatus() == ShopSlotStatusEnums.Available) {
             int framePadding = Math.round(3 * DataClass.getInstance().getResolutionFactor());
             drawFrostGlow(g2d, xCoordinate - framePadding, yCoordinate - framePadding,
                     item.getWidth() + framePadding * 2, item.getHeight() + framePadding * 2, 5);
             drawFrostCorners(g2d, xCoordinate, yCoordinate, item.getWidth(), item.getHeight(), 1f, 0);
-        } else if (service.getThawStartMillis() != 0 && item.getSlot().isCarried() && item.getShopItemInformation().isAvailable()) {
+        } else if (service.getUnfreezeAnimationStartMillis() != 0 && item.getSlot().isFrozen()) {
             drawThaw(g2d, item, Math.round(3 * DataClass.getInstance().getResolutionFactor()));
         }
     }
@@ -146,7 +153,7 @@ public class ShopFreezeEffect {
 
     // The break thaw of a carried or just-unfrozen item: the frost holds, then the corner lines fly outward while they and the rim fade out together
     private void drawThaw(Graphics2D g, ShopItem object, int framePadding) {
-        long elapsed = System.currentTimeMillis() - service.getThawStartMillis();
+        long elapsed = System.currentTimeMillis() - service.getUnfreezeAnimationStartMillis();
         if (elapsed >= THAW_TOTAL_MS) {
             return;
         }

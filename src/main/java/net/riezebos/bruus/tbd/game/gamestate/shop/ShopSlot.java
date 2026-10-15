@@ -13,10 +13,7 @@ public class ShopSlot {
     private ShopSlotStatusEnums status;
     // Set on a slot carried over from a frozen shop, and on every available slot when the shop is unfrozen, to play the thaw. Not saved.
     @JsonIgnore
-    private boolean carried;
-
-    public ShopSlot() {
-    }
+    private boolean frozen;
 
     public ShopSlot(ItemEnums item, ItemRarityEnums rarity, float cost, ShopSlotStatusEnums status) {
         this.item = item;
@@ -58,12 +55,12 @@ public class ShopSlot {
     }
 
     @JsonIgnore
-    public boolean isCarried() {
-        return carried;
+    public boolean isFrozen() {
+        return frozen;
     }
 
     @JsonIgnore
-    public void setCarried(boolean carried) {
-        this.carried = carried;
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
     }
 }

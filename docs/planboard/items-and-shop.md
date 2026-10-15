@@ -30,6 +30,21 @@ Items, boons, the shop, rerolls and prices.
   - Bonus Kaart adds the item twice (`ShopItem.purchaseItemInShop`), which can push capped items past their limit
   - FragmentationSacs and MutaliskHealingBonus pass the wrong `ItemEnums` (both disabled)
   - Anion Inverter and Electric Destabilizer, and Inverse Retrieval and Arbiter Damage, only exclude each other one way
+- Pre-release check (2026-10-14): drone upgrades, Placeholder, Firefighter, shield items and item texts are wrong
+  - Upgrade: Speed makes drones fire slower; the space station ignores drone speed entirely
+  - Upgrade: Precision never runs; Upgrade: Overload adds 0.15 flat damage instead of +15%
+  - Electro Shredding does not boost the drones' Electroshred
+  - Placeholder: upgrades should count double (1 + 2 × bonus) for damage and fire rate; its text says 10.0 DPS
+  - Firefighter's class settings reset the new 2.35 ignite duration to 1.75
+  - Barrier Backfire gives 30% on the first copy instead of 25%; "(+400%)" leaves the text
+  - Blizzard Barrier's 1% check must use max shield × the overload modifier, in both places
+  - Shop freeze frosts and thaws locked and bought slots
+  - Texts: Recycler shows 8% for 7.5%, Bombastic Barrier reads Electric Destabilizer's stun time, Barrier Booster says "Inceases"
+  - Bruus answered every question (2026-10-14); Plan unit `game-release-bug-sweep`
+- Barrier Booster probably does not raise the real shield cap
+  - BarrierBooster.java:19 raises the ship's `maxShieldPoints`, but shield regen (SpaceShip.java:432-434) and `changeShieldHitpoints` (:390) cap at PlayerStats' `maxShieldHitPoints`; not confirmed in play
+- Barrier Backfire's thorns ratio still grows by 400% per copy
+  - ReflectiveShielding.java:27 and :43 add `quantity * buffAmount` to the thorns ratio; Bruus said the 400% should not grow per copy. Question for Bruus: is the thorns ratio a separate effect that may grow?
 
 ## Features
 - Equipment slots: give a player a new active ability that is not decided by their class

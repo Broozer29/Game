@@ -210,7 +210,7 @@ public class Enemy extends GameObject {
 
         if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Placeholder) != null &&
                 FriendlyManager.getInstance().getFriendlyStations().size() < PlayerManager.getInstance().getPlayerCount() * Placeholder.maxStations) {
-            FriendlyManager.getInstance().addFriendlyStation(FriendlyCreator.createFriendlyStation(null, this.getCurrentCenterLocation()));
+            FriendlyManager.getInstance().addFriendlyStation(FriendlyCreator.createFriendlyStation(PlayerManager.getInstance().getClosestSpaceShip(this), this.getCurrentCenterLocation()));
         }
     }
 

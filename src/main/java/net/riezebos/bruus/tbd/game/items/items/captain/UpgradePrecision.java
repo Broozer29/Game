@@ -17,16 +17,16 @@ public class UpgradePrecision extends Item {
     private Random random = new Random();
 
     public UpgradePrecision() {
-        super(ItemEnums.UpgradePrecision, 1, ItemApplicationEnum.CustomActivation);
+        super(ItemEnums.UpgradePrecision, 1, ItemApplicationEnum.BeforeCollision);
     }
 
     @Override
-    public void applyEffectToObject(GameObject gameObject) {
-        if (gameObject instanceof Missile missile && missile.getOwnerOrCreator() instanceof MissileDrone) {
+    public void modifyAttackingObject(GameObject attack, GameObject target) {
+        if (attack instanceof Missile missile && missile.getOwnerOrCreator() instanceof MissileDrone) {
             if(random.nextFloat(0, 1) < critChance){
                 missile.setIsACrit(true);
             }
-        } else if (gameObject instanceof Missile missile && missile.getOwnerOrCreator() instanceof FriendlyStation){
+        } else if (attack instanceof Missile missile && missile.getOwnerOrCreator() instanceof FriendlyStation){
             if(random.nextFloat(0, 1) < critChance * 2){
                 missile.setIsACrit(true);
             }

@@ -22,7 +22,6 @@ Read `.claude/bindings/changelog.md`:
 | --- | --- |
 | `release-log` | the table of releases: name, date, release commit, patch notes file |
 | `patch-notes-folder` | the folder the patch notes files go in |
-| `release-branch` | the branch players get their builds from |
 | `dev-changelog` | the developers' running changelog |
 
 If the binding or a row is absent, print a one-line notice. For a missing release log, ask the user
@@ -31,10 +30,18 @@ for the start commit. For a missing folder, write the notes into the scratchpad 
 ## Choosing the range
 
 - **Start:** the release commit of the last row in the release log.
-- **End:** the commit being released. Run `git fetch` first. The default end is the tip of the
-  `release-branch` on `origin`, because that is what players get. Never end on a work branch: work
-  there that is not on the release branch yet is not in the release.
-- State the range (both commits, both dates) to the user before part 1 starts.
+- **End:** the tip of the branch checked out in the working tree (`git branch --show-current`).
+  Run `git fetch` first and say whether that branch is behind its `origin` copy.
+- State the range to the user before part 1 starts: both commits, both dates and the branch name.
+
+> **When** the range is set, **run this checklist** at the end commit — check every item, top to
+> bottom, skipping none:
+> - [ ] A dev test switch is on. The name map in the examples folder says where the switches live;
+>   every switch must be off in a release.
+> - [ ] The working tree has uncommitted changes to files under the source or resources folders.
+>
+> **If ANY item hits**, you MUST stop and tell the user which switch is on or which files are
+> uncommitted, and wait for their answer before part 1 starts. **Zero exceptions.**
 
 ## Part 1: find the changes
 
@@ -43,11 +50,18 @@ for the start commit. For a missing folder, write the notes into the scratchpad 
    left out. A change made in several steps is described once, by its end result.
 2. Use `git log --format='%h %an %ad %s' <start>..<end> -- <file>` and the `dev-changelog` only to
    understand what a change is.
-3. Split the changed files into groups by game area, with no file in two groups. Dispatch one agent
-   per group with the Agent tool, `model: sonnet`, using the brief in
+3. Split the changed files into groups by game area, with no file in two groups. The area table in
+   [examples/where-names-live.md](examples/where-names-live.md) maps folders to areas. A file whose
+   folder is not in the table goes to the group of the area its content is about. Write the groups
+   down and compare them before dispatching. Dispatch one agent per group with the Agent tool, `model: sonnet`, using the brief in
    [templates/fact-brief.md](templates/fact-brief.md). Each agent writes its facts to its own file
    in the scratchpad and returns only counts and open questions.
-4. Merge the fact files into one fact list. The fact list is a working file in the scratchpad, not
+4. Pictures and sound files cannot be compared line by line, so list them from
+   `git diff -M --name-status <start> <end>` instead. Turn each added, removed or renamed file into
+   a fact by what it is: a music track goes to Soundtracks, an animation or icon goes with the item,
+   enemy or effect that uses it. A picture or sound that only replaces another one with the same
+   name is a fact only when a commit message or the dev changelog says players will notice it.
+5. Merge the fact files into one fact list. The fact list is a working file in the scratchpad, not
    a deliverable.
 
 Each fact holds:
@@ -86,8 +100,8 @@ Bruus's own patch notes are the style reference:
 - [examples/rework-and-fixes.md](examples/rework-and-fixes.md)
 - [examples/class-buffs.md](examples/class-buffs.md)
 
-Read all three before writing. [examples/where-names-live.md](examples/where-names-live.md) says
-where the in-game names, rarities, classes and prices are found.
+Read all three before writing. The name map in the examples folder says where the in-game names,
+rarities, classes and prices are found.
 
 The rules of the style:
 
@@ -131,5 +145,6 @@ every finding it confirms before handing the notes over.
 3. **Add the release log row only when the user says the release was made.** The row holds the
    release name, the date, the short hash of the released commit and the notes file.
    That commit is the start of the next patch notes.
-4. The notes file, the release log row and the `dev-changelog` line go in one commit, separate from
-   any game code.
+4. Commit twice, each time with a `dev-changelog` line and separate from any game code. The notes
+   file is committed once the review is done. The release log row is committed when the user says
+   the release was made.

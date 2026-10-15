@@ -3,20 +3,40 @@ package net.riezebos.bruus.tbd.guiboards.boards;
 import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.MenuAction;
 import net.riezebos.bruus.tbd.controllerInput.MenuInput;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
+import net.riezebos.bruus.tbd.game.util.OnScreenText;
+import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.MenuBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuGrid;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.SettingsWindow;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainMenuBoard extends MenuBoard {
-    private final MenuGrid grid = new MenuGrid();
+public class MainMenuBoard extends JPanel implements TimerHolder {
+    private BackgroundManager backgroundManager = BackgroundManager.getInstance();
+    private AnimationManager animationManager = AnimationManager.getInstance();
+
+    private List<GUIComponent> firstColumn = new ArrayList<>();
+    private List<GUIComponent> secondColumn = new ArrayList<>();
+    private List<GUIComponent> thirdColumn = new ArrayList<>();
+    private List<List<GUIComponent>> grid = new ArrayList<>();
+    private List<GUIComponent> offTheGridObjects = new ArrayList<>();
+    private MenuCursor menuCursor;
     private GUITextCollection selectClassBoard;
     private GUIComponent startGameBackgroundCard;
     private GUITextCollection selectMusicOptionText;
@@ -30,14 +50,25 @@ public class MainMenuBoard extends MenuBoard {
 
     private GUITextCollection closeGameButton;
 
+    private Timer timer;
     private boolean initializedMenuObjects = false;
+
+    private int selectedRow = 0;
+    private int selectedColumn = 0;
 
     public MainMenuBoard() {
         logDiagnostic("MainMenuBoard constructor: Starting...");
-        grids.add(grid);
+        setFocusable(true);
+        setBackground(Color.BLACK);
+        logDiagnostic("MainMenuBoard constructor: Setting preferred size...");
+        setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+
+        logDiagnostic("MainMenuBoard constructor: Checking controllers...");
 
         logDiagnostic("MainMenuBoard constructor: Calling initMenuTiles()...");
         initMenuTiles();
+        logDiagnostic("MainMenuBoard constructor: Creating timer...");
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
         // Don't start timer in constructor - let it be started explicitly via getTimer().restart()
         logDiagnostic("MainMenuBoard constructor: Completed");
     }
@@ -66,7 +97,6 @@ public class MainMenuBoard extends MenuBoard {
         initializedMenuObjects = true;
     }
 
-    @Override
     public void recreateWindow() {
         if (initializedMenuObjects) {
             SettingsWindow.getInstance().closeSilently();
@@ -75,11 +105,16 @@ public class MainMenuBoard extends MenuBoard {
 
             menuCursor = MenuBoardCreator.createMenuCursor(selectClassBoard.getComponents().get(0));
             menuCursor.setSelectedMenuTile(selectClassBoard.getComponents().get(0));
+            selectedColumn = 0;
+            selectedRow = 0;
 
             buildOffTheGridObjects();
-            buildGrid();
-            grid.reset();
-            grid.placeCursor(menuCursor);
+            grid.clear();
+            grid.add(firstColumn);
+            grid.add(secondColumn);
+            grid.add(thirdColumn);
+            recreateList(); // Fill the columns
+            updateCursor();
         }
     }
 
@@ -91,6 +126,7 @@ public class MainMenuBoard extends MenuBoard {
         offTheGridObjects.add(startGameBackgroundCard);
 //        offTheGridObjects.add(selectMusicOptionBackgroundCard);
         offTheGridObjects.add(titleImage);
+        offTheGridObjects.add(menuCursor);
 //        offTheGridObjects.addAll(selectMusicOptionText.getComponents());
 
         addLettersToOffTheGrid();
@@ -117,13 +153,21 @@ public class MainMenuBoard extends MenuBoard {
         closeGameButton = MenuBoardCreator.testingButton(settingsButton);
     }
 
+    // Recreate the tilesList that gets drawn by drawComponents
+    private void recreateList() {
+        firstColumn.clear();
+        secondColumn.clear();
+        thirdColumn.clear();
+        addTilesToColumns();
+    }
+
     private void addAllButFirstComponent(GUITextCollection textCollection) {
         for (int i = 1; i < textCollection.getComponents().size(); i++) {
             offTheGridObjects.add(textCollection.getComponents().get(i));
         }
     }
 
-    // The other letters of each shown button are drawn but never selected, so they are added once per window
+    // The other letters of each shown button are drawn but never selected, so they are added once per window, not on every recreateList
     private void addLettersToOffTheGrid() {
         addAllButFirstComponent(selectClassBoard);
         if (SaveManager.getInstance().doesSaveFileExist()) {
@@ -136,35 +180,138 @@ public class MainMenuBoard extends MenuBoard {
         addAllButFirstComponent(closeGameButton);
     }
 
-    // One row per shown button, top to bottom
-    private void buildGrid() {
-        grid.clear();
-        addRow(selectClassBoard);
+    private void addTilesToColumns() {
+        addToGrid(firstColumn, selectClassBoard.getComponents().get(0), 0, 0);
 
         if (SaveManager.getInstance().doesSaveFileExist()) {
-            addRow(continueSaveFile);
+            addToGrid(firstColumn, continueSaveFile.getComponents().get(0), 0, 0);
         }
 
-        if (DevTestSettings.enableDirectShopAccess) {
-            addRow(openShopButton);
+        if(DevTestSettings.enableDirectShopAccess) {
+            addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 0);
         }
 
-        addRow(settingsButton);
+        addToGrid(firstColumn, settingsButton.getComponents().get(0), 0, 0);
 
-        addRow(closeGameButton);
+        addToGrid(firstColumn, closeGameButton.getComponents().get(0), 0, 0);
+
+//        secondColumn.add(selectDefaultMusicButton.getComponents().get(0));
+//        addAllButFirstComponent(selectDefaultMusicButton);
+
+//        secondColumn.add(selectMacOSMediaPlayerButton.getComponents().get(0));
+//        addAllButFirstComponent(selectMacOSMediaPlayerButton);
     }
 
-    private void addRow(GUITextCollection button) {
-        List<GUIComponent> row = new ArrayList<>();
-        row.add(button.getComponents().get(0));
-        grid.addRow(row);
+    private void addToGrid(List<GUIComponent> gridList, GUIComponent component, int column, int row) {
+        component.setColumn(column);
+        component.setRow(row);
+        gridList.add(component);
+    }
+
+
+    /*------------------------Navigation methods--------------------------------*/
+
+    // Activate the functionality of the specific menutile
+    private void selectMenuTile() {
+        grid.get(selectedRow).get(selectedColumn).activateComponent();
+        if (grid.get(selectedRow).get(selectedColumn).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
+            timer.stop();
+        }
+
+    }
+
+    private void previousMenuTile() {
+        if (isGridEmpty()) {
+            return; // Do nothing if the grid is empty
+        }
+
+        int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
+
+        do {
+            selectedRow--;
+            if (selectedRow < 0) {
+                selectedRow = grid.size() - 1; // Wrap around to the bottom row
+            }
+        } while (grid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+        // found or we've checked all rows
+
+        // Adjust column to be within the new row
+        if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
+            selectedColumn = grid.get(selectedRow).size() - 1;
+        }
+        updateCursor();
+    }
+
+    // Go one menu tile downwards
+    private void nextMenuTile() {
+        if (isGridEmpty()) {
+            return; // Do nothing if the grid is empty
+        }
+
+        int originalRow = selectedRow; // Keep track of the starting row to avoid infinite loop
+
+        do {
+            selectedRow++;
+            if (selectedRow >= grid.size()) {
+                selectedRow = 0; // Wrap around to the top row
+            }
+        } while (grid.get(selectedRow).isEmpty() && selectedRow != originalRow); // Repeat until a non-empty row is
+        // found or we've checked all rows
+
+        // Adjust column to be within the new row
+        if (!grid.get(selectedRow).isEmpty() && selectedColumn >= grid.get(selectedRow).size()) {
+            selectedColumn = grid.get(selectedRow).size() - 1;
+        }
+        updateCursor();
+    }
+
+    // Check if the grid is empty
+    private boolean isGridEmpty() {
+        for (List<GUIComponent> row : grid) {
+            if (!row.isEmpty()) {
+                return false; // Return false as soon as a non-empty row is found
+            }
+        }
+        return true; // If no non-empty rows are found, the grid is empty
+    }
+
+    // Go one menu tile to the left
+    private void previousMenuColumn() {
+        selectedColumn--;
+        if (selectedColumn < 0) {
+            selectedColumn = grid.get(selectedRow).size() - 1; // Wrap around to the rightmost column
+        }
+        updateCursor();
+    }
+
+    // Go one menu tile to the right
+    private void nextMenuColumn() {
+        selectedColumn++;
+        if (selectedColumn >= grid.get(selectedRow).size()) {
+            selectedColumn = 0; // Wrap around to the leftmost column
+        }
+        updateCursor();
+    }
+
+    // Update the cursor's position and selected menu tile
+    private void updateCursor() {
+        if (grid.get(selectedRow).isEmpty()) { // Check if the selected row is empty
+            menuCursor.setSelectedMenuTile(null); // You might need to decide how you want to handle this situation in
+            // your application
+        } else {
+            GUIComponent selectedTile = grid.get(selectedRow).get(selectedColumn);
+            menuCursor.setSelectedMenuTile(selectedTile);
+            menuCursor.setCenterYCoordinate(selectedTile.getCenterYCoordinate() + menuCursor.getYDistanceModification());
+            menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
+        }
     }
 
     // Shows the settings page over the main menu; when it closes, SETTINGS is selected again
     public void openSettings() {
         SettingsWindow.getInstance().open(() -> {
-            grid.select(settingsButton.getComponents().get(0));
-            grid.placeCursor(menuCursor);
+            selectedRow = 0;
+            selectedColumn = firstColumn.indexOf(settingsButton.getComponents().get(0));
+            updateCursor();
             MenuInput.getInstance().startScreen();
         });
     }
@@ -173,41 +320,172 @@ public class MainMenuBoard extends MenuBoard {
         System.exit(1);
     }
 
-    /*------------------------Menu hooks--------------------------------*/
+    // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
+    public void executeMenuInput() {
+        if (SettingsWindow.getInstance().isOpen()) {
+            SettingsWindow.getInstance().handleInput(MenuInput.getInstance().poll()); // The page takes the input, the menu does not move
+            return;
+        }
+        boolean needsUpdate = false;
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            switch (action) {
+                case LEFT:
+                    previousMenuTile();
+                    needsUpdate = true;
+                    break;
+                case RIGHT:
+                    nextMenuTile();
+                    needsUpdate = true;
+                    break;
+                case UP:
+                    previousMenuColumn();
+                    needsUpdate = true;
+                    break;
+                case DOWN:
+                    nextMenuColumn();
+                    needsUpdate = true;
+                    break;
+                case CONFIRM:
+                    selectMenuTile();
+                    recreateList();
+                    return; // selecting can change the screen
+            }
+        }
 
-    // Activate the functionality of the specific menutile
-    @Override
-    protected void onConfirm() {
-        GUIComponent selectedTile = grid.getSelected();
-        selectedTile.activateComponent();
-        if (selectedTile.getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
-            getTimer().stop();
+        if (needsUpdate) {
+            recreateList(); // Update the GUI only if there was an action that requires it
         }
     }
 
-    // Move the cursor to the selected tile
-    @Override
-    protected void onInputHandled() {
-        grid.placeCursor(menuCursor);
-    }
+    /*-----------------------------End of navigation methods--------------------------*/
 
-    // While the settings page is open it takes the input, the menu does not move
+    /*---------------------------Drawing methods-------------------------------*/
     @Override
-    protected boolean handleHostedInput(List<MenuAction> actions) {
-        if (!SettingsWindow.getInstance().isOpen()) {
-            return false;
+    public void paintComponent(Graphics g) {
+        try {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
+
+            try {
+                // Draws all background objects
+                for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                    drawImage(g2d, bgObject);
+                }
+
+                for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                drawObjects(g2d);
+
+                for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
+                    drawText(g2d, text);
+                }
+
+                ControllerNotices.getInstance().draw(g2d);
+            } finally {
+                g2d.dispose(); // Ensure resources are released
+            }
+
+            animationManager.updateGameTick();
+            backgroundManager.updateGameTick();
+            Toolkit.getDefaultToolkit().sync();
+
+            // readControllerState();
+            executeMenuInput();
+        } catch (Exception ex) {
+            try {
+                java.io.FileWriter fw = new java.io.FileWriter("error_log.txt", true);
+                java.io.PrintWriter pw = new java.io.PrintWriter(fw);
+                pw.println("=== Error at " + java.time.LocalDateTime.now() + " ===");
+                ex.printStackTrace(pw);
+                pw.println();
+                pw.close();
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
+            ex.printStackTrace();
+            System.exit(1);
         }
-        SettingsWindow.getInstance().handleInput(actions);
-        return true;
     }
 
-    // The settings page is drawn over the menu, after the cursor
-    @Override
-    protected void drawScreenOverlay(Graphics2D g) {
+
+    private void drawObjects(Graphics2D g) {
+        for (GUIComponent component : offTheGridObjects) {
+            if (component != null) {
+                drawGUIComponent(g, component);
+            }
+        }
+
+
+        for (List<GUIComponent> list : grid) {
+            for (GUIComponent component : list) {
+                drawGUIComponent(g, component);
+            }
+        }
+
         if (SettingsWindow.getInstance().isOpen()) {
             for (GUIComponent component : SettingsWindow.getInstance().getComponents()) {
                 drawGUIComponent(g, component);
             }
         }
     }
+
+    private void drawGUIComponent(Graphics2D g, GUIComponent component) {
+        g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
+    }
+
+    private void drawImage(Graphics g, Sprite sprite) {
+        if (sprite.getImage() != null) {
+            g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+        }
+    }
+
+    private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
+        if (animation.getCurrentFrameImage(false) != null) {
+            g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
+        }
+    }
+
+    private void drawText(Graphics2D g, OnScreenText text) {
+        // Ensure that transparency value is within the appropriate bounds.
+        float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
+        Color originalColor = g.getColor(); // store the original color
+        Font originalFont = g.getFont();
+
+        // Set the color with the specified transparency.
+        Color colorWithTransparency = new Color(
+                text.getColor().getRed(),
+                text.getColor().getGreen(),
+                text.getColor().getBlue(),
+                (int) (transparency * 255) // alpha value must be between 0 and 255
+        );
+
+//        g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
+        g.setColor(colorWithTransparency);
+        g.setFont(new Font("Helvetica", Font.PLAIN, text.getFontSize()));
+        // Draw the text at the current coordinates.
+        g.drawString(text.getText(), text.getXCoordinate(), text.getYCoordinate());
+
+        // Update the Y coordinate of the text to make it scroll upwards.
+        text.setYCoordinate(text.getYCoordinate() - 1);
+
+        // Decrease the transparency for the next draw
+        text.setTransparency(transparency - text.getTransparancyStepSize()); // decrease transparency
+
+        g.setColor(originalColor); // restore the original color
+        g.setFont(originalFont);
+    }
+
+    /*------------------------------End of Drawing methods-------------------------------*/
+
+
+    public Timer getTimer() {
+        return this.timer;
+    }
+
 }

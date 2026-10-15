@@ -76,7 +76,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Game time is ticks times the timer delay (GameState.java:157), and the tick and the drawing share the Swing thread (`GameBoard` timer, `actionPerformed`)
   - Fix: advance game time from the real clock, or use a fixed-step loop that can skip drawing
 - Menu screens update their animations and poll the controller inside the paint method; since 2026-10-10 a 15 ms controller clock reads the controllers and the screens only read the result
-  - Since 2026-10-11 all five menu screens share this paint step in `MenuBoard.paintComponent`, which also calls `Toolkit.sync()` every paint, so menu speed depends on paint speed
+  - ShopBoard.java:783-788 and the boon, class, difficulty and main menu boards; each also calls `Toolkit.sync()` every paint, so menu speed depends on paint speed
 - Shop and relic cards rebuild fonts and re-wrap description text every frame
   - `ShopBoard.drawDescriptionInfo` and `drawItemsInShop` (about 3 fonts per item per frame), duplicated in BoonSelectionBoard and GameBoard relic cards
   - Fix: keep fonts as constants and cache the wrapped lines when the selection changes

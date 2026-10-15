@@ -12,7 +12,8 @@ public class ImageDatabase {
     private static ImageDatabase instance = new ImageDatabase();
     private ImageLoader imgLoader = ImageLoader.getInstance();
 
-
+    private BufferedImage bombasticBarrier;
+    private BufferedImage reflectiveShielding;
     private BufferedImage bossHealthBarBackground;
     private BufferedImage bossHealthBarRed;
     private BufferedImage bossHealthBarFront;
@@ -330,6 +331,7 @@ public class ImageDatabase {
     private List<BufferedImage> playerMutaliskMissile = new ArrayList<>();
     private List<BufferedImage> mutaliskChargingUp = new ArrayList<>();
     private List<BufferedImage> mutaliskExplosion = new ArrayList<>();
+    private List<BufferedImage> bombasticBarrierExplosion = new ArrayList<>();
     private List<BufferedImage> mutaliskMissileExplosion = new ArrayList<>();
     private List<BufferedImage> alienLaserBeamAnimated = new ArrayList<>();
     private List<BufferedImage> barrierProjectile = new ArrayList<>();
@@ -587,6 +589,8 @@ public class ImageDatabase {
         this.spaceclouds2 = imgLoader.getImage(ImageEnums.SpaceClouds2);
         this.spaceclouds3 = imgLoader.getImage(ImageEnums.SpaceClouds3);
         this.spaceclouds4 = imgLoader.getImage(ImageEnums.SpaceClouds4);
+        this.bombasticBarrier = imgLoader.getImage(ImageEnums.BombasticBarrier);
+        this.reflectiveShielding = imgLoader.getImage(ImageEnums.ReflectiveShielding);
         this.bossHealthBarBackground = imgLoader.getImage(ImageEnums.BossHealthBarBackground);
         this.bossHealthBarFront = imgLoader.getImage(ImageEnums.BossHealthBarFront);
         this.bossHealthBarRed = imgLoader.getImage(ImageEnums.BossHealthBarRed);
@@ -1018,6 +1022,10 @@ public class ImageDatabase {
                 return this.chooseone;
             case BossHealthBarBackground:
                 return bossHealthBarBackground;
+            case ReflectiveShielding:
+                return reflectiveShielding;
+            case BombasticBarrier:
+                return bombasticBarrier;
             case BossHealthBarFront:
                 return bossHealthBarFront;
             case BossHealthBarRed:
@@ -1746,6 +1754,8 @@ public class ImageDatabase {
 
     public List<BufferedImage> getAnimation(ImageEnums imageType) {
         switch (imageType) {
+            case BombasticBarrierExplosion:
+                return bombasticBarrierExplosion;
             case MutaliskExplosion:
                 return mutaliskExplosion;
             case MutaliskChargeUp:
@@ -2712,6 +2722,13 @@ public class ImageDatabase {
             String sourceString = String.format("/images/gif/PNGtoGIF/Player EMP/doubled/%d.png", i);
             BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
             electroShredImproved.add(image);
+        }
+
+
+        for (int i = 0; i < 24; i++) {
+            String sourceString = String.format("/images/gif/PNGtoGIF/BombasticBarrier/%d.png", i);
+            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+            bombasticBarrierExplosion.add(image);
         }
 
         for (int i = 1; i < 10; i++) {

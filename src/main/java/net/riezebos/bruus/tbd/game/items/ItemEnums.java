@@ -24,10 +24,14 @@ public enum ItemEnums {
     RocketLauncher(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Dual_Rockets, "Rocket Launcher", false),
     ArmorPiercingRounds(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Armor_Piercing, "Piercing Rounds", false),
     KineticDynamo(ItemRarityEnums.Legendary, ImageEnums.KineticDynamoIcon, "Kinetic Dynamo", false), //todo multiplayer update broke it and I never fixed it
-
-    ReflectiveShielding(ItemRarityEnums.Common, ImageEnums.Thornedplates, "Reflective Shielding", false),
     EnergySiphon(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Energy_Siphon, "Energy Siphon", false),
-    BarrierSuperSizer(ItemRarityEnums.Common, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", false),
+
+    //Shield package: remove this comment before pushing
+    BombasticBarrier(ItemRarityEnums.Rare, ImageEnums.BombasticBarrier, "Bombastic Barrier", true),
+    BarrierBooster(ItemRarityEnums.Common, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", true),
+    ReflectiveShielding(ItemRarityEnums.Legendary, ImageEnums.ReflectiveShielding, "Barrier Backfire", true),
+    CalmInChaos(ItemRarityEnums.Legendary, ImageEnums.CalmInChaos, "Blizzard Barrier", true),
+
     //Relics 2.0
     //generic relics
     Placeholder(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true),
@@ -80,7 +84,6 @@ public enum ItemEnums {
 
     //-----------------------------
     LeechingLasers(ItemRarityEnums.Rare, ImageEnums.LeechingLasers, "Leeching Lasers", false),
-    CalmInChaos(ItemRarityEnums.Legendary, ImageEnums.CalmInChaos, "Calm in chaos", true),
     ElectroShredding(ItemRarityEnums.Legendary, ImageEnums.Electroshedding, "Electro Shredding", true),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true),
     Recycler(ItemRarityEnums.Rare, ImageEnums.Recycler, "Recycler", true),
@@ -145,6 +148,9 @@ public enum ItemEnums {
 
     public static ItemEnums getRandomItemByRarity(ItemRarityEnums category) {
         List<ItemEnums> matchingItems = new ArrayList<>();
+        if(category.equals(ItemRarityEnums.Locked)) {
+            return ItemEnums.Locked;
+        }
 
         // Loop through all ItemEnums and add those that match the given category
         for (ItemEnums item : ItemEnums.values()) {

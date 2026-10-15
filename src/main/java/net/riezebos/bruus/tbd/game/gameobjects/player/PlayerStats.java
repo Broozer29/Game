@@ -228,7 +228,7 @@ public class PlayerStats {
         this.attackType = PlayerPrimaryAttackTypes.Flamethrower;
         setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping);
         setPlayerMissileImpactImage(null);
-        igniteDuration = 1.75f;
+        igniteDuration = 2.35f;
         maxIgniteStacks = 5;
         this.maxHitPoints = fireFighterHitpoints;
         this.maxShieldHitPoints = fireFighterHitpoints;

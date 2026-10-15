@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.guiboards.boards;
 
 import net.riezebos.bruus.tbd.controllerInput.MenuAction;
+import net.riezebos.bruus.tbd.controllerInput.MenuInput;
+import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
@@ -11,21 +13,40 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.boonimplementations.
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
+import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.guiboards.TimerHolder;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
+import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
 import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.BoonSelectionBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
-import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuGrid;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
+import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoonSelectionBoard extends MenuBoard {
-    private final MenuGrid grid = new MenuGrid();
+public class BoonSelectionBoard extends JPanel implements TimerHolder {
+    private BackgroundManager backgroundManager = BackgroundManager.getInstance();
+    private AnimationManager animationManager = AnimationManager.getInstance();
+    private MenuCursor menuCursor;
+
+    private List<GUIComponent> firstColumn = new ArrayList<>();
+    private List<GUIComponent> secondColumn = new ArrayList<>();
+    private List<GUIComponent> thirdColumn = new ArrayList<>();
+    private List<GUIComponent> fourthColumn = new ArrayList<>();
+    private List<GUIComponent> fifthColumn = new ArrayList<>();
+    private List<GUIComponent> sixthColumn = new ArrayList<>();
+    private List<List<GUIComponent>> grid = new ArrayList<>();
+    private List<GUIComponent> offTheGridObjects = new ArrayList<>();
 
     private GUIComponent selectBoonsTitle;
 
@@ -66,7 +87,10 @@ public class BoonSelectionBoard extends MenuBoard {
     private GUITextCollection boonColumnTitleText;
     private GUITextCollection gameModifiersColumnTitleText;
 
+    private Timer timer;
     private int textPadding = Math.round(40 * DataClass.getInstance().getResolutionFactor());
+    private int selectedColumn = 0;
+    private int selectedRow = 0;
     private boolean initializedMenuObjects = false;
 
     private DescriptionInfo currentDescription;
@@ -79,10 +103,14 @@ public class BoonSelectionBoard extends MenuBoard {
     }
 
     public BoonSelectionBoard() {
-        grids.add(grid);
+        setFocusable(true);
+        setBackground(Color.BLACK);
+        setPreferredSize(new Dimension(DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight()));
+
 
         initMenuTiles();
-        getTimer().start();
+        timer = new Timer(GameState.getInstance().getDELAY(), e -> repaint(0, 0, DataClass.getInstance().getWindowWidth(), DataClass.getInstance().getWindowHeight() + 5));
+        timer.start();
     }
 
     private void initMenuTiles() {
@@ -116,15 +144,14 @@ public class BoonSelectionBoard extends MenuBoard {
         recreateWindow();
     }
 
-    @Override
     public void recreateWindow() {
         if (initializedMenuObjects) {
             menuCursor = BoonSelectionBoardCreator.createCursor(selectNepotism.getComponents().get(0));
             //Clear all existing columns/rows/grid then re-add them
             recreateList();
-            grid.reset();
-            grid.placeCursor(menuCursor);
-            refreshDescription();
+            selectedRow = 0;
+            selectedColumn = 0;
+            updateCursor();
         }
     }
 
@@ -133,8 +160,21 @@ public class BoonSelectionBoard extends MenuBoard {
     }
 
     public void recreateList() {
+        firstColumn.clear();
+        secondColumn.clear();
+        thirdColumn.clear();
+        fourthColumn.clear();
+        fifthColumn.clear();
+        sixthColumn.clear();
         grid.clear();
         offTheGridObjects.clear();
+
+        grid.add(firstColumn);
+        grid.add(secondColumn);
+        grid.add(thirdColumn);
+        grid.add(fourthColumn);
+        grid.add(fifthColumn);
+        grid.add(sixthColumn);
 
         offTheGridObjects.add(selectBoonsTitle);
         offTheGridObjects.add(firstColumnBackgroundCard);
@@ -151,65 +191,51 @@ public class BoonSelectionBoard extends MenuBoard {
         offTheGridObjects.addAll(gameModifiersColumnTitleText.getComponents());
 
 
-        List<GUIComponent> firstRow = new ArrayList<>();
-        List<GUIComponent> secondRow = new ArrayList<>();
-        List<GUIComponent> thirdRow = new ArrayList<>();
-        List<GUIComponent> fourthRow = new ArrayList<>();
-        List<GUIComponent> fifthRow = new ArrayList<>();
-        List<GUIComponent> sixthRow = new ArrayList<>();
-        List<GUIComponent> seventhRow = new ArrayList<>();
-
-        firstRow.add(selectNepotism.getComponents().get(0));
+        addToGrid(firstColumn, selectNepotism.getComponents().get(0), 0, 0);
+//        firstColumn.add(selectNepotism.getComponents().get(0));
         addAllButFirstComponent(selectNepotism);
-        firstRow.add(upgradeNepotism);
+        addToGrid(secondColumn, upgradeNepotism, 1, 0);
 
-        secondRow.add(selectClubAccess.getComponents().get(0));
+
+        addToGrid(firstColumn, selectClubAccess.getComponents().get(0), 0, 1);
         addAllButFirstComponent(selectClubAccess);
-        secondRow.add(upgradeClubAccess);
+        addToGrid(secondColumn, upgradeClubAccess, 1, 1);
 
-        thirdRow.add(selectCompoundInterest.getComponents().get(0));
+        addToGrid(firstColumn, selectCompoundInterest.getComponents().get(0), 0, 2);
         addAllButFirstComponent(selectCompoundInterest);
-        thirdRow.add(upgradeCompoundInterest);
+        addToGrid(secondColumn, upgradeCompoundInterest, 1, 2);
 
-        fourthRow.add(selectBountyHunter.getComponents().get(0));
+        addToGrid(firstColumn, selectBountyHunter.getComponents().get(0), 0, 3);
         addAllButFirstComponent(selectBountyHunter);
-        fourthRow.add(upgradeBountyHunter);
+        addToGrid(secondColumn, upgradeBountyHunter, 1, 3);
 
-        fifthRow.add(selectTreasureHunter.getComponents().get(0));
+        addToGrid(firstColumn, selectTreasureHunter.getComponents().get(0), 0, 4);
         addAllButFirstComponent(selectTreasureHunter);
-        fifthRow.add(upgradeTreasureHunter);
+        addToGrid(secondColumn, upgradeTreasureHunter, 1, 4);
 
-        sixthRow.add(selectClassButton.getComponents().get(0));
+        addToGrid(firstColumn, selectClassButton.getComponents().get(0), 0, 5);
         addAllButFirstComponent(selectClassButton);
 
-        firstRow.add(selectDefault.getComponents().get(0));
+        addToGrid(thirdColumn, selectDefault.getComponents().get(0), 2, 0);
         addAllButFirstComponent(selectDefault);
 
-        secondRow.add(selectManMode.getComponents().get(0));
+        addToGrid(thirdColumn, selectManMode.getComponents().get(0), 2, 1);
         addAllButFirstComponent(selectManMode);
 
-        thirdRow.add(selectMonoCultural.getComponents().get(0));
+        addToGrid(thirdColumn, selectMonoCultural.getComponents().get(0), 2, 2);
         addAllButFirstComponent(selectMonoCultural);
 
-        fourthRow.add(selectDoubleTrouble.getComponents().get(0));
+        addToGrid(thirdColumn, selectDoubleTrouble.getComponents().get(0), 2, 3);
         addAllButFirstComponent(selectDoubleTrouble);
 
-        fifthRow.add(selectNightmare.getComponents().get(0));
+        addToGrid(thirdColumn, selectNightmare.getComponents().get(0), 2, 4);
         addAllButFirstComponent(selectNightmare);
 
-        sixthRow.add(selectFormatted.getComponents().get(0));
+        addToGrid(thirdColumn, selectFormatted.getComponents().get(0), 2, 5);
         addAllButFirstComponent(selectFormatted);
 
-        seventhRow.add(startGameButton.getComponents().get(0));
+        addToGrid(sixthColumn, startGameButton.getComponents().get(0), 5, 0);
         addAllButFirstComponent(startGameButton);
-
-        grid.addRow(firstRow);
-        grid.addRow(secondRow);
-        grid.addRow(thirdRow);
-        grid.addRow(fourthRow);
-        grid.addRow(fifthRow);
-        grid.addRow(sixthRow);
-        grid.addRow(seventhRow);
 
         offTheGridObjects.add(menuCursor);
 
@@ -223,8 +249,7 @@ public class BoonSelectionBoard extends MenuBoard {
             offTheGridObjects.add(gameModifierColumnSelectionIndicator);
         }
 
-        grid.placeCursor(menuCursor);
-        refreshDescription();
+        updateCursor();
     }
 
     private void recreateBoonsComponents() {
@@ -259,155 +284,167 @@ public class BoonSelectionBoard extends MenuBoard {
         }
     }
 
-    private void refreshDescription() {
-        GUIComponent selectedTile = grid.getSelected();
-        if (selectedTile != null) {
-            currentDescription = prepareDescriptionText(selectedTile);
-        }
+    private void addToGrid(List<GUIComponent> gridList, GUIComponent component, int column, int row) {
+        component.setColumn(column);
+        component.setRow(row);
+        gridList.add(component);
     }
 
-    /*------------------------Menu hooks--------------------------------*/
+    /*------------------------Navigation methods--------------------------------*/
 
     // Activate the functionality of the specific menutile
-    @Override
-    protected void onConfirm() {
-        GUIComponent selectedTile = grid.getSelected();
-        selectedTile.activateComponent();
-        if (selectedTile.getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
-            getTimer().stop();
+    private void selectMenuTile() {
+        grid.get(selectedColumn).get(selectedRow).activateComponent();
+        if (grid.get(selectedColumn).get(selectedRow).getMenuFunctionality() == MenuFunctionEnums.Start_Game) {
+            timer.stop();
         }
     }
 
-    @Override
-    protected void onBack() {
-        BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
+    //Move a tile LEFT
+    private void previousColumn() {
+        if (isGridEmpty()) {
+            return; // Do nothing if the grid is empty
+        }
+        if (handleLeftOrRightNavigationOverwrites()) {
+            return; //We overwrote the navigation
+        }
+
+
+        int originalRow = selectedColumn; // Keep track of the starting row to avoid infinite loop
+
+        do {
+            selectedColumn--;
+            if (selectedColumn < 0) {
+                selectedColumn = grid.size() - 1; // Wrap around to the bottom row
+            }
+        } while (grid.get(selectedColumn).isEmpty() && selectedColumn != originalRow); // Repeat until a non-empty row is
+        // found or we've checked all rows
+
+        // Adjust column to be within the new row
+        if (!grid.get(selectedColumn).isEmpty() && selectedRow >= grid.get(selectedColumn).size()) {
+            selectedRow = grid.get(selectedColumn).size() - 1;
+        }
     }
 
-    // Update the GUI only if there was an action that requires it
-    @Override
-    protected void onInputHandled() {
-        recreateList();
+    // Go one menu tile RIGHT
+    private void nextColumn() {
+        if (isGridEmpty()) {
+            return; // Do nothing if the grid is empty
+        }
+
+        if (handleLeftOrRightNavigationOverwrites()) {
+            return; //We overwrote the navigation
+        }
+
+        int originalRow = selectedColumn; // Keep track of the starting row to avoid infinite loop
+
+        do {
+            selectedColumn++;
+            if (selectedColumn >= grid.size()) {
+                selectedColumn = 0; // Wrap around to the top row
+            }
+        } while (grid.get(selectedColumn).isEmpty() && selectedColumn != originalRow); // Repeat until a non-empty row is
+        // found or we've checked all rows
+
+        // Adjust column to be within the new row
+        if (!grid.get(selectedColumn).isEmpty() && selectedRow >= grid.get(selectedColumn).size()) {
+            selectedRow = grid.get(selectedColumn).size() - 1;
+        }
     }
 
-    // The cursor sits in offTheGridObjects (under the tiles and the checkmarks), not in the cursor layer of the base
-    @Override
-    protected boolean drawsMenuCursor() {
+
+    private boolean handleLeftOrRightNavigationOverwrites() {
+        //If overwritten a navigation, return true, if not return false
+        if (menuCursor.getSelectedMenuTile().equals(this.selectClassButton.getComponents().get(0))) {
+            selectedColumn = startGameButton.getComponents().get(0).getColumn();
+            selectedRow = startGameButton.getComponents().get(0).getRow();
+            return true;
+        }
+
+        if (menuCursor.getSelectedMenuTile().equals(this.startGameButton.getComponents().get(0))) {
+            selectedColumn = selectClassButton.getComponents().get(0).getColumn();
+            selectedRow = selectClassButton.getComponents().get(0).getRow();
+            return true;
+        }
+
         return false;
     }
 
-    // The description is drawn after the cursor and the grid
-    @Override
-    protected void drawScreenOverlay(Graphics2D g) {
-        drawDescriptionInfo(g, currentDescription);
+    // Check if the grid is empty
+    private boolean isGridEmpty() {
+        for (List<GUIComponent> row : grid) {
+            if (!row.isEmpty()) {
+                return false; // Return false as soon as a non-empty row is found
+            }
+        }
+        return true; // If no non-empty rows are found, the grid is empty
     }
 
-    /*------------------------Navigation--------------------------------*/
-
-    // The grid is rows of columns: R0 [Nepotism, its upgrade, Default], R1 [ClubAccess, upgrade, ManMode],
-    // R2 [CompoundInterest, upgrade, MonoCultural], R3 [BountyHunter, upgrade, DoubleTrouble],
-    // R4 [TreasureHunter, upgrade, Nightmare], R5 [Class button, Formatted], R6 [Start].
-    // The old screen wrapped up and down inside a column, MenuGrid wraps over all rows, so the moves where those
-    // differ, and the old jumps between named buttons, are listed here. Everything else is the MenuGrid default.
-    @Override
-    protected void onDirection(MenuAction action) {
-        // Like the old code, the jumps between named buttons look at the tile the cursor was last placed on.
-        // That is refreshed once per poll, so with several directions in one poll it lags behind the selection.
-        GUIComponent target = jumpFromCursorTile(action, menuCursor.getSelectedMenuTile());
-        if (target == null) {
-            // Moves of the old column grid that the MenuGrid default does not give. They also keep the old result
-            // for the stale-cursor cases (Start left/right, Class button right, upgrade Nepotism up,
-            // upgrade Treasure Hunter down, Formatted down) when the cursor tile lags behind the selection.
-            target = jumpFromSelectedTile(action, grid.getSelected());
+    // Go one menu tile down
+    private void previousRow() {
+        if (handleUpNavigationOverwrites()) {
+            return; //We overwrote the navigation
         }
-        if (target != null) {
-            grid.select(target);
-            return;
-        }
-        super.onDirection(action);
-    }
 
-    private GUIComponent jumpFromCursorTile(MenuAction action, GUIComponent cursorTile) {
-        GUIComponent classButton = selectClassButton.getComponents().get(0);
-        GUIComponent start = startGameButton.getComponents().get(0);
-        switch (action) {
-            case LEFT:
-            case RIGHT:
-                if (cursorTile == classButton) {
-                    return start;
-                }
-                if (cursorTile == start) {
-                    return classButton;
-                }
-                return null;
-            case UP:
-                return cursorTile == upgradeNepotism ? classButton : null;
-            case DOWN:
-                if (cursorTile == upgradeTreasureHunter) {
-                    return classButton;
-                }
-                if (cursorTile == selectFormatted.getComponents().get(0)) {
-                    return start;
-                }
-                return null;
-            default:
-                return null;
+        selectedRow--;
+        if (selectedRow < 0) {
+            selectedRow = grid.get(selectedColumn).size() - 1;
         }
     }
 
-    private GUIComponent jumpFromSelectedTile(MenuAction action, GUIComponent selected) {
-        GUIComponent classButton = selectClassButton.getComponents().get(0);
-        GUIComponent start = startGameButton.getComponents().get(0);
-        GUIComponent formatted = selectFormatted.getComponents().get(0);
-        List<GUIComponent> boonTiles = List.of(selectNepotism.getComponents().get(0), selectClubAccess.getComponents().get(0),
-                selectCompoundInterest.getComponents().get(0), selectBountyHunter.getComponents().get(0),
-                selectTreasureHunter.getComponents().get(0));
-        List<GUIComponent> modeTiles = List.of(selectDefault.getComponents().get(0), selectManMode.getComponents().get(0),
-                selectMonoCultural.getComponents().get(0), selectDoubleTrouble.getComponents().get(0),
-                selectNightmare.getComponents().get(0), formatted);
-        switch (action) {
-            case LEFT:
-                if (boonTiles.contains(selected) || selected == classButton) {
-                    return start;
-                }
-                if (selected == formatted) {
-                    return upgradeTreasureHunter;
-                }
-                return selected == start ? selectDefault.getComponents().get(0) : null;
-            case RIGHT:
-                if (modeTiles.contains(selected)) {
-                    return start;
-                }
-                if (selected == classButton) {
-                    return upgradeTreasureHunter;
-                }
-                return selected == start ? selectNepotism.getComponents().get(0) : null;
-            case UP:
-                if (selected == selectNepotism.getComponents().get(0)) {
-                    return classButton;
-                }
-                if (selected == upgradeNepotism) {
-                    return upgradeTreasureHunter;
-                }
-                if (selected == selectDefault.getComponents().get(0)) {
-                    return formatted;
-                }
-                if (selected == formatted) {
-                    return selectNightmare.getComponents().get(0);
-                }
-                return selected == start ? start : null;
-            case DOWN:
-                if (selected == classButton) {
-                    return selectNepotism.getComponents().get(0);
-                }
-                if (selected == upgradeTreasureHunter) {
-                    return upgradeNepotism;
-                }
-                if (selected == formatted) {
-                    return selectDefault.getComponents().get(0);
-                }
-                return selected == start ? start : null;
-            default:
-                return null;
+    // Go one menu tile up
+    private void nextRow() {
+        if (handleDownNavigationOverwrites()) {
+            return; //We overwrote the navigation
+        }
+        selectedRow++;
+        if (selectedRow >= grid.get(selectedColumn).size()) {
+            selectedRow = 0;
+        }
+
+    }
+
+    private boolean handleDownNavigationOverwrites() {
+        if (menuCursor.getSelectedMenuTile().equals(this.upgradeTreasureHunter)) {
+            selectedColumn = selectClassButton.getComponents().get(0).getColumn();
+            selectedRow = selectClassButton.getComponents().get(0).getRow();
+            return true;
+        }
+
+        if (menuCursor.getSelectedMenuTile().equals(this.selectFormatted.getComponents().get(0))) {
+            selectedColumn = startGameButton.getComponents().get(0).getColumn();
+            selectedRow = startGameButton.getComponents().get(0).getRow();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleUpNavigationOverwrites() {
+        if (menuCursor.getSelectedMenuTile().equals(this.upgradeNepotism)) {
+            selectedColumn = selectClassButton.getComponents().get(0).getColumn();
+            selectedRow = selectClassButton.getComponents().get(0).getRow();
+            return true;
+        }
+
+        if (menuCursor.getSelectedMenuTile().equals(this.startGameButton)) {
+            selectedColumn = selectFormatted.getComponents().get(0).getColumn();
+            selectedRow = selectFormatted.getComponents().get(0).getRow();
+            return true;
+        }
+
+        return false;
+    }
+
+    // Update the cursor's position and selected menu tile
+    private void updateCursor() {
+        if (grid.get(selectedColumn).isEmpty()) { // Check if the selected row is empty
+            menuCursor.setSelectedMenuTile(null); // Need to decide how you want to handle this situation
+        } else {
+            GUIComponent selectedTile = grid.get(selectedColumn).get(selectedRow);
+            menuCursor.setSelectedMenuTile(selectedTile);
+            menuCursor.setCenterYCoordinate(selectedTile.getCenterYCoordinate() + menuCursor.getYDistanceModification());
+            menuCursor.setXCoordinate(selectedTile.getXCoordinate() - (menuCursor.getxDistanceToKeep()));
+            currentDescription = prepareDescriptionText(selectedTile);
         }
     }
 
@@ -444,6 +481,91 @@ public class BoonSelectionBoard extends MenuBoard {
         }
 
         return descriptionInfo;
+    }
+
+    // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
+    public void executeMenuInput() {
+        boolean needsUpdate = false;
+        for (MenuAction action : MenuInput.getInstance().poll()) {
+            switch (action) {
+                case LEFT:
+                    previousColumn();
+                    needsUpdate = true;
+                    break;
+                case RIGHT:
+                    nextColumn();
+                    needsUpdate = true;
+                    break;
+                case UP:
+                    previousRow();
+                    needsUpdate = true;
+                    break;
+                case DOWN:
+                    nextRow();
+                    needsUpdate = true;
+                    break;
+                case CONFIRM:
+                    selectMenuTile();
+                    recreateList();
+                    return; // selecting can change the screen
+                case BACK:
+                    BoardManager.getInstance().switchScreen(BoardManager.ScreenType.CLASS_SELECTION);
+                    recreateList();
+                    return; // the screen has changed
+            }
+        }
+
+        if (needsUpdate) {
+            recreateList(); // Update the GUI only if there was an action that requires it
+        }
+    }
+
+    /*-----------------------------End of navigation methods--------------------------*/
+
+    /*---------------------------Drawing methods-------------------------------*/
+    @Override
+    public void paintComponent(Graphics g) {
+        try {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create(); // Create a copy to avoid modifying the original graphics context
+
+            try {
+                // Draws all background objects
+                for (BackgroundObject bgObject : backgroundManager.getAllBGO()) {
+                    drawImage(g2d, bgObject);
+                }
+
+                for (SpriteAnimation animation : animationManager.getLowerAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                drawObjects(g2d);
+                drawDescriptionInfo(g2d, currentDescription);
+
+                for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
+                    drawAnimation(g2d, animation);
+                }
+
+                for (OnScreenText text : OnScreenTextManager.getInstance().getOnScreenTexts()) {
+                    drawText(g2d, text);
+                }
+
+                ControllerNotices.getInstance().draw(g2d);
+            } finally {
+                g2d.dispose(); // Ensure resources are released
+            }
+
+            animationManager.updateGameTick();
+            backgroundManager.updateGameTick();
+            Toolkit.getDefaultToolkit().sync();
+
+            // readControllerState();
+            executeMenuInput();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            timer.stop();
+            System.exit(1);
+        }
     }
 
     private void drawDescriptionInfo(Graphics2D g2d, DescriptionInfo descriptionInfo) {
@@ -505,6 +627,74 @@ public class BoonSelectionBoard extends MenuBoard {
         }
     }
 
+
+    private void drawObjects(Graphics2D g) {
+        for (GUIComponent component : offTheGridObjects) {
+            if (component != null) {
+                drawGUIComponent(g, component);
+            }
+        }
+
+
+        for (List<GUIComponent> list : grid) {
+            for (GUIComponent component : list) {
+                drawGUIComponent(g, component);
+            }
+        }
+
+    }
+
+    private void drawGUIComponent(Graphics2D g, GUIComponent component) {
+        g.drawImage(component.getImage(), component.getXCoordinate(), component.getYCoordinate(), this);
+    }
+
+    private void drawImage(Graphics g, Sprite sprite) {
+        if (sprite.getImage() != null) {
+            g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+        }
+    }
+
+    private void drawAnimation(Graphics2D g, SpriteAnimation animation) {
+        if (animation.getCurrentFrameImage(false) != null) {
+            g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(), this);
+        }
+    }
+
+    private void drawText(Graphics2D g, OnScreenText text) {
+        // Ensure that transparency value is within the appropriate bounds.
+        float transparency = Math.max(0, Math.min(1, text.getTransparencyValue()));
+        Color originalColor = g.getColor(); // store the original color
+        Font originalFont = g.getFont();
+
+        // Set the color with the specified transparency.
+        Color colorWithTransparency = new Color(
+                text.getColor().getRed(),
+                text.getColor().getGreen(),
+                text.getColor().getBlue(),
+                (int) (transparency * 255) // alpha value must be between 0 and 255
+        );
+
+//        g.setColor(new Color(1.0f, 1.0f, 1.0f, transparency)); // White with transparency
+        g.setColor(colorWithTransparency);
+        g.setFont(new Font("Helvetica", Font.PLAIN, text.getFontSize()));
+        // Draw the text at the current coordinates.
+        g.drawString(text.getText(), text.getXCoordinate(), text.getYCoordinate());
+
+        // Update the Y coordinate of the text to make it scroll upwards.
+        text.setYCoordinate(text.getYCoordinate() - 1);
+
+        // Decrease the transparency for the next draw
+        text.setTransparency(transparency - text.getTransparancyStepSize()); // decrease transparency
+
+        g.setColor(originalColor); // restore the original color
+        g.setFont(originalFont);
+    }
+
+    /*------------------------------End of Drawing methods-------------------------------*/
+
+    public Timer getTimer() {
+        return this.timer;
+    }
 
     private void updateCheckmarkLocations() {
         placeBoonColumnCheckmark();

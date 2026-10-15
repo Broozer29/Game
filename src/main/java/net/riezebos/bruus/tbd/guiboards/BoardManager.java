@@ -7,7 +7,7 @@ import net.riezebos.bruus.tbd.game.UI.GameBoardCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezeService;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezer;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelPreloader;
 import net.riezebos.bruus.tbd.guiboards.boards.*;
@@ -108,8 +108,8 @@ public class BoardManager extends JFrame {
         screenActions.put(ScreenType.SHOP, () -> {
             playShopMenuMusic();
             PlayerInventory.getInstance().setCashMoney(Math.round(PlayerInventory.getInstance().getCashMoney()));
-            shopBoard.recreateWindow();
-            ShopFreezeService.getInstance().startThawIfCarried();
+            shopBoard.initShopBoardGUIComponents();
+            ShopFreezer.getInstance().startUnfreezeAnimationIfFrozen();
             shopBoard.getTimer().restart();
             MenuInput.getInstance().startScreen();
             DiscordConnector.getInstance().setStatus("Shopping with " + Math.round(PlayerInventory.getInstance().getCashMoney()) + " minerals.", "Shop");

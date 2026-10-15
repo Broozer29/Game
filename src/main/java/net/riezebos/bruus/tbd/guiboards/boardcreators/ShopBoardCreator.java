@@ -340,6 +340,8 @@ public class ShopBoardCreator {
     };
 
     //Builds one row of shop buttons from the slots of the shop contents
+    //todo possible refactor: this coupling between ShopSlot and ShopItem is effectively 1 to 1 but feels very flimsy because ShopContents only knows a list of ShopSlots.
+    // ShopSlots are only accesible through a ShopItem, but ShopContents knows a list of ShopSlots and NOT ShopItems, effectively skipping this inheritence step, it feels awkward but no good solution comes to mind yet
     public List<GUIComponent> createRowOfItems(int row, ShopContents contents) {
         List<GUIComponent> itemRow = new ArrayList<>();
         List<ShopSlot> slots = contents.getRows().get(row);
@@ -612,7 +614,7 @@ public class ShopBoardCreator {
     }
 
     public static void updateDifficultyIconsToDifficulty(LevelDifficulty currentLevelDifficulty, GUIComponent easy,
-                                                  GUIComponent medium, GUIComponent hard) {
+                                                         GUIComponent medium, GUIComponent hard) {
         if (LevelManager.getInstance().isNextLevelABossLevel()) {
             medium.setImage(ImageEnums.RedWings5);
             return;
@@ -634,7 +636,7 @@ public class ShopBoardCreator {
     }
 
     public static void updateMiniBossIconsToSelection(MiniBossConfig currentMiniBossConfig, GUIComponent shortLength,
-                                               GUIComponent mediumMediumLength, GUIComponent longLength) {
+                                                      GUIComponent mediumMediumLength, GUIComponent longLength) {
         if (LevelManager.getInstance().isNextLevelABossLevel()) {
             mediumMediumLength.setNewImage(ImageEnums.RedWings5);
             return;

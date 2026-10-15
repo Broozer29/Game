@@ -108,11 +108,6 @@ public abstract class Drone extends GameObject {
         electroShredSpriteConfig.setScale(scale);
         float damage = (spaceShip.getSpecialAttackDamage() * CaptainSecondaryGun.electroShredBonusDamageModifier) * spaceShip.getDroneDamageModifier();
 
-        ElectroShredding electroShredding = (ElectroShredding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding);
-        if(electroShredding != null){
-            electroShredding.modifyAttackingObject(spaceShip, this);
-        }
-
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(electroShredSpriteConfig, 2, false);
         SpecialAttackConfiguration missileConfiguration = new SpecialAttackConfiguration(damage, true, true, false, true, true, true);
 
@@ -123,6 +118,12 @@ public abstract class Drone extends GameObject {
         specialAttack.setCenteredAroundObject(true);
         specialAttack.setScale(scale);
         specialAttack.setOwnerOrCreator(this.ownerOrCreator);
+
+        ElectroShredding electroShredding = (ElectroShredding) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ElectroShredding);
+        if(electroShredding != null){
+            electroShredding.modifyAttackingObject(spaceShip, specialAttack);
+        }
+
         specialAttack.setCenterCoordinates(this.getAnimation().getCenterXCoordinate(), this.getAnimation().getCenterYCoordinate());
         specialAttack.setTransparancyAlpha(false, 0.3f, 0);
         this.addFollowingGameObject(specialAttack);

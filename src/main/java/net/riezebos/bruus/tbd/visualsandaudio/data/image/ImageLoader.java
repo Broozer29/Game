@@ -195,6 +195,10 @@ public class ImageLoader {
                 return "/images/Icons/ringoffire.png";
             case Starcraft2_Auto_Tracking:
                 return "/images/Icons/Starcraft2 Auto Tracking.png";
+            case ReflectiveShielding:
+                return "/images/Icons/reflectiveshielding.png";
+            case BombasticBarrier:
+                return "/images/Icons/bombasticbarrier.png";
             case UpgradePrecision:
                 return "/images/Icons/upradeprecision.png";
             case UpgradeSpeed:

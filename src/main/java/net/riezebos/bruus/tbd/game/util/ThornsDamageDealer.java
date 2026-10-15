@@ -5,11 +5,11 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
+import net.riezebos.bruus.tbd.game.items.items.ReflectiveShielding;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.BeckoningFlames;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -72,15 +72,15 @@ public class ThornsDamageDealer {
         thornsApplyMap.merge(gameObject, amountOftimes, Integer::sum);
     }
 
-    public void reflectMissile(Point origin, GameObject missile) {
+    public void reflectMissile(GameObject origin, GameObject missile) {
         if (missile == null || origin == null || missile.getOwnerOrCreator() == null) {
             return; //We need a missile and an owner for this operation
         }
 
-        reflectTheMissile(missile);
+        reflectTheMissile(origin, missile);
     }
 
-    private void reflectTheMissile(GameObject missile) {
+    private void reflectTheMissile(GameObject origin, GameObject missile) {
         missile.setFriendly(true);
         missile.resetMovementPath();
         missile.setAllowedVisualsToRotate(true);
@@ -89,12 +89,12 @@ public class ThornsDamageDealer {
                         missile.getOwnerOrCreator().getCenterXCoordinate() - missile.getWidth() / 2,
                         missile.getOwnerOrCreator().getCenterYCoordinate() - missile.getHeight() / 2
                 ));
-        missile.getMovementConfiguration().setMovementSpeed(Math.min(missile.getMovementConfiguration().getMovementSpeed(), 4));
+        missile.getMovementConfiguration().setMovementSpeed(8);
         missile.setPathFinder(new StraightLinePathFinder());
         missile.rotateObjectTowardsDestination(true);
         missile.setAllowedVisualsToRotate(false);
-        missile.setDamage(missile.getDamage() * PlayerStats.getInstance().getThornsDamageRatio());
-        missile.setOwnerOrCreator(PlayerManager.getInstance().getAllSpaceShips().get(0)); //tijdelijk fix om code te kunnen compileren, deze methode wordt alleen gebruikt door reflective shielding dat disabled/verwijderd is
+        missile.setOwnerOrCreator(origin);
+        missile.setDamage(missile.getDamage() * ReflectiveShielding.buffAmount);
     }
 
     public Missile createMissile(GameObject originObject, GameObject target) {

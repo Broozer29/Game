@@ -2,38 +2,54 @@
 
 All notable changes on the `Nelis` branch.
 
-## 2026-10-13
+## 2026-10-14
 
 ### Changed
-- Bosses, everything they spawn and mini bosses are now prepared just before the level they appear in, instead of at game startup, so they stutter much less when they spawn, and the game starts faster. Entering a boss or mini-boss level can take a moment longer.
-- Internal: a level's boss and mini bosses are now decided before the level starts, in one plan. Nothing changes in play.
-- Internal: the image cache has a protected level section for images prepared just before a level; at the end of the level they return to the normal cache.
-- Internal: every boss and mini boss spawn, and everything they spawn, now takes its scale and spawn directions from one list (`BossSummons`). Nothing changes in play.
+- Patch notes skill: the notes cover the checked-out branch, the changed files are split over the agents by a folder-to-area table, added and removed pictures and sounds are listed, the run stops when a dev test switch is on, and the notes and the release log row are committed separately. The old docs/claude-changelog.md is removed; the patch notes replace it.
+- Internal: all dev test switches in DevTestSettings are off again (mute mode, infinite money, free reroll, portal cheat key, player immunity, direct shop access).
+- Internal: macOS .DS_Store files are no longer tracked by git and are removed from the repository. They were already in .gitignore.
 
-## 2026-10-12
+### Fixed
+- Shop freeze: rows that unlock after you froze the shop now get items in the next shop. They used to stay empty, as if their items had been bought. Slots you bought in a frozen shop still stay empty.
+- Upgrade: Speed now makes drones fire faster. It used to make them fire slower.
+- Placeholder drones now use your drone upgrades: Upgrade: Overload and Upgrade: Speed count twice as strongly, as the description says, and the description shows the damage per second with your upgrades. Killing an enemy with Placeholder no longer crashes the game.
+- Upgrade: Overload now multiplies drone damage instead of adding a small number to it, for every drone shot and rocket.
+- Upgrade: Precision now works. Drones and Placeholder drones can land critical hits, and your own shots are not affected.
+- Electro Shredding now also makes the drone's Electroshred hit harder, the same way it does for your own Electroshred.
+- Firefighter: ignite now lasts 2.35 seconds, as intended, instead of 1.75.
+- Barrier Backfire: the first copy now gives a 25% chance to reflect a missile, and each extra copy adds 5%. The text no longer says the reflected damage bonus grows with each copy.
+- Blizzard Barrier now uses the same maximum shield value for starting and keeping its storm.
+- Shop freeze: locked rows and bought slots are no longer frozen or shown with frost. Only slots with an item for sale freeze.
+- Item texts: Recycler shows 7.5%, Bombastic Barrier shows its own stun time, and Barrier Booster is spelled "Increases".
+
+## 2026-10-13
 
 ### Added
 - A free Freeze button next to Refresh in the shop. Items you don't buy in a frozen shop come back in the same slots in the next shop, at the same price. Bought slots get new items. The frozen state is saved.
 - A new snowflake icon on the Freeze button.
 - Frozen items get thin corner lines around the frost frame.
-- A Freeze shop binding: F on the keyboard and RB on the controller by default. You can remap it in the CONTROLS tab, and it only works in the shop.
 - Kept items play a thaw animation when the next shop opens: the corner lines fly outward and fade, then the frost fades. It plays once per shop visit and not when you continue a saved run.
 
 ### Changed
+- Shop freeze, the remembered shop (quit and continue in the shop) and the menu rewrite (MenuBoard and MenuGrid) are taken back out of this branch. The menus and the shop work as they did before 2026-10-11. Shop freeze and the remembered shop move to their own branch, without the menu rewrite.
 - In the shop, the name, rarity and price under every item sit a little lower, so the frost no longer touches them.
 - Refreshing the shop also unfreezes it.
-- The thaw is faster: the corner lines and the frost break off together in 0.6 s. Unfreezing the shop plays the same thaw on every frozen item. After you unfreeze, the Freeze button and its binding wait 0.7 s before they work again; freezing has no wait.
-- Internal: the freeze code moved out of ShopBoard into ShopFreezeService (logic) and ShopFreezeEffect (drawing).
+- The thaw is faster: the corner lines and the frost break off together in 0.6 s. Unfreezing the shop plays the same thaw on every frozen item. After you unfreeze, the Freeze button waits 0.7 s before it works again; freezing has no wait.
+- Internal: the freeze code lives in ShopFreezeService (logic) and ShopFreezeEffect (drawing), not in ShopBoard.
 - The shop's refresh cost is now worked out when you enter the shop, instead of when the level ends. It is still 15% of your minerals.
 - Internal: the shop's items, prices, bought slots, free refreshes and refresh cost now live in one saved data model (ShopContents), and the shop is saved after entering it, after every purchase and after every refresh.
+
+### Fixed
+- The shop's refresh cost now includes Compound Wealth's interest, and quitting and continuing in the shop keeps that interest.
+- Quitting to the main menu and pressing CONTINUE RUN during shopping no longer rerolls the shop, refills your free refreshes, re-enables Bonus Kaart's double purchase, or pays out finished contracts again. You get the exact shop you left, including bought items, the refresh cost and the free refreshes you had left.
+- A save file from before this change, or one whose shop names an item that no longer exists, still continues the run and gets a freshly rolled shop.
+
+## 2026-10-12
 
 ### Fixed
 - Upgrade: Focus Fire is no longer offered to the Firefighter.
 - In co-op, when both ships are destroyed at the same moment the run now ends instead of carrying on forever.
 - The song progress bar no longer shows full at the start of a level; it starts empty and fills as the song plays.
-- The shop's refresh cost now includes Compound Wealth's interest, and quitting and continuing in the shop keeps that interest.
-- Quitting to the main menu and pressing CONTINUE RUN during shopping no longer rerolls the shop, refills your free refreshes, re-enables Bonus Kaart's double purchase, or pays out finished contracts again. You get the exact shop you left, including bought items, the refresh cost and the free refreshes you had left.
-- A save file from before this change, or one whose shop names an item that no longer exists, still continues the run and gets a freshly rolled shop.
 
 ## 2026-10-11
 
@@ -46,7 +62,6 @@ All notable changes on the `Nelis` branch.
 - docs/claude-changelog.md: one changelog of everything present today since the `Nelis` branch was created, with changes that were later undone left out, and Bruus's merged changes in their own section.
 
 ### Changed
-- Internal refactor: the difficulty screen is built on a new shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, descriptions and Back and Start behaviour.
 - The settings page now has two tabs, CONTROLS and SOUND, and opens on CONTROLS. LB and RB, or Shift+Tab and Tab, switch tabs, and Tab cycles from the last tab back to the first; the page keeps the same size on both tabs and one SAVE saves both.
 - Pressing Y no longer ends the level by spawning the portal; that cheat is now behind a test switch (`DevTestSettings.enablePortalCheatKey`), so Y can be bound to an action.
 - The keys and controller buttons for fire, special attack and hold fire are now stored in settings.json, with the same layout as before as the default; a binding that is not valid falls back to its default. Enter no longer fires the special attack; Q does.
@@ -62,10 +77,6 @@ All notable changes on the `Nelis` branch.
 - A key or button that is still held down when a new screen opens does nothing on that screen until you let go of it. This also applies to the score card and the game over screen.
 - The score card and the game over screen continue on any key or any controller button except the stick and the d-pad, and they say "Press any key to continue".
 - Planboard: the outdated Electro Shedding entry is removed.
-- Internal refactor: the class selection screen is built on the shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, descriptions, Back and confirm behaviour.
-- Internal refactor: the main menu is built on the shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, Settings page and confirm behaviour.
-- Internal refactor: the boon screen is built on the shared base for menu screens (MenuBoard and MenuGrid). Nothing changes for players: same buttons, cursor movement, checkmarks, descriptions, Back and confirm behaviour. Only a crash on this screen now also writes error_log.txt.
-- Internal refactor: the shop is built on the shared base for menu screens (MenuBoard and MenuGrid), with one grid for the items and buttons and one for the inventory. Nothing changes for players: same buttons, cursor movement, inventory, purchases, rerolls, descriptions, Back and confirm behaviour.
 
 ### Fixed
 - The difficulty screen no longer overlaps its cards on smaller windows, such as a TV with Windows display scaling at 250% or more: the cards and wing icons now scale with the window, and look the same as before at 1920x1080.
