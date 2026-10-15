@@ -60,16 +60,10 @@ public class ImageResizer {
         }
 
         // The frames are cached as one list, not one by one
-        ArrayList<BufferedImage> newFrames = new ArrayList<>();
-        for (int i = 0; i < frames.size(); i++) {
-            BufferedImage bufferedImage;
-            if (scale == 0) {
-                bufferedImage = frames.get(i);
-            } else {
-                bufferedImage = scaleWithoutCaching(frames.get(i), scale);
-            }
-            newFrames.add(bufferedImage);
-        }
+        // The frames are built on all processor cores at once; collect() keeps the frame order
+        ArrayList<BufferedImage> newFrames = frames.parallelStream()
+                .map(frame -> scale == 0 ? frame : scaleWithoutCaching(frame, scale))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         cache.putFrames(keyString, newFrames);
 

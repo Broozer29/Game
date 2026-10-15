@@ -56,6 +56,10 @@ Frame rate, lag, loading times and memory use.
   - Captain, generic and Mutalisk missiles are marked destructible, so `interactsWithMissiles()` is true for all of them (MissileManager.java:357-375)
   - Fix: keep a separate list of reflective blocks and only check those
   - Bruus agreed on 2026-10-08; see his reply under "Missile-against-missile collision compares every pair every frame"
+- Some enemies resize their explosion twice and throw the first copy away (Nelis, 2026-10-15)
+  - `Enemy.initChargingUpAnimation` raises the shared scale to 0.85. The death animation is first built at that scale, and `setAnimationScale` then builds a second copy
+  - This affects the Mirage, the Needler and the Seeker (0.85) and the Mother Ship (0.9), about 0.4 to 0.5 s each
+  - The Mother Ship drone keeps a 0.85 explosion for a 0.25-scale enemy
 
 # Negeer de onderstaande
 
@@ -101,7 +105,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - `ImageResizer.getScaledImage` uses bicubic scaling, the slowest and highest-quality mode; the profile shows the preload time inside it
   - Option: bilinear scaling is faster but looks slightly softer, so compare the sprites first
   - Measured on 2026-10-05 as a test, then put back to bicubic: with bilinear scaling the enemy preload took 2.2-2.9 s instead of about 7 s, and startup took 11-12 s in total. It changes how scaled sprites look everywhere in the game, not only at startup
-  - Option: resize the frames on several CPU cores at once; sprites look the same but it is more work
+  - Done 2026-10-15: the frames of an animation are now resized and rotated on all processor cores at once, with the same bicubic scaling, so the sprites look the same. The 62 frames of Explosion2 at 3x took 5.1 s on one core and 0.63 s on 16 threads (Ryzen 7 5800X)
 - The audio system started about 17,000 threads in a 30-second recording
   - Seen in the Java Flight Recorder profile on 2026-10-05; the threads have no Java stack, so they are made by JavaFX's native media code
   - They come in two bursts. About 12,300 start while `AudioDatabase` builds its players, before the window appears. About 4,800 start at "Finishing initialization", when `initMainMenu` calls `gameBoard.resetGame()`, which calls `AudioDatabase.resetAudio()`
@@ -243,6 +247,9 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - A faster flamethrower lowers its damage cooldown, so more burn-effect copies are made per second
 
 ## Ideas
+- Question for Bruus: can the mini bosses' death explosion be cheaper? (Nelis, 2026-10-15)
+  - The four mini bosses (Laserbeam, Mirage, Mother Ship, Shuriken) build Explosion2 at 3x: 62 frames of 1536x1536, 558 MB. This is the main cost of a mini-boss level preload
+  - Could it be 2x, have fewer frames, or be a different explosion? Each would change how the death looks, so it is your call
 - Redesign the image cache so it keys on what an image is, not which object it is
   - Key by `ImageEnums` plus whole-number scale, angle, crop and flip values, looked up directly
   - Never modify a list the cache or ImageDatabase hands out

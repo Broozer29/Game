@@ -42,10 +42,10 @@ public class ImageRotator {
         }
 
         // The frames are cached as one list, not one by one
-        ArrayList<BufferedImage> newFrames = new ArrayList<>();
-        for (BufferedImage frame : frames) {
-            newFrames.add(rotateOrFlipWithoutCaching(frame, rotation.toAngle(), crop));
-        }
+        double angle = rotation.toAngle();
+        ArrayList<BufferedImage> newFrames = frames.parallelStream()
+                .map(frame -> rotateOrFlipWithoutCaching(frame, angle, crop))
+                .collect(Collectors.toCollection(ArrayList::new));
         cache.putFrames(keyString, newFrames);
         return newFrames;
     }
@@ -62,14 +62,10 @@ public class ImageRotator {
             return cachedFrames;
         }
 
-        // Prepare a list to store the adjusted frames, whether rotated or flipped
-        ArrayList<BufferedImage> adjustedFrames = new ArrayList<>();
-
-        // Process each frame, without caching it separately
-        for (BufferedImage frame : frames) {
-            BufferedImage adjustedFrame = rotateOrFlipWithoutCaching(frame, roundedDegrees, false);
-            adjustedFrames.add(adjustedFrame);
-        }
+        // Process each frame on all processor cores at once, without caching it separately; collect() keeps the frame order
+        ArrayList<BufferedImage> adjustedFrames = frames.parallelStream()
+                .map(frame -> rotateOrFlipWithoutCaching(frame, roundedDegrees, false))
+                .collect(Collectors.toCollection(ArrayList::new));
 
 
         ImageCropper.getInstance().cropFramesToUniformContent(adjustedFrames);
