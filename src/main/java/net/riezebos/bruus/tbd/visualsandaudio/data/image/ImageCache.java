@@ -3,7 +3,6 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 import net.riezebos.bruus.tbd.DevTestSettings;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +14,8 @@ import java.util.*;
 
 // One shared cache for rotated and resized images (single images and frame lists).
 // The normal section has a memory budget: least recently used entries are dropped first when its pixel data exceeds it.
+// The permanent section sits outside the budget too: it holds what is built once at startup (laser beams, cash carrier) and is never evicted or cleared.
+// While the startup build runs (beginPermanentBuild until endPermanentBuild), every put goes to the permanent section.
 // The level section sits outside that budget and is never evicted. While the preloader builds a Generic enemy
 // (beginLevelPreload until endLevelPreload), every put goes to the level section, from any thread. A lookup that hits
 // the normal section leaves the entry there. clearLevelEntries() deletes the whole level section; nothing moves between the sections.
@@ -29,10 +30,13 @@ public class ImageCache {
     private static ImageCache instance = new ImageCache();
 
     // Normal section, access order: a lookup moves the entry to the end, so the first entry is the least recently used
-    private final Section entries = new Section(true);
+    private final ImageCacheSection entries = new ImageCacheSection(true);
     // Level section: outside the budget and never evicted, until clearLevelEntries() deletes it
-    private final Section levelEntries = new Section(false);
+    private final ImageCacheSection levelEntries = new ImageCacheSection(false);
+    // Permanent section: outside the budget, never evicted and never cleared; filled by the startup build between beginPermanentBuild() and endPermanentBuild()
+    private final ImageCacheSection permanentEntries = new ImageCacheSection(false);
     private boolean levelPreload = false;
+    private boolean permanentBuild = false;
     private long hits = 0;
     private long misses = 0;
     private long evictions = 0;
@@ -42,85 +46,6 @@ public class ImageCache {
     private long levelBuildNanos = 0;
     private long levelSlowestNanos = 0;
     private String levelSlowestKey = null;
-
-    // The entries of one section, with their own byte count
-    private static class Section {
-        private final LinkedHashMap<String, CacheEntry> map;
-        // How many cached images point to each pixel buffer (getSubimage views share the buffer of their parent)
-        private final Map<DataBuffer, Integer> bufferReferences = new IdentityHashMap<>();
-        private long countedBytes = 0;
-
-        private Section(boolean accessOrder) {
-            this.map = new LinkedHashMap<>(accessOrder ? 1024 : 16, 0.75f, accessOrder);
-        }
-
-        private void put(String key, CacheEntry entry) {
-            map.put(key, entry);
-            count(entry);
-        }
-
-        // Takes the entry out and gives its bytes back, without flushing its images
-        private CacheEntry remove(String key) {
-            CacheEntry entry = map.remove(key);
-            if (entry != null) {
-                uncount(entry);
-            }
-            return entry;
-        }
-
-        private void count(CacheEntry entry) {
-            for (BufferedImage image : entry.images) {
-                DataBuffer buffer = image.getRaster().getDataBuffer();
-                Integer count = bufferReferences.get(buffer);
-                if (count == null) {
-                    countedBytes += bytesOf(buffer);
-                    bufferReferences.put(buffer, 1);
-                } else {
-                    bufferReferences.put(buffer, count + 1);
-                }
-            }
-        }
-
-        private void uncount(CacheEntry entry) {
-            for (BufferedImage image : entry.images) {
-                DataBuffer buffer = image.getRaster().getDataBuffer();
-                Integer count = bufferReferences.get(buffer);
-                if (count != null) {
-                    if (count <= 1) {
-                        bufferReferences.remove(buffer);
-                        countedBytes -= bytesOf(buffer);
-                    } else {
-                        bufferReferences.put(buffer, count - 1);
-                    }
-                }
-            }
-        }
-
-        private void clear() {
-            map.clear();
-            bufferReferences.clear();
-            countedBytes = 0;
-        }
-
-        private static long bytesOf(DataBuffer buffer) {
-            return (long) buffer.getSize() * buffer.getNumBanks() * (DataBuffer.getDataTypeSize(buffer.getDataType()) / 8);
-        }
-    }
-
-    private static class CacheEntry {
-        private final List<BufferedImage> images;
-        private final ArrayList<BufferedImage> frames;
-
-        private CacheEntry(BufferedImage image) {
-            this.images = List.of(image);
-            this.frames = null;
-        }
-
-        private CacheEntry(ArrayList<BufferedImage> frames) {
-            this.images = frames;
-            this.frames = frames;
-        }
-    }
 
     private ImageCache() {
         String statsDir = System.getProperty("game.cacheStatsDir");
@@ -148,21 +73,21 @@ public class ImageCache {
     }
 
     public synchronized BufferedImage getImage(String key) {
-        CacheEntry entry = lookup(key, false);
+        ImageCacheSection.CacheEntry entry = lookup(key, false);
         return entry == null ? null : entry.images.get(0);
     }
 
     public synchronized ArrayList<BufferedImage> getFrames(String key) {
-        CacheEntry entry = lookup(key, true);
+        ImageCacheSection.CacheEntry entry = lookup(key, true);
         return entry == null ? null : entry.frames;
     }
 
     public synchronized void putImage(String key, BufferedImage image) {
-        add(key, new CacheEntry(image));
+        add(key, new ImageCacheSection.CacheEntry(image));
     }
 
     public synchronized void putFrames(String key, ArrayList<BufferedImage> frames) {
-        add(key, new CacheEntry(frames));
+        add(key, new ImageCacheSection.CacheEntry(frames));
     }
 
     public synchronized void beginLevelPreload() {
@@ -173,9 +98,25 @@ public class ImageCache {
         levelPreload = false;
     }
 
+    public synchronized void beginPermanentBuild() {
+        permanentBuild = true;
+    }
+
+    public synchronized void endPermanentBuild() {
+        permanentBuild = false;
+    }
+
+    public synchronized int getPermanentEntryCount() {
+        return permanentEntries.map.size();
+    }
+
+    public synchronized double getPermanentMegabytes() {
+        return permanentEntries.countedBytes / (1024.0 * 1024.0);
+    }
+
     // Deletes every level entry, the same way an eviction releases it. Nothing is added to the normal section.
     public synchronized void clearLevelEntries() {
-        for (CacheEntry levelEntry : levelEntries.map.values()) {
+        for (ImageCacheSection.CacheEntry levelEntry : levelEntries.map.values()) {
             flush(levelEntry);
         }
         levelEntries.clear();
@@ -215,13 +156,15 @@ public class ImageCache {
                 + " misses=" + misses
                 + " evictions=" + evictions
                 + " levelEntries=" + levelEntries.map.size()
-                + " levelMb=" + String.format("%.1f", levelEntries.countedBytes / (1024.0 * 1024.0));
+                + " levelMb=" + String.format("%.1f", levelEntries.countedBytes / (1024.0 * 1024.0))
+                + " permanentEntries=" + permanentEntries.map.size()
+                + " permanentMb=" + String.format("%.1f", permanentEntries.countedBytes / (1024.0 * 1024.0));
     }
 
-    // Finds the entry in either section, and leaves it in the section it was found in
-    private CacheEntry lookup(String key, boolean wantFrames) {
-        CacheEntry entry = null;
-        if (!levelEntries.map.isEmpty()) {
+    // Finds the entry in any of the three sections, and leaves it in the section it was found in
+    private ImageCacheSection.CacheEntry lookup(String key, boolean wantFrames) {
+        ImageCacheSection.CacheEntry entry = permanentEntries.map.get(key);
+        if (entry == null && !levelEntries.map.isEmpty()) {
             entry = levelEntries.map.get(key);
         }
         if (entry == null) {
@@ -235,11 +178,22 @@ public class ImageCache {
         return entry;
     }
 
-    private void add(String key, CacheEntry entry) {
-        // A key already in the level section stays there, so it keeps its protection
-        Section target = levelPreload || levelEntries.map.containsKey(key) ? levelEntries : entries;
-        Section other = target == entries ? levelEntries : entries;
-        flush(other.remove(key));
+    private void add(String key, ImageCacheSection.CacheEntry entry) {
+        // A key already in the permanent or level section stays there, so it keeps its protection
+        ImageCacheSection target;
+        if (permanentBuild || permanentEntries.map.containsKey(key)) {
+            target = permanentEntries;
+        } else if (levelPreload || levelEntries.map.containsKey(key)) {
+            target = levelEntries;
+        } else {
+            target = entries;
+        }
+        // A key lives in one section only, so an older copy in another section is deleted
+        for (ImageCacheSection section : new ImageCacheSection[]{permanentEntries, levelEntries, entries}) {
+            if (section != target) {
+                flush(section.remove(key));
+            }
+        }
         flush(target.remove(key));
         target.put(key, entry);
         if (target == entries) {
@@ -253,9 +207,9 @@ public class ImageCache {
             return;
         }
         // After a put the new entry is the most recently used one, so the loop only reaches it when nothing else is left
-        Iterator<CacheEntry> eldest = entries.map.values().iterator();
+        Iterator<ImageCacheSection.CacheEntry> eldest = entries.map.values().iterator();
         while (entries.countedBytes > MEMORY_BUDGET_BYTES && entries.map.size() > 1 && eldest.hasNext()) {
-            CacheEntry evicted = eldest.next();
+            ImageCacheSection.CacheEntry evicted = eldest.next();
             eldest.remove();
             entries.uncount(evicted);
             flush(evicted);
@@ -264,7 +218,7 @@ public class ImageCache {
     }
 
     // Flushes the images so their graphics card copies are freed too. The entry must already be out of its section.
-    private void flush(CacheEntry entry) {
+    private void flush(ImageCacheSection.CacheEntry entry) {
         if (entry == null) {
             return;
         }

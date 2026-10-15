@@ -6,7 +6,8 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - Internal: at the end of every level the game logs how many images had to be built during the level, how long that took and the slowest one, so stutters can be measured. Nothing changes for players.
-- Bosses and mini bosses are prepared just before their level, so they stutter much less when they spawn. The game also starts faster, because it no longer prepares enemies and laser beams at startup.
+- Bosses and mini bosses are prepared just before their level, so they stutter much less when they spawn. The game also starts faster, because it no longer prepares enemies at startup.
+- The first level now starts as fast as the others. The laser beams and the cash carrier (also as Overlord) are built once while the game starts and are never rebuilt during play, so startup takes a little longer.
 - Entering a level with a mini boss no longer freezes the game for about 5 seconds: the frames of its animations are now resized on all processor cores at once. Nothing looks different.
 
 ## 2026-10-14

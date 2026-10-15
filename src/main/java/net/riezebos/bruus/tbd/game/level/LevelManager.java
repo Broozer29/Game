@@ -446,6 +446,11 @@ public class LevelManager {
         return levelType;
     }
 
+    // Only for the startup image build, which creates the Zerg version of the cash carrier and restores the tribe afterwards
+    void setCurrentEnemyTribeForPreload(EnemyTribes tribe) {
+        this.currentEnemyTribe = tribe;
+    }
+
     public EnemyTribes getCurrentEnemyTribe() {
         return currentEnemyTribe;
     }

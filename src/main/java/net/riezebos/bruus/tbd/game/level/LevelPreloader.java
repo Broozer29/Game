@@ -7,11 +7,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBossManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageCache;
 
 import java.util.ArrayList;
@@ -21,7 +17,8 @@ import java.util.List;
 /**
  * Builds the images of the next level's boss (with all its summons) or mini bosses just before the level.
  * Generic enemies go into the image cache's protected level section, which is deleted at level end. Everything shared
- * (the non-Generic summons, the cash carrier and the laser beams) is built into the normal cache.
+ * (the non-Generic summons) is built into the normal cache. The cash carrier and the laser beams are not built here:
+ * they live in the permanent section, built once at startup by PermanentImageBuilder.
  * The plan decides what, BossSummons says how, the cache stores it.
  */
 public class LevelPreloader {
@@ -95,18 +92,6 @@ public class LevelPreloader {
             }
         }
 
-        try {
-            EnemyEnums cashCarrierEnum = EnemyEnums.CashCarrier;
-            Enemy cashCarrier = EnemyCreator.createEnemy(cashCarrierEnum, 0, 0, Direction.LEFT,
-                    cashCarrierEnum.getDefaultScale(), cashCarrierEnum.getMovementSpeed());
-            cashCarrier.deleteObject();
-            preloadLaserbeams();
-        } catch (Exception e) {
-            failed = true;
-            System.out.println("Cash carrier and laserbeam preload failed: " + e);
-            e.printStackTrace();
-        }
-
         long millis = (System.nanoTime() - start) / 1_000_000;
         System.out.println("Level preload" + (failed ? " FAILED" : "") + ": " + planned + " built " + built
                 + " enemies in " + millis + " ms, " + imageCache.getStatsLine());
@@ -116,28 +101,6 @@ public class LevelPreloader {
         Enemy enemy = EnemyCreator.createEnemy(settings.enemy(), 0, 0, direction,
                 settings.scale(parentScale), settings.enemy().getMovementSpeed());
         enemy.deleteObject();
-    }
-
-    private void preloadLaserbeams() {
-        LaserbeamConfiguration pinkLaserbeamConfig = new LaserbeamConfiguration(false, 0);
-        pinkLaserbeamConfig.setAmountOfLaserbeamSegments(50);
-        pinkLaserbeamConfig.setOriginPoint(new Point(0, 0));
-        Laserbeam pinkLaserBeam = new AngledLaserBeam(pinkLaserbeamConfig);
-
-        for (int degree = 0; degree < 360; degree++) {
-            pinkLaserBeam.setAngleDegrees(degree);
-            pinkLaserBeam.update();
-        }
-
-        LaserbeamConfiguration blueLaserbeamConfig = new LaserbeamConfiguration(true, 0);
-        blueLaserbeamConfig.setAmountOfLaserbeamSegments(50);
-        blueLaserbeamConfig.setOriginPoint(new Point(0, 0));
-        Laserbeam blueLaserBeam = new AngledLaserBeam(blueLaserbeamConfig);
-
-        for (int degree = 0; degree < 360; degree++) {
-            blueLaserBeam.setAngleDegrees(degree);
-            blueLaserBeam.update();
-        }
     }
 
     public void clearLevel() {

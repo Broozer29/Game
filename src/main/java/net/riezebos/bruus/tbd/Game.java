@@ -3,8 +3,10 @@ package net.riezebos.bruus.tbd;
 import javafx.application.Platform;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
+import net.riezebos.bruus.tbd.game.level.PermanentImageBuilder;
 import net.riezebos.bruus.tbd.game.level.SpawningCoordinator;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
@@ -70,6 +72,12 @@ public class Game {
                             logDiagnostic("Loading assets...");
                             AudioDatabase loadingAudioInstance = AudioDatabase.getInstance();
                             ImageDatabase loadingImageInstance = ImageDatabase.getInstance();
+
+                            logDiagnostic("Building permanent images...");
+                            //the real window size, so the cash carrier gets the same scale as when it spawns (finishInitialization sets it again later)
+                            DataClass.getInstance().setWindowWidth(ex.getWidth());
+                            DataClass.getInstance().setWindowHeight(ex.getHeight());
+                            PermanentImageBuilder.build();
 
                             exportItemDescriptions();
                             assetsLoaded = true;

@@ -57,9 +57,10 @@ Frame rate, lag, loading times and memory use.
   - Fix: keep a separate list of reflective blocks and only check those
   - Bruus agreed on 2026-10-08; see his reply under "Missile-against-missile collision compares every pair every frame"
 - Some enemies resize their explosion twice and throw the first copy away (Nelis, 2026-10-15)
-  - `Enemy.initChargingUpAnimation` raises the shared scale to 0.85. The death animation is first built at that scale, and `setAnimationScale` then builds a second copy
-  - This affects the Mirage, the Needler and the Seeker (0.85) and the Mother Ship (0.9), about 0.4 to 0.5 s each
-  - The Mother Ship drone keeps a 0.85 explosion for a 0.25-scale enemy
+  - The first explosion build uses the enemy's shared settings scale, which `Enemy.initChargingUpAnimation` sometimes raises to 0.85. `setAnimationScale` then builds a second copy at the scale the explosion actually needs, and the first copy is thrown away
+  - 19 enemy classes have the pattern: the cash carrier, Needler, Scout, Seeker, Defender, the four big mini bosses, the Mother Ship drone, all seven RoyalGuard enemies, and the Striker and Final boss laserbeam clones. About 0.4 to 0.5 s each for the big ones
+  - The Mother Ship drone rebuilds its explosion at full size
+  - Fix direction (Nelis): give the explosion its own copy of the sprite settings so its scale can be overridden and it is built once
 
 # Negeer de onderstaande
 
@@ -257,7 +258,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
   - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
 - Never build boss images during a level: prepare them at game start, run start or level start (Nelis, 2026-10-08)
-  - Startup now builds no enemies and no laserbeams; bosses, their summons and mini bosses are prepared just before their level by `LevelPreloader`, which also builds the cash carrier and the laserbeams into the normal cache on every level preload
+  - Startup builds no enemies; bosses, their summons and mini bosses are prepared just before their level by `LevelPreloader`. Startup builds only the laserbeams and the cash carrier (pirate and Overlord), into a permanent part of the image cache that is never cleared
   - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup (before 2026-10-13) could be dropped again and rebuilt when it appears, which freezes the game for a moment
   - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level, or its mini bosses if it is a regular level (the level plan, `LevelManager.planNextLevel()`, now decides both before the level starts) and keep them from being dropped until the level ends (built on the branch boss-preload, 2026-10-13)
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
@@ -278,7 +279,7 @@ Why: on 2026-10-07 a 15-minute stress run used up all of the PC's memory and cra
 The slow motion in busy levels turned out to be a different problem: damage numbers piling up (see Menus & UI). The cache does not cause the slowdown, only the memory use.
 
 Decisions for the experiment:
-- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; only Generic bosses, mini bosses and their summons built during a level preload sit in a level section outside the budget, and that section is deleted when the level ends
+- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; only Generic bosses, mini bosses and their summons built during a level preload sit in a level section outside the budget, and that section is deleted when the level ends; the laserbeams and the cash carrier, built once at startup, sit in a permanent section outside the budget that is never cleared
 - The budget is a constant at the top of that class, first set to about 2.5 GB, which is above what one level needs today. It can be lowered once each image takes less memory
 - Memory is counted as width × height × 4 bytes per image, each image counted once even if two entries point to it
 - When the budget is full, the image used longest ago is dropped and `flush()`ed, so its graphics card copy is freed too
