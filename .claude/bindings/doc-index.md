@@ -4,4 +4,4 @@
 
 | role | path |
 | --- | --- |
-<!-- Rows are absent on purpose: the repo has no docs besides docs/planboard/. -->
+| architecture-index | docs/architecture/index.md |

@@ -29,7 +29,7 @@ Requires **JDK 21** (the compiler targets 21; CI uses Temurin 21).
 
 Any run configuration needs those two JVM settings: `-Xms4g -Xmx8g` raises memory, and
 `-XX:+UseG1GC` picks the garbage collector.
-The packaged jar is about 2 GB because all assets go into it, so prefer `mvn -q compile` to check a
+The packaged jar is about 560 MB because all assets go into it, so prefer `mvn -q compile` to check a
 change.
 
 ## Where to start looking
@@ -53,7 +53,9 @@ Searching the whole codebase is expensive. Start from these files for a subject 
   outside the task at hand.
 - Bruus writes notes, code comments and commit messages in a mix of Dutch and English. Translate
   any of his text to English first, and reason only on the English version.
-- Work happens on the `Nelis` branch. Commit only there.
+- Work happens on the `Nelis` branch or on a branch made from it. Commit only there. A branch goes
+  into `Nelis` as one squash commit (`git merge --squash`, then one commit), so `Nelis` shows each
+  finished change as a single commit.
 - Every change we commit gets a line in `CHANGELOG.md` under today's date (Added / Changed / Fixed),
   in the same commit.
 - Project bindings live in `.claude/bindings/`.

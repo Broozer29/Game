@@ -6,6 +6,7 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - All music is now MP3 instead of WAV, so the game download shrinks from about 2 GB to about 560 MB. Sound effects are unchanged.
+- Internal: A branch goes into `Nelis` as one squash commit; CLAUDE.md gives the packaged jar size as about 560 MB; the doc index binding points at docs/architecture/index.md.
 
 ### Fixed
 - A regular level can no longer get stuck when its song fails to load or never reports that it has ended.
