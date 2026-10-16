@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
@@ -97,7 +98,13 @@ public class AnimationManager {
 		}
 	}
 
+	// Its frames are not loaded while leveling is disabled (see ImageDatabase); re-enable that loop together with leveling.
+	// Loading a save still replays its levels (PlayerStats.loadInSaveFile), so it returns when the frames are missing.
+	@Deprecated
 	public void playLevelUpAnimation(GameObject gameObject){
+		if (ImageDatabase.getInstance().getAnimation(ImageEnums.LevelUpAnimation).isEmpty()) {
+			return;
+		}
 		SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
 		spriteConfiguration.setxCoordinate(gameObject.getXCoordinate());
 		spriteConfiguration.setyCoordinate(gameObject.getYCoordinate());

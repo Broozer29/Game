@@ -5,6 +5,7 @@ All notable changes on the `Nelis` branch.
 ## 2026-10-16
 
 ### Changed
+- Internal: the level-up animation (48 MB) is no longer loaded at startup, because leveling is switched off; its code stays.
 - The image cache now also counts the copy the graphics card keeps of each image, so it holds about 1.1 GB of images instead of 2.5 GB, and once it is full the game uses up to about 3 GB less memory.
 - All five mini bosses now die in four explosions spread over their body instead of one explosion. For the Laserbeam, Mirage, Mother Ship and Shuriken mini bosses this replaces a blurry enlarged explosion and saves about 0.5 GB of memory on mini-boss levels.
 - The game now lets Java's heap (the memory for game objects and images) grow to at most 4 GB instead of 8 GB, and reserves 2 GB at start instead of 4 GB, so it fits better on PCs with 16 GB of RAM. Internal: a launch setting that did nothing (`-Dsun.java2d.accthresh=0`) is removed.
