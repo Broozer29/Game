@@ -25,9 +25,9 @@ Requires **JDK 21** (the compiler targets 21; CI uses Temurin 21).
 | compile | `mvn -q compile` |
 | package jar | `mvn package` |
 | packaged app (as CI does) | `mvn clean package jpackage:jpackage -Phw-accel` (or `-Pno-hw-accel` for the software renderer) |
-| run the jar | `java -Xms4g -Xmx6g -XX:+UseG1GC -jar target/Game-0.0.1-SNAPSHOT.jar` |
+| run the jar | `java -Xms2g -Xmx4g -XX:+UseG1GC -jar target/Game-0.0.1-SNAPSHOT.jar` |
 
-Any run configuration needs those two JVM settings: `-Xms4g -Xmx6g` raises memory, and
+Any run configuration needs those two JVM settings: `-Xms2g -Xmx4g` sets the memory Java may use, and
 `-XX:+UseG1GC` picks the garbage collector.
 The packaged jar is about 560 MB because all assets go into it, so prefer `mvn -q compile` to check a
 change.
