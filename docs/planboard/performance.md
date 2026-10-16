@@ -248,6 +248,10 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - A faster flamethrower lowers its damage cooldown, so more burn-effect copies are made per second
 
 ## Ideas
+- Decode boss and mini-boss images just before their level instead of at startup (Nelis, 2026-10-16: pinned, not the easiest win)
+  - Every PNG is decoded at startup and kept all game; the five mini bosses and the Space Station boss alone are about 350 MB of the 1.25 GB image database (measured 2026-10-16)
+  - Only if it adds no noticeable wait before a level: decoding on all processor cores while the level preload waits for it, as the explosions are resized now, is acceptable; decoding in the background while the player is in the shop is out of the question (Nelis)
+  - Measure the decode time of those images first
 - Redesign the image cache so it keys on what an image is, not which object it is
   - Key by `ImageEnums` plus whole-number scale, angle, crop and flip values, looked up directly
   - Never modify a list the cache or ImageDatabase hands out
