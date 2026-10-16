@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-17
+
+### Changed
+- Internal: the image cache log shows how many MB are rotated copies and how many are resized copies.
+
 ## 2026-10-16
 
 ### Changed

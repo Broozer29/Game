@@ -155,13 +155,31 @@ public class ImageCache {
         return "entries=" + entries.map.size()
                 + " mb=" + String.format("%.1f", entries.countedBytes / (1024.0 * 1024.0))
                 + " withGraphicsMb=" + String.format("%.1f", withGraphicsCopy(entries.countedBytes) / (1024.0 * 1024.0))
+                + " rotMb=" + megabytesWithPrefix(entries, "rot_")
+                + " scaleMb=" + megabytesWithPrefix(entries, "scale_")
                 + " hits=" + hits
                 + " misses=" + misses
                 + " evictions=" + evictions
                 + " levelEntries=" + levelEntries.map.size()
                 + " levelMb=" + String.format("%.1f", levelEntries.countedBytes / (1024.0 * 1024.0))
                 + " permanentEntries=" + permanentEntries.map.size()
-                + " permanentMb=" + String.format("%.1f", permanentEntries.countedBytes / (1024.0 * 1024.0));
+                + " permanentMb=" + String.format("%.1f", permanentEntries.countedBytes / (1024.0 * 1024.0))
+                + " permanentRotMb=" + megabytesWithPrefix(permanentEntries, "rot_")
+                + " permanentScaleMb=" + megabytesWithPrefix(permanentEntries, "scale_");
+    }
+
+    // Rotated (rot_) or resized (scale_) share of a section, as width x height x 4 bytes per image.
+    // Images that share a pixel buffer are counted twice, so it is an approximation of the split, not of the total.
+    private static String megabytesWithPrefix(ImageCacheSection section, String keyPrefix) {
+        long bytes = 0;
+        for (Map.Entry<String, ImageCacheSection.CacheEntry> cached : section.map.entrySet()) {
+            if (cached.getKey().startsWith(keyPrefix)) {
+                for (BufferedImage image : cached.getValue().images) {
+                    bytes += (long) image.getWidth() * image.getHeight() * 4;
+                }
+            }
+        }
+        return String.format("%.1f", bytes / (1024.0 * 1024.0));
     }
 
     // Finds the entry in any of the three sections, and leaves it in the section it was found in
