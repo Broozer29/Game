@@ -45,6 +45,7 @@ public class GameObject extends Sprite {
 
     protected SpriteAnimation animation; //This is a code smell, because spriteanimation is already extension of sprite, need to untangle this
     protected SpriteAnimation destructionAnimation;
+    protected List<SpriteAnimation> bossDeathExplosions = new ArrayList<>(); // extra death explosions around the centre one, empty for most objects
     protected SpriteAnimation shieldDamagedAnimation;
     protected SpriteAnimation exhaustAnimation;
     protected SpriteAnimation chargingUpAttackAnimation;
@@ -356,6 +357,10 @@ public class GameObject extends Sprite {
                 this.destructionAnimation.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
 //                this.destructionAnimation.rotateAnimation(this.rotationAngle, false);
                 AnimationManager.getInstance().addUpperAnimation(destructionAnimation);
+            }
+            for (SpriteAnimation explosion : bossDeathExplosions) {
+                explosion.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                AnimationManager.getInstance().addUpperAnimation(explosion);
             }
 
             for (GameObject object : objectsFollowingThis) {
@@ -682,6 +687,10 @@ public class GameObject extends Sprite {
 
     public void setDestructionAnimation(SpriteAnimation destructionAnimation) {
         this.destructionAnimation = destructionAnimation;
+    }
+
+    public List<SpriteAnimation> getBossDeathExplosions() {
+        return bossDeathExplosions;
     }
 
     public Point getCurrentLocation() {

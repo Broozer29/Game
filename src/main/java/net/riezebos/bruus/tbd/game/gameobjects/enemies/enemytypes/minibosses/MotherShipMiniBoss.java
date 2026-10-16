@@ -27,7 +27,7 @@ public class MotherShipMiniBoss extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteAnimationConfigurationion.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.destructionAnimation.setAnimationScale(3f);
+        initBossDeathExplosions(destroyedExplosionfiguration);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
         this.updateBoardBlock();

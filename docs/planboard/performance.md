@@ -248,13 +248,6 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - A faster flamethrower lowers its damage cooldown, so more burn-effect copies are made per second
 
 ## Ideas
-- Question for Bruus: can the mini bosses' death explosion be cheaper? (Nelis, 2026-10-15)
-  - The four mini bosses (Laserbeam, Mirage, Mother Ship, Shuriken) build Explosion2 at 3x: 62 frames of 1536x1536, 558 MB. This is the main cost of a mini-boss level preload
-  - Could it be 2x, have fewer frames, or be a different explosion? Each would change how the death looks, so it is your call
-  - Bruus insight:
-    - **Mening:** Ik ben niet heel gehecht aan de boss-explosion visuals zoals hij nu is. De huidige sprite verliest kwaliteit vanwege het upscalen
-    - **Mijn voorstel:** ipv 1 enkele animatie een `List<SpriteAnimation> bossDeathExplosions` met een hoop kleine explosies, met verschillende frameDelays en xOffset/yOffset, voor groter dramatisch effect dat ook mooi blijft. Alternatief: de .png resizen en `setScale(3)` naar `setScale(1)`
-  - Nelis (2026-10-16): resizing the .png keeps 558 MB in memory all game, because every image is decoded at startup; the list of 1x explosions reuses the existing 512x512 frames and adds almost no memory
 - Redesign the image cache so it keys on what an image is, not which object it is
   - Key by `ImageEnums` plus whole-number scale, angle, crop and flip values, looked up directly
   - Never modify a list the cache or ImageDatabase hands out

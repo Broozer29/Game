@@ -43,7 +43,7 @@ public class MirageMiniBoss extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteAnimationConfigurationion.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.destructionAnimation.setAnimationScale(3f);
+        initBossDeathExplosions(destroyedExplosionfiguration);
         this.detonateOnCollision = false;
         this.knockbackStrength = 8;
         this.attackSpeed = 2;
@@ -206,6 +206,7 @@ public class MirageMiniBoss extends Enemy {
         clonedEnemy.getDestructionAnimation().changeImagetype(ImageEnums.SmokeExplosion);
         clonedEnemy.getDestructionAnimation().setAnimationScale(0.65f);
         clonedEnemy.getDestructionAnimation().setFrameDelay(2);
+        clonedEnemy.getBossDeathExplosions().clear(); // a clone keeps its small smoke death
 
         clonedEnemy.resetMovementPath();
         float newSpeed = getDifferentMovementSpeed(getDifferentMovementSpeed(this.getMovementConfiguration().getMovementSpeed()));

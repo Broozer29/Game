@@ -176,6 +176,21 @@ public class Enemy extends GameObject {
         this.chargingUpAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
     }
 
+    // Mini boss death: the centre explosion plus three more spread over the boss, all at scale 1 so no enlarged copy is built.
+    // Each row is the x and y direction of the offset (a third of the boss's width and height) and the frame delay.
+    protected void initBossDeathExplosions(SpriteAnimationConfiguration explosionConfiguration) {
+        this.destructionAnimation.setAnimationScale(1f);
+        int[][] offsetsAndFrameDelays = {{-1, -1, 1}, {1, -1, 1}, {0, 1, 2}};
+        for (int[] offsetAndFrameDelay : offsetsAndFrameDelays) {
+            SpriteAnimation explosion = new SpriteAnimation(explosionConfiguration);
+            explosion.setAnimationScale(1f);
+            explosion.addXOffset(offsetAndFrameDelay[0] * this.getWidth() / 3);
+            explosion.addYOffset(offsetAndFrameDelay[1] * this.getHeight() / 3);
+            explosion.setFrameDelay(offsetAndFrameDelay[2]);
+            this.bossDeathExplosions.add(explosion);
+        }
+    }
+
     @Override
     public void triggerOnDeathActions() {
         if (LevelManager.getInstance().isNextLevelABossLevel() && this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
