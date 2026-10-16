@@ -7,6 +7,7 @@ All notable changes on the `Nelis` branch.
 ### Changed
 - The game now lets Java use at most 6 GB of memory instead of 8 GB, so it fits better on PCs with 16 GB of RAM. Internal: a launch setting that did nothing (`-Dsun.java2d.accthresh=0`) is removed.
 - Internal: CLAUDE.md gives the run command with -Xmx6g.
+- Internal: planboard reply from Bruus on the mini-boss death explosion (a list of smaller explosions).
 
 ## 2026-10-15
 
