@@ -137,7 +137,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - `drawAnimation` calls `getCurrentFrameImage(true)` (GameBoard.java:782)
 - Sprite-sheet frames are views into the whole sheet (`getSubimage`), so each frame keeps the full sheet in memory
   - ImageDatabase.java:3118, ImageCropper and ImageRotator; not measured
-- `-Xms4g` reserves 4 GB at launch, which slows startup slightly; no pause-time setting (`-XX:MaxGCPauseMillis`) is set for G1
+- No pause-time setting (`-XX:MaxGCPauseMillis`) is set for G1
 - Every moving object builds its whole route up front as up to a few thousand points, then removes the first point each step
   - RegularPathFinder.java:45-68 (up to twice the window width divided by the step size) and StraightLinePathFinder; `GameObjectMover.handleNextWaypointRemoval` does `getWaypoints().remove(0)`, which shifts the whole list every time
   - Formation enemies build their route twice (`resetMovementPath()` in `LevelManager.spawnEnemy`)
@@ -261,7 +261,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
 - Why the game uses so much memory but hardly any processor or graphics card (Nelis, 2026-10-08: the PC almost ran out of memory again)
   - The process reached 7.9 GB and 8.5 GB in the two stress runs of 2026-10-08. After a forced garbage collection the Java heap held 3.9 to 4.4 GB, of which the image cache is 2.5 GB; the rest is outside the heap
-  - The heap: `-Xms4g` reserves 4 GB at start and `-Xmx6g` allows 6 GB (8 GB until 2026-10-16); Java keeps memory it has grown to, so Windows shows the peak
+  - The heap: `-Xms2g` reserves 2 GB at start and `-Xmx4g` allows 4 GB (8 GB until 2026-10-16, then 6 GB); Java keeps memory it has grown to, so Windows shows the peak
   - The image cache keeps every rotated and resized sprite fully decoded at 4 bytes per pixel, and each rotated copy is a square as wide as the sprite's diagonal
   - Outside the heap: the graphics driver's copies of the cached images that have been drawn at least once (Java gives every drawn image a graphics card copy by default; about 2.8 GB at minute 30 of the 2026-10-16 recording) and the Windows heaps (0.57 GB). The sound threads are short-lived and leave no memory behind (tested 2026-10-15)
   - The processor is barely used because the game logic runs on one thread (one busy core of 16 shows as about 6%), and the caches exist so it does not redo rotations and scaling; drawing 2D sprites is light work for the graphics card

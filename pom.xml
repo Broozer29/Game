@@ -138,8 +138,8 @@
                     <mainJar>Game-0.0.1-SNAPSHOT.jar</mainJar>
                     <mainClass>net.riezebos.bruus.tbd.Game</mainClass>
                     <javaOptions>
-                        <option>-Xms4g</option>
-                        <option>-Xmx6g</option>
+                        <option>-Xms2g</option>
+                        <option>-Xmx4g</option>
                         <option>-XX:+UseG1GC</option>
                         <option>-Dsun.java2d.opengl=${opengl.enabled}</option>
                         <option>-Dsun.java2d.d3d=${opengl.enabled}</option>
