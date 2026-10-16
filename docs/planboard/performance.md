@@ -251,7 +251,10 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
 - Decode boss and mini-boss images just before their level instead of at startup (Nelis, 2026-10-16: pinned, not the easiest win)
   - Every PNG is decoded at startup and kept all game; the five mini bosses and the Space Station boss alone are about 350 MB of the 1.25 GB image database (measured 2026-10-16)
   - Only if it adds no noticeable wait before a level: decoding on all processor cores while the level preload waits for it, as the explosions are resized now, is acceptable; decoding in the background while the player is in the shop is out of the question (Nelis)
-  - Measure the decode time of those images first
+  - Measured 2026-10-17: the five big sets take 1.3-1.4 s to decode on one core and 0.2 s on all 16; one mini boss 0.05 s on all cores. Design and council done (Plan wish game-boss-decode-per-level): measure live heap per level and the boss-level peak first, then try only the Shuriken mini boss
+- Draw rotated sprites without storing a rotated copy (Plan wish game-rotate-while-drawing, designed 2026-10-17)
+  - Cheap steps first, each measured: laser angles on demand instead of 360 prebuilt (166 MB), coarser angle steps for missiles and enemies (Bruus decides the look), a cache rule against evict-then-rebuild hitches
+  - Only if rotated copies still hold about 0.75 GB: a pilot that draws one sprite family rotated, keeping every size and hitbox exactly as today
 - Redesign the image cache so it keys on what an image is, not which object it is
   - Key by `ImageEnums` plus whole-number scale, angle, crop and flip values, looked up directly
   - Never modify a list the cache or ImageDatabase hands out
