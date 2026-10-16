@@ -277,7 +277,7 @@ The slow motion in busy levels turned out to be a different problem: damage numb
 
 Decisions for the experiment:
 - One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; only Generic bosses, mini bosses and their summons built during a level preload sit in a level section outside the budget, and that section is deleted when the level ends; the laserbeams and the cash carrier, built once at startup, sit in a permanent section outside the budget that is never cleared
-- The budget is a constant at the top of that class, first set to about 2.5 GB, which is above what one level needs today. It can be lowered once each image takes less memory
+- The budget is a constant at the top of that class, set to about 2.5 GB. Since 2026-10-16 it counts each image's Java pixels plus an estimated graphics card copy (1.3 times the pixels), so the normal section holds about 1.1 GB of pixels, and one stress level (about 2.1 GB of pixels) no longer fits, so the cache evicts during a level
 - Memory is counted as width × height × 4 bytes per image, each image counted once even if two entries point to it
 - When the budget is full, the image used longest ago is dropped and `flush()`ed, so its graphics card copy is freed too
 - Laser rotations are no longer kept forever. A laser that is firing keeps being used, so it stays in the cache

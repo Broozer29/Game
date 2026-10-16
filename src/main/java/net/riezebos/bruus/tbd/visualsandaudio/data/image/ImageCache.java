@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 // One shared cache for rotated and resized images (single images and frame lists).
-// The normal section has a memory budget: least recently used entries are dropped first when its pixel data exceeds it.
+// The normal section has a memory budget for its Java pixels plus an estimated graphics card copy of each image (GRAPHICS_COPY_FACTOR): least recently used entries are dropped first when that total exceeds it.
 // The permanent section sits outside the budget too: it holds what is built once at startup (laser beams, cash carrier) and is never evicted or cleared.
 // While the startup build runs (beginPermanentBuild until endPermanentBuild), every put goes to the permanent section.
 // The level section sits outside that budget and is never evicted. While the preloader builds a Generic enemy
@@ -22,6 +22,8 @@ import java.util.*;
 public class ImageCache {
 
     private static final long MEMORY_BUDGET_BYTES = 2_560L * 1024 * 1024;
+    // The graphics driver keeps its own copy of every drawn image, measured on 2026-10-16 at about 1.3 times the image's pixel bytes
+    private static final double GRAPHICS_COPY_FACTOR = 1.3;
     private static final long STATS_INTERVAL_MILLIS = 30_000;
     private static final DateTimeFormatter FILE_TIMESTAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private static final DateTimeFormatter LINE_TIMESTAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -152,6 +154,7 @@ public class ImageCache {
     public synchronized String getStatsLine() {
         return "entries=" + entries.map.size()
                 + " mb=" + String.format("%.1f", entries.countedBytes / (1024.0 * 1024.0))
+                + " withGraphicsMb=" + String.format("%.1f", withGraphicsCopy(entries.countedBytes) / (1024.0 * 1024.0))
                 + " hits=" + hits
                 + " misses=" + misses
                 + " evictions=" + evictions
@@ -208,13 +211,18 @@ public class ImageCache {
         }
         // After a put the new entry is the most recently used one, so the loop only reaches it when nothing else is left
         Iterator<ImageCacheSection.CacheEntry> eldest = entries.map.values().iterator();
-        while (entries.countedBytes > MEMORY_BUDGET_BYTES && entries.map.size() > 1 && eldest.hasNext()) {
+        while (withGraphicsCopy(entries.countedBytes) > MEMORY_BUDGET_BYTES && entries.map.size() > 1 && eldest.hasNext()) {
             ImageCacheSection.CacheEntry evicted = eldest.next();
             eldest.remove();
             entries.uncount(evicted);
             flush(evicted);
             evictions++;
         }
+    }
+
+    // Java pixel bytes plus the estimated graphics card copy, which is what the budget counts
+    private static long withGraphicsCopy(long pixelBytes) {
+        return (long) (pixelBytes * (1 + GRAPHICS_COPY_FACTOR));
     }
 
     // Flushes the images so their graphics card copies are freed too. The entry must already be out of its section.
