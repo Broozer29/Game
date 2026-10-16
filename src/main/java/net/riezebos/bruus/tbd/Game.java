@@ -2,17 +2,11 @@ package net.riezebos.bruus.tbd;
 
 import javafx.application.Platform;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
+import net.riezebos.bruus.tbd.game.level.PermanentImageBuilder;
 import net.riezebos.bruus.tbd.game.level.SpawningCoordinator;
-import net.riezebos.bruus.tbd.game.movement.Direction;
-import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
@@ -79,8 +73,11 @@ public class Game {
                             AudioDatabase loadingAudioInstance = AudioDatabase.getInstance();
                             ImageDatabase loadingImageInstance = ImageDatabase.getInstance();
 
-                            logDiagnostic("Preloading assets...");
-                            preloadThings();
+                            logDiagnostic("Building permanent images...");
+                            //the real window size, so the cash carrier gets the same scale as when it spawns (finishInitialization sets it again later)
+                            DataClass.getInstance().setWindowWidth(ex.getWidth());
+                            DataClass.getInstance().setWindowHeight(ex.getHeight());
+                            PermanentImageBuilder.build();
 
                             exportItemDescriptions();
                             assetsLoaded = true;
@@ -204,96 +201,6 @@ public class Game {
             logDiagnostic("Error detecting hardware acceleration capabilities");
         }
     }
-
-    private static void preloadThings() {
-        // Load LARGE animations so it doesn't lag upon creation of them
-
-
-        Runtime runtime = Runtime.getRuntime();
-        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.printf("Before preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
-
-        EnemyEnums enemyEnum = EnemyEnums.Shuriken;
-        Enemy shuriken = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        shuriken.deleteObject();
-
-        enemyEnum = EnemyEnums.SpaceStationBoss;
-        Enemy spaceStation = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        spaceStation.deleteObject();
-
-        enemyEnum = EnemyEnums.ShurikenMiniBoss;
-        Enemy shurikenMiniBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        shurikenMiniBoss.deleteObject();
-
-        // The other mini bosses scale large destruction animations too; without a preload the first one froze the game
-        for (EnemyEnums miniBossEnum : new EnemyEnums[]{EnemyEnums.MirageMiniBoss, EnemyEnums.MotherShipMiniBoss,
-                EnemyEnums.DefenderMiniBoss, EnemyEnums.LaserbeamMiniBoss}) {
-            Enemy miniBoss = EnemyCreator.createEnemy(miniBossEnum, 0, 0, Direction.LEFT,
-                    miniBossEnum.getDefaultScale(), miniBossEnum.getMovementSpeed());
-            miniBoss.deleteObject();
-        }
-
-        enemyEnum = EnemyEnums.CashCarrier;
-        Enemy cashCarrier = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        cashCarrier.deleteObject();
-
-
-        enemyEnum = EnemyEnums.RedBoss;
-        Enemy redBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        redBoss.deleteObject();
-
-        enemyEnum = EnemyEnums.FourDirectionalDrone;
-        Enemy fDrone = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        fDrone.deleteObject();
-
-        enemyEnum = EnemyEnums.YellowBoss;
-        Enemy yellowBoss = EnemyCreator.createEnemy(enemyEnum, 0, 0, Direction.LEFT,
-                enemyEnum.getDefaultScale(), enemyEnum.getMovementSpeed());
-        yellowBoss.deleteObject();
-
-        logDiagnostic("Preloading laserbeams...");
-        runtime = Runtime.getRuntime();
-        usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.printf("Before preloading laserbeams memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
-
-        simulateAttackAngles();
-
-        runtime = Runtime.getRuntime();
-        usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.printf("After complete preload memory usage: %.3f GB%n", usedMemory / (1024.0 * 1024.0 * 1024.0));
-
-    }
-
-	private static void simulateAttackAngles() {
-		LaserbeamConfiguration pinkLaserbeamConfig = new LaserbeamConfiguration(false, 0);
-        pinkLaserbeamConfig.setAmountOfLaserbeamSegments(50);
-        pinkLaserbeamConfig.setOriginPoint(new Point(0, 0));
-		Laserbeam pinkLaserBeam = new AngledLaserBeam(pinkLaserbeamConfig);
-
-        for(int degree = 0; degree < 360; degree++){
-            pinkLaserBeam.setAngleDegrees(degree);
-            pinkLaserBeam.update();
-        }
-
-
-        LaserbeamConfiguration blueLaserbeamConfig = new LaserbeamConfiguration(true, 0);
-        blueLaserbeamConfig.setAmountOfLaserbeamSegments(50);
-        blueLaserbeamConfig.setOriginPoint(new Point(0, 0));
-        Laserbeam blueLaserBeam = new AngledLaserBeam(blueLaserbeamConfig);
-
-
-        for(int degree = 0; degree < 360; degree++){
-            blueLaserBeam.setAngleDegrees(degree);
-            blueLaserBeam.update();
-        }
-    }
-
 
     /*
        The ideal version of this method does the following:

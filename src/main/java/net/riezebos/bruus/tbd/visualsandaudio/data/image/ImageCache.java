@@ -3,7 +3,6 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.image;
 import net.riezebos.bruus.tbd.DevTestSettings;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,8 +12,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-// One shared cache for rotated and resized images (single images and frame lists) with one memory budget.
-// Least recently used entries are dropped first when the pixel data of all cached images exceeds the budget.
+// One shared cache for rotated and resized images (single images and frame lists).
+// The normal section has a memory budget: least recently used entries are dropped first when its pixel data exceeds it.
+// The permanent section sits outside the budget too: it holds what is built once at startup (laser beams, cash carrier) and is never evicted or cleared.
+// While the startup build runs (beginPermanentBuild until endPermanentBuild), every put goes to the permanent section.
+// The level section sits outside that budget and is never evicted. While the preloader builds a Generic enemy
+// (beginLevelPreload until endLevelPreload), every put goes to the level section, from any thread. A lookup that hits
+// the normal section leaves the entry there. clearLevelEntries() deletes the whole level section; nothing moves between the sections.
 public class ImageCache {
 
     private static final long MEMORY_BUDGET_BYTES = 2_560L * 1024 * 1024;
@@ -25,30 +29,23 @@ public class ImageCache {
     // Must stay below the other static fields, the constructor reads them
     private static ImageCache instance = new ImageCache();
 
-    // Access order: a lookup moves the entry to the end, so the first entry is the least recently used
-    private final LinkedHashMap<String, CacheEntry> entries = new LinkedHashMap<>(1024, 0.75f, true);
-    // How many cached images point to each pixel buffer (getSubimage views share the buffer of their parent)
-    private final Map<DataBuffer, Integer> bufferReferences = new IdentityHashMap<>();
-    private long countedBytes = 0;
+    // Normal section, access order: a lookup moves the entry to the end, so the first entry is the least recently used
+    private final ImageCacheSection entries = new ImageCacheSection(true);
+    // Level section: outside the budget and never evicted, until clearLevelEntries() deletes it
+    private final ImageCacheSection levelEntries = new ImageCacheSection(false);
+    // Permanent section: outside the budget, never evicted and never cleared; filled by the startup build between beginPermanentBuild() and endPermanentBuild()
+    private final ImageCacheSection permanentEntries = new ImageCacheSection(false);
+    private boolean levelPreload = false;
+    private boolean permanentBuild = false;
     private long hits = 0;
     private long misses = 0;
     private long evictions = 0;
     private Path statsFile = null;
-
-    private static class CacheEntry {
-        private final List<BufferedImage> images;
-        private final ArrayList<BufferedImage> frames;
-
-        private CacheEntry(BufferedImage image) {
-            this.images = List.of(image);
-            this.frames = null;
-        }
-
-        private CacheEntry(ArrayList<BufferedImage> frames) {
-            this.images = frames;
-            this.frames = frames;
-        }
-    }
+    // Builds on a cache miss since the last resetLevelBuilds(), for the level end log line
+    private long levelBuilds = 0;
+    private long levelBuildNanos = 0;
+    private long levelSlowestNanos = 0;
+    private String levelSlowestKey = null;
 
     private ImageCache() {
         String statsDir = System.getProperty("game.cacheStatsDir");
@@ -76,90 +73,158 @@ public class ImageCache {
     }
 
     public synchronized BufferedImage getImage(String key) {
-        CacheEntry entry = entries.get(key);
-        if (entry == null || entry.frames != null) {
-            misses++;
-            return null;
-        }
-        hits++;
-        return entry.images.get(0);
+        ImageCacheSection.CacheEntry entry = lookup(key, false);
+        return entry == null ? null : entry.images.get(0);
     }
 
     public synchronized ArrayList<BufferedImage> getFrames(String key) {
-        CacheEntry entry = entries.get(key);
-        if (entry == null || entry.frames == null) {
+        ImageCacheSection.CacheEntry entry = lookup(key, true);
+        return entry == null ? null : entry.frames;
+    }
+
+    public synchronized void putImage(String key, BufferedImage image) {
+        add(key, new ImageCacheSection.CacheEntry(image));
+    }
+
+    public synchronized void putFrames(String key, ArrayList<BufferedImage> frames) {
+        add(key, new ImageCacheSection.CacheEntry(frames));
+    }
+
+    public synchronized void beginLevelPreload() {
+        levelPreload = true;
+    }
+
+    public synchronized void endLevelPreload() {
+        levelPreload = false;
+    }
+
+    public synchronized void beginPermanentBuild() {
+        permanentBuild = true;
+    }
+
+    public synchronized void endPermanentBuild() {
+        permanentBuild = false;
+    }
+
+    public synchronized int getPermanentEntryCount() {
+        return permanentEntries.map.size();
+    }
+
+    public synchronized double getPermanentMegabytes() {
+        return permanentEntries.countedBytes / (1024.0 * 1024.0);
+    }
+
+    // Deletes every level entry, the same way an eviction releases it. Nothing is added to the normal section.
+    public synchronized void clearLevelEntries() {
+        for (ImageCacheSection.CacheEntry levelEntry : levelEntries.map.values()) {
+            flush(levelEntry);
+        }
+        levelEntries.clear();
+    }
+
+    // Called by the resizer and rotator after they built an image or frame list on a cache miss
+    public synchronized void recordBuild(String key, long nanos) {
+        levelBuilds++;
+        levelBuildNanos += nanos;
+        if (nanos > levelSlowestNanos) {
+            levelSlowestNanos = nanos;
+            levelSlowestKey = key;
+        }
+    }
+
+    public synchronized void resetLevelBuilds() {
+        levelBuilds = 0;
+        levelBuildNanos = 0;
+        levelSlowestNanos = 0;
+        levelSlowestKey = null;
+    }
+
+    public synchronized String getLevelBuildSummary() {
+        String key = levelSlowestKey == null ? "-" : levelSlowestKey;
+        if (key.length() > 80) {
+            key = key.substring(0, 80) + "...";
+        }
+        return levelBuilds + " cache misses built in " + String.format("%.1f", levelBuildNanos / 1_000_000.0)
+                + " ms during the level, slowest " + String.format("%.1f", levelSlowestNanos / 1_000_000.0)
+                + " ms (" + key + ")";
+    }
+
+    public synchronized String getStatsLine() {
+        return "entries=" + entries.map.size()
+                + " mb=" + String.format("%.1f", entries.countedBytes / (1024.0 * 1024.0))
+                + " hits=" + hits
+                + " misses=" + misses
+                + " evictions=" + evictions
+                + " levelEntries=" + levelEntries.map.size()
+                + " levelMb=" + String.format("%.1f", levelEntries.countedBytes / (1024.0 * 1024.0))
+                + " permanentEntries=" + permanentEntries.map.size()
+                + " permanentMb=" + String.format("%.1f", permanentEntries.countedBytes / (1024.0 * 1024.0));
+    }
+
+    // Finds the entry in any of the three sections, and leaves it in the section it was found in
+    private ImageCacheSection.CacheEntry lookup(String key, boolean wantFrames) {
+        ImageCacheSection.CacheEntry entry = permanentEntries.map.get(key);
+        if (entry == null && !levelEntries.map.isEmpty()) {
+            entry = levelEntries.map.get(key);
+        }
+        if (entry == null) {
+            entry = entries.map.get(key);
+        }
+        if (entry == null || (entry.frames != null) != wantFrames) {
             misses++;
             return null;
         }
         hits++;
-        return entry.frames;
+        return entry;
     }
 
-    public synchronized void putImage(String key, BufferedImage image) {
-        add(key, new CacheEntry(image));
-    }
-
-    public synchronized void putFrames(String key, ArrayList<BufferedImage> frames) {
-        add(key, new CacheEntry(frames));
-    }
-
-    public synchronized String getStatsLine() {
-        return "entries=" + entries.size()
-                + " mb=" + String.format("%.1f", countedBytes / (1024.0 * 1024.0))
-                + " hits=" + hits
-                + " misses=" + misses
-                + " evictions=" + evictions;
-    }
-
-    private void add(String key, CacheEntry entry) {
-        CacheEntry replaced = entries.remove(key);
-        if (replaced != null) {
-            release(replaced);
+    private void add(String key, ImageCacheSection.CacheEntry entry) {
+        // A key already in the permanent or level section stays there, so it keeps its protection
+        ImageCacheSection target;
+        if (permanentBuild || permanentEntries.map.containsKey(key)) {
+            target = permanentEntries;
+        } else if (levelPreload || levelEntries.map.containsKey(key)) {
+            target = levelEntries;
+        } else {
+            target = entries;
         }
-        entries.put(key, entry);
-        for (BufferedImage image : entry.images) {
-            DataBuffer buffer = image.getRaster().getDataBuffer();
-            Integer count = bufferReferences.get(buffer);
-            if (count == null) {
-                countedBytes += bytesOf(buffer);
-                bufferReferences.put(buffer, 1);
-            } else {
-                bufferReferences.put(buffer, count + 1);
+        // A key lives in one section only, so an older copy in another section is deleted
+        for (ImageCacheSection section : new ImageCacheSection[]{permanentEntries, levelEntries, entries}) {
+            if (section != target) {
+                flush(section.remove(key));
             }
         }
+        flush(target.remove(key));
+        target.put(key, entry);
+        if (target == entries) {
+            evictOverBudget();
+        }
+    }
 
+    // Only the normal section is evicted, the level section never is
+    private void evictOverBudget() {
         if (DevTestSettings.disableImageCacheBudget) {
             return;
         }
-        // The entry just added is the most recently used one, so it is only reached when it is the last one left
-        Iterator<CacheEntry> eldest = entries.values().iterator();
-        while (countedBytes > MEMORY_BUDGET_BYTES && entries.size() > 1 && eldest.hasNext()) {
-            CacheEntry evicted = eldest.next();
+        // After a put the new entry is the most recently used one, so the loop only reaches it when nothing else is left
+        Iterator<ImageCacheSection.CacheEntry> eldest = entries.map.values().iterator();
+        while (entries.countedBytes > MEMORY_BUDGET_BYTES && entries.map.size() > 1 && eldest.hasNext()) {
+            ImageCacheSection.CacheEntry evicted = eldest.next();
             eldest.remove();
-            release(evicted);
+            entries.uncount(evicted);
+            flush(evicted);
             evictions++;
         }
     }
 
-    // Gives back the memory of the entry's images and flushes them. The entry itself must already be out of the map.
-    private void release(CacheEntry entry) {
+    // Flushes the images so their graphics card copies are freed too. The entry must already be out of its section.
+    private void flush(ImageCacheSection.CacheEntry entry) {
+        if (entry == null) {
+            return;
+        }
         for (BufferedImage image : entry.images) {
-            DataBuffer buffer = image.getRaster().getDataBuffer();
-            Integer count = bufferReferences.get(buffer);
-            if (count != null) {
-                if (count <= 1) {
-                    bufferReferences.remove(buffer);
-                    countedBytes -= bytesOf(buffer);
-                } else {
-                    bufferReferences.put(buffer, count - 1);
-                }
-            }
             image.flush();
         }
-    }
-
-    private long bytesOf(DataBuffer buffer) {
-        return (long) buffer.getSize() * buffer.getNumBanks() * (DataBuffer.getDataTypeSize(buffer.getDataType()) / 8);
     }
 
     private void writeStatsLine() {

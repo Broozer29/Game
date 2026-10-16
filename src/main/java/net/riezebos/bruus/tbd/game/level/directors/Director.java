@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd.game.level.directors;
 
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyCategory;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
@@ -48,6 +50,7 @@ public class Director {
     private boolean active;
 
     private int miniBossessSpawned = 0;
+    private List<EnemyEnums> plannedMiniBosses = new ArrayList<>();
 
     public Director(DirectorType directorType, List<MonsterCard> availableCards) {
         this.directorType = directorType;
@@ -133,7 +136,7 @@ public class Director {
     }
 
     private void handleMiniBossDirectorSpawn() {
-        if (miniBossessSpawned < LevelManager.getInstance().getCurrentMiniBossConfig().getMiniBossesPerLevel()) {
+        if (miniBossessSpawned < plannedMiniBosses.size()) {
             spawnMiniBoss();
             this.miniBossessSpawned++;
         }
@@ -141,15 +144,10 @@ public class Director {
 
     private void spawnMiniBoss() {
         // Set parameters for spawning
-        MonsterCard selectedCard = selectMonsterCard();
-        if (selectedCard == null) {
-            //failed to select a boss
-            return;
-        }
-
-        EnemyEnums miniBossType = selectedCard.getEnemyType();
-        Direction direction = getMiniBossDirection(miniBossType);
-        float scale = miniBossType.getDefaultScale();
+        EnemyEnums miniBossType = plannedMiniBosses.get(miniBossessSpawned);
+        EnemySpawnSettings settings = BossSummons.forEnemy(miniBossType).get(0);
+        Direction direction = getMiniBossDirection(settings);
+        float scale = settings.scale(0);
         float xMovementSpeed = miniBossType.getMovementSpeed();
 
         // Call LevelManager's spawnEnemy method
@@ -159,21 +157,12 @@ public class Director {
                 miniBossType, direction, scale, false, xMovementSpeed);
     }
 
-    private Direction getMiniBossDirection(EnemyEnums enemyEnums) {
-        Direction direction = Direction.LEFT;
-        if (enemyEnums.equals(EnemyEnums.ShurikenMiniBoss) || enemyEnums.equals(EnemyEnums.MirageMiniBoss)) {
-            switch (random.nextInt(2)) {
-                case 0:
-                    direction = Direction.LEFT_UP;
-                    break;
-                case 1:
-                    direction = Direction.LEFT_DOWN;
-                    break;
-                default:
-                    direction = Direction.LEFT_UP;
-            }
+    private Direction getMiniBossDirection(EnemySpawnSettings settings) {
+        List<Direction> directions = settings.directions();
+        if (directions.size() == 1) {
+            return directions.get(0); //no random call, so the shared Random is used exactly as before
         }
-        return direction;
+        return directions.get(random.nextInt(directions.size()));
     }
 
 
@@ -302,12 +291,9 @@ public class Director {
 
     private void spawnBoss(EnemyEnums enemyEnums) {
         // Set parameters for spawning
-        Direction direction = Direction.LEFT;
-        float scale = enemyEnums.getDefaultScale();
-
-        if(DataClass.getInstance().getResolutionFactor() < 1){
-            scale *= 0.7f;
-        }
+        EnemySpawnSettings settings = BossSummons.forEnemy(enemyEnums).get(0);
+        Direction direction = settings.directions().get(0);
+        float scale = settings.scale(0); //includes the 0.7 factor below resolution factor 1
 
 //        float scale = 0.35f;
         float xMovementSpeed = enemyEnums.getMovementSpeed();
@@ -339,7 +325,7 @@ public class Director {
 
             //spawn left twins
             int leftXCoordinate = Math.round(-(EnemyEnums.TwinBoss.getBaseWidth() * scale));
-            Direction rightDirection = Direction.RIGHT;
+            Direction rightDirection = settings.directions().get(1);
             LevelManager.getInstance().spawnEnemy(
                     leftXCoordinate,
                     Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.25f),
@@ -600,15 +586,15 @@ public class Director {
     }
 
 
+    public void setPlannedMiniBosses(List<EnemyEnums> plannedMiniBosses) {
+        this.plannedMiniBosses = plannedMiniBosses;
+    }
+
     public void receiveCredits(float amount) {
         this.credits += amount;
     }
 
     private MonsterCard selectMonsterCard() {
-        if (this.directorType == DirectorType.MiniBoss) {
-            return availableCards.get(random.nextInt(availableCards.size()));
-        }
-
         List<MonsterCard> adjustedCards = adjustWeights(availableCards, GameState.getInstance().getDifficultyCoefficient());
         if (!adjustedCards.isEmpty()) {
             return weightedRandomSelection(adjustedCards);

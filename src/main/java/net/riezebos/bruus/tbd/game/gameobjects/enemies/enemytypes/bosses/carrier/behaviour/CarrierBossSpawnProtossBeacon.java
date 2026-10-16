@@ -2,6 +2,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrie
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -9,7 +11,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
-import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.DestinationPathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -94,8 +95,9 @@ public class CarrierBossSpawnProtossBeacon implements BossActionable {
 
     private Enemy createProtossBeacon(Enemy enemy) {
         EnemyEnums enemyEnums = EnemyEnums.EnemyCarrierBeacon;
-        Enemy enemyProtossBeacon = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
-                enemyEnums.getDefaultScale(),
+        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.CarrierBoss, enemyEnums);
+        Enemy enemyProtossBeacon = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), settings.directions().get(0),
+                settings.scale(0),
                 enemyEnums.getMovementSpeed() + LevelManager.getInstance().getBossDifficultyLevel() * 0.5f);
 
         enemyProtossBeacon.setOwnerOrCreator(enemy);

@@ -45,6 +45,8 @@ Items, boons, the shop, rerolls and prices.
   - BarrierBooster.java:19 raises the ship's `maxShieldPoints`, but shield regen (SpaceShip.java:432-434) and `changeShieldHitpoints` (:390) cap at PlayerStats' `maxShieldHitPoints`; not confirmed in play
 - Barrier Backfire's thorns ratio still grows by 400% per copy
   - ReflectiveShielding.java:27 and :43 add `quantity * buffAmount` to the thorns ratio; Bruus said the 400% should not grow per copy. Question for Bruus: is the thorns ratio a separate effect that may grow?
+- Continue Run cannot read the shop from the save file, so a new shop is rolled
+  - Seen on 2026-10-15 on the `boss-preload` branch after `Nelis` was merged in. Jackson throws `InvalidDefinitionException`: `ShopSlot` has no constructor it can use
 
 ## Features
 - Equipment slots: give a player a new active ability that is not decided by their class

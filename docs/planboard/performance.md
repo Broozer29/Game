@@ -56,6 +56,11 @@ Frame rate, lag, loading times and memory use.
   - Captain, generic and Mutalisk missiles are marked destructible, so `interactsWithMissiles()` is true for all of them (MissileManager.java:357-375)
   - Fix: keep a separate list of reflective blocks and only check those
   - Bruus agreed on 2026-10-08; see his reply under "Missile-against-missile collision compares every pair every frame"
+- Some enemies resize their explosion twice and throw the first copy away (Nelis, 2026-10-15)
+  - The first explosion build uses the enemy's shared settings scale, which `Enemy.initChargingUpAnimation` sometimes raises to 0.85. `setAnimationScale` then builds a second copy at the scale the explosion actually needs, and the first copy is thrown away
+  - 19 enemy classes have the pattern: the cash carrier, Needler, Scout, Seeker, Defender, the four big mini bosses, the Mother Ship drone, all seven RoyalGuard enemies, and the Striker and Final boss laserbeam clones. About 0.4 to 0.5 s each for the big ones
+  - The Mother Ship drone rebuilds its explosion at full size
+  - Fix direction (Nelis): give the explosion its own copy of the sprite settings so its scale can be overridden and it is built once
 
 # Negeer de onderstaande
 
@@ -88,19 +93,20 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Measured on 2026-10-05, two runs each, from the timestamps in startup_log.txt. A "Preloading laserbeams..." line was added to Game.java to split the preload in two
   - Before any fix: 36 s total (window appears 2.7 s, images 13-15 s, enemy preload 7-8 s, laserbeam preload 11-12 s)
   - After the three fixes in this file: 19 s total (window 2.7 s, images 6.5 s, enemy preload 7-7.6 s, laserbeam preload 2 s)
-  - Image loading now starts on its own thread at the very start of `main`, so it runs while JavaFX, the controllers, the window and the audio start up. Measured: about 16 s total (15.8, 16.1 and 16.4 s; one outlier run took 22 s). The window still appears after about 2.8 s
+  - Image loading now starts on its own thread at the very start of `main`, so it runs while JavaFX, the controllers, the window and the audio start up. Measured on 2026-10-05, while startup still built enemies and laserbeams: about 16 s total (15.8, 16.1 and 16.4 s; one outlier run took 22 s). The window still appears after about 2.8 s
   - Still open: images are decoded on one thread, about 4,500 PNG files. Decoding on all CPU cores could cut the 6.5 s further; `ImageLoader`'s shared `bufferedImage` field must become a local variable first
+  - Profile the 6.5 s image decode before changing the asset format (council 2026-10-15)
   - Still open: audio loads before the window appears, because BoardManager's `AudioManager` field creates the whole `AudioDatabase`. Moving it to the loading thread shows the window sooner and lets a loading bar include audio
   - Audio measured on its own: building all 189 players takes about 1.25 s, of which the reset of every player takes 0.12 s. A player for a large music file takes as long to create as one for a short sound (about 5.7 ms each), so the music format does not change startup time
 - Every image was copied to a temporary file before it was decoded
   - Java's image reader does this by default when reading from a stream. With about 4,500 PNGs this was half of the image loading time (shown by a Java Flight Recorder profile)
   - Fixed on 2026-10-05: `ImageIO.setUseCache(false)` at the start of loading in Game.java
   - Measured: image loading went from about 13 s to 6.7 s
-- The enemy preload spends about 7 s resizing big enemy animations
+- Resizing big enemy animations is slow (about 7 s of the startup enemy preload on 2026-10-05; since 2026-10-13 that cost falls on entering a boss or mini-boss level)
   - `ImageResizer.getScaledImage` uses bicubic scaling, the slowest and highest-quality mode; the profile shows the preload time inside it
   - Option: bilinear scaling is faster but looks slightly softer, so compare the sprites first
   - Measured on 2026-10-05 as a test, then put back to bicubic: with bilinear scaling the enemy preload took 2.2-2.9 s instead of about 7 s, and startup took 11-12 s in total. It changes how scaled sprites look everywhere in the game, not only at startup
-  - Option: resize the frames on several CPU cores at once; sprites look the same but it is more work
+  - Done 2026-10-15: the frames of an animation are now resized and rotated on all processor cores at once, with the same bicubic scaling, so the sprites look the same. The 62 frames of Explosion2 at 3x took 5.1 s on one core and 0.63 s on 16 threads (Ryzen 7 5800X)
 - The audio system started about 17,000 threads in a 30-second recording
   - Seen in the Java Flight Recorder profile on 2026-10-05; the threads have no Java stack, so they are made by JavaFX's native media code
   - They come in two bursts. About 12,300 start while `AudioDatabase` builds its players, before the window appears. About 4,800 start at "Finishing initialization", when `initMainMenu` calls `gameBoard.resetGame()`, which calls `AudioDatabase.resetAudio()`
@@ -242,6 +248,9 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - A faster flamethrower lowers its damage cooldown, so more burn-effect copies are made per second
 
 ## Ideas
+- Question for Bruus: can the mini bosses' death explosion be cheaper? (Nelis, 2026-10-15)
+  - The four mini bosses (Laserbeam, Mirage, Mother Ship, Shuriken) build Explosion2 at 3x: 62 frames of 1536x1536, 558 MB. This is the main cost of a mini-boss level preload
+  - Could it be 2x, have fewer frames, or be a different explosion? Each would change how the death looks, so it is your call
 - Redesign the image cache so it keys on what an image is, not which object it is
   - Key by `ImageEnums` plus whole-number scale, angle, crop and flip values, looked up directly
   - Never modify a list the cache or ImageDatabase hands out
@@ -249,9 +258,9 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
   - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
 - Never build boss images during a level: prepare them at game start, run start or level start (Nelis, 2026-10-08)
-  - Today `Game.preloadThings` prepares the Space Station, Red and Yellow bosses and all five mini bosses at startup; the Twin boss, the Striker boss and the final boss are not prepared, so their first appearance builds their images during play
-  - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup can be dropped again and rebuilt when it appears, which freezes the game for a moment
-  - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level (boss levels are known in advance); prepare the possible mini bosses at level start and keep them from being dropped until the level ends; keep preparing every boss at startup, including the three missing ones
+  - Startup builds no enemies; bosses, their summons and mini bosses are prepared just before their level by `LevelPreloader`. Startup builds only the laserbeams and the cash carrier (pirate and Overlord), into a permanent part of the image cache that is never cleared
+  - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup (before 2026-10-13) could be dropped again and rebuilt when it appears, which freezes the game for a moment
+  - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level, or its mini bosses if it is a regular level (the level plan, `LevelManager.planNextLevel()`, now decides both before the level starts) and keep them from being dropped until the level ends (built on the branch boss-preload, 2026-10-13)
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
 - Why the game uses so much memory but hardly any processor or graphics card (Nelis, 2026-10-08: the PC almost ran out of memory again)
   - The process reached 7.9 GB and 8.5 GB in the two stress runs of 2026-10-08. After a forced garbage collection the Java heap held 3.9 to 4.4 GB, of which the image cache is 2.5 GB; the rest is outside the heap
@@ -270,7 +279,7 @@ Why: on 2026-10-07 a 15-minute stress run used up all of the PC's memory and cra
 The slow motion in busy levels turned out to be a different problem: damage numbers piling up (see Menus & UI). The cache does not cause the slowdown, only the memory use.
 
 Decisions for the experiment:
-- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both
+- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; only Generic bosses, mini bosses and their summons built during a level preload sit in a level section outside the budget, and that section is deleted when the level ends; the laserbeams and the cash carrier, built once at startup, sit in a permanent section outside the budget that is never cleared
 - The budget is a constant at the top of that class, first set to about 2.5 GB, which is above what one level needs today. It can be lowered once each image takes less memory
 - Memory is counted as width × height × 4 bytes per image, each image counted once even if two entries point to it
 - When the budget is full, the image used longest ago is dropped and `flush()`ed, so its graphics card copy is freed too

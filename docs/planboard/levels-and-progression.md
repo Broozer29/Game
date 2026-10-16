@@ -25,7 +25,7 @@ Level flow, portals, the structure of a run and saved progress.
 - Not every route back to the menu resets the run
   - `GameBoard.resetGame()` doesn't reset `TwinBossManager`, `InteractableManager` or `GameStatsTracker`; the stats tracker only resets on the death screen's key or controller path and on EXIT RUN in the pause window (since 2026-10-11)
   - `ThornsDamageDealer.resetThornsDamageDealer()` doesn't clear `thornsMissileMap`, and it isn't called between levels
-- `LevelManager.getNextBoss` (LevelManager.java:255-264) retries with recursion until a counter passes 1000, and that counter is never reset
+- `LevelManager.getNextBoss` (LevelManager.java:285-290) retries with recursion until a counter passes 1000, and that counter is never reset
 - The Instant director never spawns anything, so the opening wave at level start never happens
   - `Director.attemptSpawn()` (Director.java:122-132) handles Boss, Fast, Slow and MiniBoss but has no Instant branch; its credits (DirectorManager.java:82) are never spent
 - Enemy caps are checked before the formation size is known, so formations blow through them
@@ -44,11 +44,11 @@ Level flow, portals, the structure of a run and saved progress.
 - God-run spawn speed bonuses are only calculated when the level starts
   - `updateSpawnInterval` is only called from the Director constructor (Director.java:57)
 - A spawn that fails to find a free spot still costs credits, and a skipped cash carrier still starts its 45-second lockout
-  - LevelManager.java:318 and Director.java:176-177
+  - LevelManager.java:348 and Director.java:176-177
 - Edge cases that can crash or misbehave
-  - Director.java:241 and LevelManager.java:253 pick from lists that can be empty
+  - `LevelManager.planNextLevel()` skips the mini-boss draw when the list is empty (so no mini boss spawns), but `getNextBoss` (LevelManager.java:283) picks from a list that can be empty
   - `calculateLevelProgression` (Director.java:62-64) divides by the predicted level length, which can be 0 or stale with local music
   - `isBossAlive()` also counts `FinalBossLaserbeamClone`, which may keep a boss level open
 - Unreachable or unused flow
   - `LevelTypes.Special` is never assigned; the final boss needs 99999 kills and its portal is commented out (FriendlyManager.java:103), so runs are endless
-  - `getMineralPenaltyModifier` has no band for 301 to 500 (may be intended); in Man Mode or `onlyBossLevels`, the selected difficulty is overwritten with Hard on later levels (LevelManager.java:194)
+  - `getMineralPenaltyModifier` has no band for 301 to 500 (may be intended); in Man Mode or `onlyBossLevels`, the selected difficulty is overwritten with Hard on later levels (LevelManager.java:224)

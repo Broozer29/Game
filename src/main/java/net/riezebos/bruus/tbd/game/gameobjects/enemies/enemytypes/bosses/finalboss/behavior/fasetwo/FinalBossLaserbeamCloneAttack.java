@@ -2,6 +2,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalb
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
@@ -9,7 +11,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -117,8 +118,9 @@ public class FinalBossLaserbeamCloneAttack implements BossActionable {
     }
 
     private FinalBossLaserbeamClone createClone(int angleDegrees, Point spawningPoint, Enemy enemy) {
-        FinalBossLaserbeamClone finalBossLaserbeamClone = (FinalBossLaserbeamClone) EnemyCreator.createEnemy(EnemyEnums.FinalBossLaserbeamClone, spawningPoint.getX(), spawningPoint.getY(), Direction.LEFT,
-                enemy.getScale(), 1);
+        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.FinalBoss, EnemyEnums.FinalBossLaserbeamClone);
+        FinalBossLaserbeamClone finalBossLaserbeamClone = (FinalBossLaserbeamClone) EnemyCreator.createEnemy(EnemyEnums.FinalBossLaserbeamClone, spawningPoint.getX(), spawningPoint.getY(), settings.directions().get(0),
+                settings.scale(enemy.getScale()), 1);
         finalBossLaserbeamClone.setOwnerOrCreator(enemy);
         finalBossLaserbeamClone.setDamage(enemy.getDamage());
         finalBossLaserbeamClone.setCurrentHitpoints(1000000);

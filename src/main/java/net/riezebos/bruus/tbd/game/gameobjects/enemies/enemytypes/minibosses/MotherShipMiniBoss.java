@@ -3,10 +3,11 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.minibosses;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.SpawnCoinsOnDeath;
-import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.HoverPathFinder;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -68,7 +69,8 @@ public class MotherShipMiniBoss extends Enemy {
 
 
     private void addDrone(){
-        Enemy drone = EnemyCreator.createEnemy(EnemyEnums.MotherShipDrone, this.getCenterXCoordinate(), this.getCenterYCoordinate(), Direction.LEFT, 0.25f, EnemyEnums.MotherShipDrone.getMovementSpeed());
+        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.MotherShipMiniBoss, EnemyEnums.MotherShipDrone);
+        Enemy drone = EnemyCreator.createEnemy(EnemyEnums.MotherShipDrone, this.getCenterXCoordinate(), this.getCenterYCoordinate(), settings.directions().get(0), settings.scale(0), EnemyEnums.MotherShipDrone.getMovementSpeed());
         drone.setOwnerOrCreator(this);
         drone.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
         droneList.add(drone);

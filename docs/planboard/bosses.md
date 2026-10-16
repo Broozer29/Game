@@ -2,6 +2,12 @@
 Bosses and the final boss: attacks, phases, difficulty and rewards.
 
 ## Bugs
+- Two spawn directions can never be picked; is that intended?
+  - Red Boss shurikens: the old pick was `nextInt(0, 2)`, so LEFT was never picked; `BossSummons` now lists only LEFT_UP and LEFT_DOWN for Red's shurikens
+  - Space Station: its shurikens never get RIGHT_DOWN (`BossSummons` lists only LEFT_UP, LEFT_DOWN and RIGHT_UP), and its bounce direction (`SpaceStationSpinningAttack.getRandomDirection`, `nextInt(0, directions.length - 1)`) never picks RIGHT_DOWN either
+  - To change either, add the direction to the `BossSummons` list (and fix the bounce pick for the Station)
+  - Both look like off-by-one slips. Nothing was changed: the allowed directions are listed in `BossSummons` exactly as they are picked today
+  - Question for Nelis/Bruus: should Red also spawn LEFT, and should the Space Station also pick RIGHT_DOWN, or leave it as it is?
 - The white battlecruiser boss sometimes crashes the game
 - The white battlecruiser crash is probably the reflective-block crash fixed in commit a7ccbe1b
   - error_log.txt (2026-10-05) shows `ReflectiveBlocks.reflectMissile` reading the path of a missile that had none; the Yellow Boss and the final boss both use reflective blocks. Re-test to confirm
