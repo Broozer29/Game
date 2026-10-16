@@ -264,11 +264,11 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
 - Why the game uses so much memory but hardly any processor or graphics card (Nelis, 2026-10-08: the PC almost ran out of memory again)
   - The process reached 7.9 GB and 8.5 GB in the two stress runs of 2026-10-08. After a forced garbage collection the Java heap held 3.9 to 4.4 GB, of which the image cache is 2.5 GB; the rest is outside the heap
-  - The heap: `-Xms4g` reserves 4 GB at start and `-Xmx8g` allows 8 GB; Java keeps memory it has grown to, so Windows shows the peak
+  - The heap: `-Xms4g` reserves 4 GB at start and `-Xmx6g` allows 6 GB (8 GB until 2026-10-16); Java keeps memory it has grown to, so Windows shows the peak
   - The image cache keeps every rotated and resized sprite fully decoded at 4 bytes per pixel, and each rotated copy is a square as wide as the sprite's diagonal
-  - Outside the heap: about 600 sound threads with their own memory, JavaFX media buffers, and the graphics driver's copies of the cached images (`-Dsun.java2d.accthresh=0` gives every cached image a graphics card copy)
+  - Outside the heap: the graphics driver's copies of the cached images that have been drawn at least once (Java gives every drawn image a graphics card copy by default; about 2.8 GB at minute 30 of the 2026-10-16 recording) and the Windows heaps (0.57 GB). The sound threads are short-lived and leave no memory behind (tested 2026-10-15)
   - The processor is barely used because the game logic runs on one thread (one busy core of 16 shows as about 6%), and the caches exist so it does not redo rotations and scaling; drawing 2D sprites is light work for the graphics card
-  - Levers already on the list: a lower `-Xmx` after a 20 to 30 minute run, rotated copies at their real size, and the sound fix (see the audio entry under "Negeer de onderstaande")
+  - Levers already on the list: rotated copies at their real size, and the sound fix (see the audio entry under "Negeer de onderstaande")
 
 ## Probeerseltje. Kijk maar of je er wat mee gaat doen
 
@@ -301,4 +301,3 @@ Not done, possible later steps if memory needs to come down further:
 - Round scales to steps of 0.05, so scales computed from difficulty or enemy size stop creating new copy families
 - Coarser angle steps for small sprites (2 to 3 degrees); bosses and lasers keep 1 degree
 - Convert images to the screen's own pixel format at load; resizing the old indexed-colour images is what made the first Mirage mini boss freeze the game
-- Lower `-Xmx` from 8 GB once a 20 to 30 minute run shows how the heap behaves

@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-16
+
+### Changed
+- The game now lets Java use at most 6 GB of memory instead of 8 GB, so it fits better on PCs with 16 GB of RAM. Internal: a launch setting that did nothing (`-Dsun.java2d.accthresh=0`) is removed.
+
 ## 2026-10-15
 
 ### Changed
