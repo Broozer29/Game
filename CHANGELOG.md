@@ -6,6 +6,7 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - Internal: the image cache log shows how many MB are rotated copies and how many are resized copies.
+- Internal: the firefighter-distributed-heat test save is the full firefighter-scorch build plus Distributed Heat and 99,999 minerals.
 - Internal: planboard notes on the two designed memory steps (rotated sprites drawn without copies, boss images decoded per level).
 
 ## 2026-10-16

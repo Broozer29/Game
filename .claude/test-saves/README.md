@@ -10,6 +10,7 @@ every 2nd stage from stage 6).
 | --- | --- |
 | `captain-lasers` | stress run: lasers and drone attacks (3000 minerals) |
 | `firefighter-scorch` | stress run: burns and Scorch (3000 minerals) |
+| `firefighter-distributed-heat` | memory recording with the heaviest Firefighter effect: `firefighter-scorch` plus Distributed Heat 1 and 99,999 minerals, so the build deals enough damage at difficulty 7 |
 | `captain-items` | play-test of item and shop fixes: `captain-lasers` plus Precision Amplifier 7, Guillotine 2, Wondrous Wisdomball 1 and 99,999 minerals |
 
 ## Stress runs and recording
