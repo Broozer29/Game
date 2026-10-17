@@ -198,7 +198,7 @@ public class ImageRotator {
             return image;
         }
         try {
-            return image.getSubimage(minX, minY, subImageWidth, subImageHeight);
+            return ImageCropper.getInstance().copyToOwnImage(image.getSubimage(minX, minY, subImageWidth, subImageHeight));
         } catch (RasterFormatException exception) {
             System.out.println(exception);
             return image;

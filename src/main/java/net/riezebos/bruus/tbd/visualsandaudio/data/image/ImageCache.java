@@ -21,7 +21,8 @@ import java.util.*;
 // the normal section leaves the entry there. clearLevelEntries() deletes the whole level section; nothing moves between the sections.
 public class ImageCache {
 
-    private static final long MEMORY_BUDGET_BYTES = 2_560L * 1024 * 1024;
+    // About 500 MB of pixels times 2.3 (pixels plus GRAPHICS_COPY_FACTOR): the visible pixels the normal section held in the 2026-10-17 Firefighter run
+    private static final long MEMORY_BUDGET_BYTES = 1_152L * 1024 * 1024;
     // The graphics driver keeps its own copy of every drawn image, measured on 2026-10-16 at about 1.3 times the image's pixel bytes
     private static final double GRAPHICS_COPY_FACTOR = 1.3;
     private static final long STATS_INTERVAL_MILLIS = 30_000;
@@ -169,7 +170,7 @@ public class ImageCache {
     }
 
     // Rotated (rot_) or resized (scale_) share of a section, as width x height x 4 bytes per image.
-    // Images that share a pixel buffer are counted twice, so it is an approximation of the split, not of the total.
+    // Cached rotated copies own their pixel buffers, so these are the real sizes and add up to the section's total.
     private static String megabytesWithPrefix(ImageCacheSection section, String keyPrefix) {
         long bytes = 0;
         for (Map.Entry<String, ImageCacheSection.CacheEntry> cached : section.map.entrySet()) {

@@ -35,6 +35,16 @@ public class ImageCropper {
         return cropped;
     }
     
+    // A getSubimage view keeps the whole parent image in memory; this copies just the visible part into an image of its own
+    public BufferedImage copyToOwnImage(BufferedImage view) {
+        BufferedImage copy = new BufferedImage(view.getWidth(), view.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = copy.createGraphics();
+        g.setComposite(AlphaComposite.Src);
+        g.drawImage(view, 0, 0, null);
+        g.dispose();
+        return copy;
+    }
+
     public BufferedImage cropToContent(BufferedImage img) {
         BufferedImage cachedCrop = croppedFrameCache.get(img);
         if (cachedCrop != null) {
@@ -124,7 +134,7 @@ public class ImageCropper {
             int width = Math.min(globalMaxX - globalMinX + 1, img.getWidth() - globalMinX);
             int height = Math.min(globalMaxY - globalMinY + 1, img.getHeight() - globalMinY);
             if (width > 0 && height > 0) {
-                frames.set(i, img.getSubimage(globalMinX, globalMinY, width, height));
+                frames.set(i, copyToOwnImage(img.getSubimage(globalMinX, globalMinY, width, height)));
             }
         }
     }
