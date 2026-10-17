@@ -61,6 +61,11 @@ Frame rate, lag, loading times and memory use.
   - 19 enemy classes have the pattern: the cash carrier, Needler, Scout, Seeker, Defender, the four big mini bosses, the Mother Ship drone, all seven RoyalGuard enemies, and the Striker and Final boss laserbeam clones. About 0.4 to 0.5 s each for the big ones
   - The Mother Ship drone rebuilds its explosion at full size
   - Fix direction (Nelis): give the explosion its own copy of the sprite settings so its scale can be overridden and it is built once
+- Rotations during play still build images in the middle of a level (Nelis, 2026-10-17)
+  - Every time something turns to a whole degree it has not used before, its animation is rotated once and cached; the level preload cannot know these angles
+  - Measured 2026-10-15 (target/perf/run-2026-10-15_12-10-28-normal.log in the boss-preload worktree, copied to target/perf/): one level with the `captain-lasers` test save built 1,597 images during the level, 0.9 s in total, the slowest 26.6 ms. Bouncing lasers and drones turn to many new angles
+  - The Final boss clone attack aims its laser clones at angles known only during the fight; Nelis noticed lag in that fight
+  - The level-end log line names the slowest build by its cache key, which holds hash numbers only, so it cannot say which animation it was. Idea: log the image name as well
 
 # Negeer de onderstaande
 
@@ -264,6 +269,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Startup builds no enemies; bosses, their summons and mini bosses are prepared just before their level by `LevelPreloader`. Startup builds only the laserbeams and the cash carrier (pirate and Overlord), into a permanent part of the image cache that is never cleared
   - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup (before 2026-10-13) could be dropped again and rebuilt when it appears, which freezes the game for a moment
   - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level, or its mini bosses if it is a regular level (the level plan, `LevelManager.planNextLevel()`, now decides both before the level starts) and keep them from being dropped until the level ends (built on the branch boss-preload, 2026-10-13)
+  - Built and squash-merged into `Nelis` on 2026-10-17 (Bruus gave the green light). Playtested: mini bosses and bosses spawn without a stutter, the Twin fight has exactly 4 ships, Continue Run prepares the next level. Still to check before this entry is deleted: no sound plays or hangs after a Final boss preload (the test of 2026-10-15 was cut short by the relic crash in Items & Shop)
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
 - Why the game uses so much memory but hardly any processor or graphics card (Nelis, 2026-10-08: the PC almost ran out of memory again)
   - The process reached 7.9 GB and 8.5 GB in the two stress runs of 2026-10-08. After a forced garbage collection the Java heap held 3.9 to 4.4 GB, of which the image cache is 2.5 GB; the rest is outside the heap

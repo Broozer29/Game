@@ -47,6 +47,7 @@ Items, boons, the shop, rerolls and prices.
   - ReflectiveShielding.java:27 and :43 add `quantity * buffAmount` to the thorns ratio; Bruus said the 400% should not grow per copy. Question for Bruus: is the thorns ratio a separate effect that may grow?
 - Continue Run cannot read the shop from the save file, so a new shop is rolled
   - Seen on 2026-10-15 on the `boss-preload` branch after `Nelis` was merged in. Jackson throws `InvalidDefinitionException`: `ShopSlot` has no constructor it can use
+  - Related crash, seen 2026-10-15: Continue Run from a save that stopped mid-level (`Zoning_In`) goes straight into the level, so no shop is made; picking a relic after the level then crashes because `ShopContents` is null (ShopItem.java:72)
 
 ## Features
 - Equipment slots: give a player a new active ability that is not decided by their class

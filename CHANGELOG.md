@@ -8,6 +8,8 @@ All notable changes on the `Nelis` branch.
 - Internal: the image cache log shows how many MB are rotated copies and how many are resized copies.
 - Internal: the firefighter-distributed-heat test save is the full firefighter-scorch build plus Distributed Heat and 99,999 minerals.
 - Internal: planboard notes on the two designed memory steps (rotated sprites drawn without copies, boss images decoded per level).
+- Internal: Claude setup: a finished branch is cleaned up once its squash commit is pushed (worktree removed, local branch deleted).
+- Internal: planboard follow-ups from the boss preloading: rotations during play, the relic crash after Continue Run from a mid-level save, the `instantlySpawnPortal` dev setting, the Final boss clone crash with the Guillotine, and the open Final boss sound check.
 
 ## 2026-10-16
 

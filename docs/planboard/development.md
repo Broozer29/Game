@@ -2,6 +2,9 @@
 Settings, startup, Discord status, builds, packaging and dev tooling.
 
 ## Bugs
+- `DevTestSettings.instantlySpawnPortal` opens the portal but the level keeps going
+  - It only sets the level to finished (LevelManager.java:172-174); a normal level end also turns the spawner off (`DirectorManager.setEnabled(false)`, LevelManager.java:102-103), so enemies keep spawning and the progress bar keeps filling
+  - Fix: also turn the spawner off in the dev setting
 - Any error during a game tick closes the whole game
   - `GameBoard.actionPerformed` catches every exception, writes error_log.txt and calls `System.exit(1)` (GameBoard.java:1128-1140), so every null pointer below ends the run
   - Fix: log the error and skip that tick, or go to a game-over screen instead of exiting
