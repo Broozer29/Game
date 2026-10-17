@@ -137,7 +137,6 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - `drawAnimation` calls `getCurrentFrameImage(true)` (GameBoard.java:782)
 - Sprite-sheet frames are views into the whole sheet (`getSubimage`), so each frame keeps the full sheet in memory
   - ImageDatabase.java:3118, ImageCropper and ImageRotator; not measured
-- No pause-time setting (`-XX:MaxGCPauseMillis`) is set for G1
 - Every moving object builds its whole route up front as up to a few thousand points, then removes the first point each step
   - RegularPathFinder.java:45-68 (up to twice the window width divided by the step size) and StraightLinePathFinder; `GameObjectMover.handleNextWaypointRemoval` does `getWaypoints().remove(0)`, which shifts the whole list every time
   - Formation enemies build their route twice (`resetMovementPath()` in `LevelManager.spawnEnemy`)
