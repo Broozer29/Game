@@ -5,7 +5,7 @@ All notable changes on the `Nelis` branch.
 ## 2026-10-17
 
 ### Changed
-- Rotated pictures are now stored at their visible size instead of on the whole square they were rotated on, and the image cache limit drops so it keeps the same pictures as before; the game uses about 600 MB less memory and looks the same.
+- Rotated pictures are now stored at their visible size instead of on the whole square they were rotated on, so the image cache fits more pictures in the same space and has to rebuild them less often; the game looks the same.
 - Internal: the image cache log shows how many MB are rotated copies and how many are resized copies.
 - Internal: the firefighter-distributed-heat test save is the full firefighter-scorch build plus Distributed Heat and 99,999 minerals.
 - Internal: planboard notes on the two designed memory steps (rotated sprites drawn without copies, boss images decoded per level).

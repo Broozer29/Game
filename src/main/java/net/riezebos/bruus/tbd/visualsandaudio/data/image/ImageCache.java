@@ -21,8 +21,8 @@ import java.util.*;
 // the normal section leaves the entry there. clearLevelEntries() deletes the whole level section; nothing moves between the sections.
 public class ImageCache {
 
-    // About 500 MB of pixels times 2.3 (pixels plus GRAPHICS_COPY_FACTOR): the visible pixels the normal section held in the 2026-10-17 Firefighter run
-    private static final long MEMORY_BUDGET_BYTES = 1_152L * 1024 * 1024;
+    // 1,152 MB was tried on 2026-10-17 and made the cache drop and rebuild pictures about twice as often, which caused noticeable hitches
+    private static final long MEMORY_BUDGET_BYTES = 2_560L * 1024 * 1024;
     // The graphics driver keeps its own copy of every drawn image, measured on 2026-10-16 at about 1.3 times the image's pixel bytes
     private static final double GRAPHICS_COPY_FACTOR = 1.3;
     private static final long STATS_INTERVAL_MILLIS = 30_000;
