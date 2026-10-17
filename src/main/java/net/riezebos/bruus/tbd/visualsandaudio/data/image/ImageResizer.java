@@ -32,7 +32,9 @@ public class ImageResizer {
             return cachedImage;
         }
 
+        long buildStart = System.nanoTime();
         BufferedImage bufferedImage = scaleWithoutCaching(image, scale);
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putImage(keyString, bufferedImage);
 
         return bufferedImage;
@@ -60,16 +62,12 @@ public class ImageResizer {
         }
 
         // The frames are cached as one list, not one by one
-        ArrayList<BufferedImage> newFrames = new ArrayList<>();
-        for (int i = 0; i < frames.size(); i++) {
-            BufferedImage bufferedImage;
-            if (scale == 0) {
-                bufferedImage = frames.get(i);
-            } else {
-                bufferedImage = scaleWithoutCaching(frames.get(i), scale);
-            }
-            newFrames.add(bufferedImage);
-        }
+        // The frames are built on all processor cores at once; collect() keeps the frame order
+        long buildStart = System.nanoTime();
+        ArrayList<BufferedImage> newFrames = frames.parallelStream()
+                .map(frame -> scale == 0 ? frame : scaleWithoutCaching(frame, scale))
+                .collect(Collectors.toCollection(ArrayList::new));
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
 
         cache.putFrames(keyString, newFrames);
 
@@ -88,12 +86,14 @@ public class ImageResizer {
             return cachedImage;
         }
 
+        long buildStart = System.nanoTime();
         double scaleX = (double) width / image.getWidth();
         double scaleY = (double) height / image.getHeight();
         AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
         AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BICUBIC);
 
         BufferedImage bufferedImage = bilinearScaleOp.filter(image, new BufferedImage(width, height, image.getType()));
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putImage(keyString, bufferedImage);
 
         return bufferedImage;

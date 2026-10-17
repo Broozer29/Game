@@ -33,6 +33,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class LevelManager {
 
@@ -54,6 +55,9 @@ public class LevelManager {
     private int stagesBeforeBoss = 3;
     private PerformanceLogger performanceLogger = null;
     private EnemyEnums selectedBoss = null;
+    private boolean levelPlanned = false;
+    private List<EnemyEnums> plannedMiniBosses = new ArrayList<>();
+    private final Random random = new Random();
 
     private LevelManager() {
         this.performanceLogger = new PerformanceLogger("Level Manager");
@@ -71,6 +75,7 @@ public class LevelManager {
         currentEnemyTribe = EnemyTribes.Pirates;
         performanceLogger.reset();
         loopBreaker = 0;
+        clearPlan();
     }
 
 
@@ -133,15 +138,7 @@ public class LevelManager {
         BoonManager.getInstance().activateBoons(BoonActivationEnums.Start_of_Level);
         GameState.getInstance().setLevelStartTime(GameState.getInstance().getGameSeconds());
 
-        initDifficulty();
-
-        if (DevTestSettings.onlyBossLevels) {
-            this.levelType = LevelTypes.Boss;
-        }
-
-        if (this.levelType.equals(LevelTypes.Boss)) {
-            selectedBoss = getNextBoss();
-        }
+        planNextLevel();
 
         GameBoardCreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), getDifficultyScore());
         GameBoardCreator.getInstance().createProgressBar();
@@ -175,6 +172,39 @@ public class LevelManager {
         if (DevTestSettings.instantlySpawnPortal) {
             gameState.setGameState(GameStatusEnums.Level_Finished);
         }
+    }
+
+    //Decides the level type, difficulty, boss and mini bosses of the next level, once; startLevel uses the result
+    public void planNextLevel() {
+        if (levelPlanned) {
+            return;
+        }
+
+        initDifficulty();
+
+        if (this.levelType.equals(LevelTypes.Boss)) {
+            selectedBoss = getNextBoss();
+        } else {
+            List<EnemyEnums> availableMiniBosses = DirectorManager.getInstance().getAvailableMiniBosses();
+            if (!availableMiniBosses.isEmpty()) {
+                List<EnemyEnums> miniBosses = new ArrayList<>();
+                for (int i = 0; i < currentMiniBossConfig.getMiniBossesPerLevel(); i++) {
+                    miniBosses.add(availableMiniBosses.get(random.nextInt(availableMiniBosses.size())));
+                }
+                plannedMiniBosses = miniBosses;
+            }
+        }
+        levelPlanned = true;
+    }
+
+    public void clearPlan() {
+        levelPlanned = false;
+        selectedBoss = null;
+        plannedMiniBosses = new ArrayList<>(); //a new list, the mini-boss director still holds the old one
+    }
+
+    public List<EnemyEnums> getPlannedMiniBosses() {
+        return plannedMiniBosses;
     }
 
     private void initDifficulty() {
@@ -414,6 +444,11 @@ public class LevelManager {
 
     public LevelTypes getLevelType() {
         return levelType;
+    }
+
+    // Only for the startup image build, which creates the Zerg version of the cash carrier and restores the tribe afterwards
+    void setCurrentEnemyTribeForPreload(EnemyTribes tribe) {
+        this.currentEnemyTribe = tribe;
     }
 
     public EnemyTribes getCurrentEnemyTribe() {

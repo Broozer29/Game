@@ -6,6 +6,7 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - Internal: Claude setup: a finished branch is cleaned up once its squash commit is pushed (worktree removed, local branch deleted).
+- Internal: planboard follow-ups from the boss preloading: rotations during play, the relic crash after Continue Run from a mid-level save, the `instantlySpawnPortal` dev setting, the Final boss clone crash with the Guillotine, and the open Final boss sound check.
 
 ## 2026-10-15
 
@@ -13,6 +14,10 @@ All notable changes on the `Nelis` branch.
 - All music is now MP3 instead of WAV, so the game download shrinks from about 2 GB to about 560 MB. Sound effects are unchanged.
 - Internal: A branch goes into `Nelis` as one squash commit; CLAUDE.md gives the packaged jar size as about 560 MB; the doc index binding points at docs/architecture/index.md.
 - Internal: planboard ideas added for a music list viewer and for shrinking the PNGs.
+- Internal: at the end of every level the game logs how many images had to be built during the level, how long that took and the slowest one, so stutters can be measured. Nothing changes for players.
+- Bosses and mini bosses are prepared just before their level, so they stutter much less when they spawn. The game also starts faster, because it no longer prepares enemies at startup.
+- The first level now starts as fast as the others. The laser beams and the cash carrier (also as Overlord) are built once while the game starts and are never rebuilt during play, so startup takes a little longer.
+- Entering a level with a mini boss no longer freezes the game for about 5 seconds: the frames of its animations are now resized on all processor cores at once. Nothing looks different.
 
 ### Fixed
 - A regular level can no longer get stuck when its song fails to load or never reports that it has ended.

@@ -2,6 +2,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.spaces
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -139,14 +141,15 @@ public class SpaceStationSpinningAttack implements BossActionable {
 
 
 
-        Direction randomDirection = directions[random.nextInt(0, (directions.length - 1))];
-        EnemyManager.getInstance().addEnemy(createShuriken(enemy, randomDirection));
+        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.SpaceStationBoss, EnemyEnums.Shuriken);
+        Direction randomDirection = settings.directions().get(random.nextInt(0, settings.directions().size()));
+        EnemyManager.getInstance().addEnemy(createShuriken(enemy, randomDirection, settings));
     }
 
-    private Enemy createShuriken(Enemy enemy, Direction direction) {
+    private Enemy createShuriken(Enemy enemy, Direction direction, EnemySpawnSettings settings) {
         EnemyEnums enemyType = EnemyEnums.Shuriken;
         Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate(), direction,
-                enemyType.getDefaultScale(), enemyType.getMovementSpeed());
+                settings.scale(0), enemyType.getMovementSpeed());
 
         shuriken.resetMovementPath();
         shuriken.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());

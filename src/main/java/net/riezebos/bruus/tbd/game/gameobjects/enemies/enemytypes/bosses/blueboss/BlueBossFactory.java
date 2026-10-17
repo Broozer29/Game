@@ -4,6 +4,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.behaviour.BlueBossFireLaserbeams;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -176,7 +178,8 @@ public class BlueBossFactory extends Enemy {
     }
 
     private void spawnNeedler(){
-        Enemy needler = EnemyCreator.createEnemy(EnemyEnums.Needler, this.getCenterXCoordinate(), this.getCenterYCoordinate(), Direction.LEFT, EnemyEnums.Needler.getDefaultScale(), EnemyEnums.Needler.getMovementSpeed());
+        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.BlueBoss, EnemyEnums.Needler);
+        Enemy needler = EnemyCreator.createEnemy(EnemyEnums.Needler, this.getCenterXCoordinate(), this.getCenterYCoordinate(), settings.directions().get(0), settings.scale(0), EnemyEnums.Needler.getMovementSpeed());
         needler.getMovementConfiguration().setPathFinder(new StraightLinePathFinder());
         needler.setCenterCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
 
@@ -196,10 +199,11 @@ public class BlueBossFactory extends Enemy {
 
 
     private void createDefenders() {
+        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.BlueBoss, EnemyEnums.BlueBossFactoryDefender);
         for (int i = 0; i < 2; i++) {
             BlueBossFactoryDefender blueBossFactoryDefender =
-                    (BlueBossFactoryDefender) EnemyCreator.createEnemy(EnemyEnums.BlueBossFactoryDefender, this.getCenterXCoordinate(), this.getCenterYCoordinate(), Direction.LEFT,
-                            EnemyEnums.BlueBossFactoryDefender.getDefaultScale(), EnemyEnums.BlueBossFactoryDefender.getMovementSpeed());
+                    (BlueBossFactoryDefender) EnemyCreator.createEnemy(EnemyEnums.BlueBossFactoryDefender, this.getCenterXCoordinate(), this.getCenterYCoordinate(), settings.directions().get(0),
+                            settings.scale(0), EnemyEnums.BlueBossFactoryDefender.getMovementSpeed());
 
             blueBossFactoryDefender.setPathFinder(new OrbitPathFinder(this));
             blueBossFactoryDefender.getMovementConfiguration().setOrbitRadius(100);

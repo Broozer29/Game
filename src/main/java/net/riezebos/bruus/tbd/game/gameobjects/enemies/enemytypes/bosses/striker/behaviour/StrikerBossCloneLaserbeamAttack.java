@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.strike
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker.StrikerBossLaserbeamClone;
@@ -15,7 +17,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
-import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -74,8 +75,9 @@ public class StrikerBossCloneLaserbeamAttack implements BossActionable {
 
     private StrikerBossLaserbeamClone createEnemy(int boardBlock, GameObject parent) {
         Point spawnCoordinates = BoardBlockUpdater.getRandomCoordinateInBlock(boardBlock, parent.getWidth(), parent.getHeight());
-        StrikerBossLaserbeamClone strikerBossLaserbeamClone = (StrikerBossLaserbeamClone) EnemyCreator.createEnemy(EnemyEnums.StrikerBossLaserbeamClone, spawnCoordinates.getX(), spawnCoordinates.getY(), Direction.LEFT,
-                parent.getScale(), 1);
+        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.StrikerBoss, EnemyEnums.StrikerBossLaserbeamClone);
+        StrikerBossLaserbeamClone strikerBossLaserbeamClone = (StrikerBossLaserbeamClone) EnemyCreator.createEnemy(EnemyEnums.StrikerBossLaserbeamClone, spawnCoordinates.getX(), spawnCoordinates.getY(), settings.directions().get(0),
+                settings.scale(parent.getScale()), 1);
         strikerBossLaserbeamClone.setOwnerOrCreator(parent);
         strikerBossLaserbeamClone.setDamage(parent.getDamage());
         strikerBossLaserbeamClone.setCurrentHitpoints(1000000);

@@ -42,10 +42,12 @@ public class ImageRotator {
         }
 
         // The frames are cached as one list, not one by one
-        ArrayList<BufferedImage> newFrames = new ArrayList<>();
-        for (BufferedImage frame : frames) {
-            newFrames.add(rotateOrFlipWithoutCaching(frame, rotation.toAngle(), crop));
-        }
+        double angle = rotation.toAngle();
+        long buildStart = System.nanoTime();
+        ArrayList<BufferedImage> newFrames = frames.parallelStream()
+                .map(frame -> rotateOrFlipWithoutCaching(frame, angle, crop))
+                .collect(Collectors.toCollection(ArrayList::new));
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putFrames(keyString, newFrames);
         return newFrames;
     }
@@ -62,17 +64,15 @@ public class ImageRotator {
             return cachedFrames;
         }
 
-        // Prepare a list to store the adjusted frames, whether rotated or flipped
-        ArrayList<BufferedImage> adjustedFrames = new ArrayList<>();
-
-        // Process each frame, without caching it separately
-        for (BufferedImage frame : frames) {
-            BufferedImage adjustedFrame = rotateOrFlipWithoutCaching(frame, roundedDegrees, false);
-            adjustedFrames.add(adjustedFrame);
-        }
+        // Process each frame on all processor cores at once, without caching it separately; collect() keeps the frame order
+        long buildStart = System.nanoTime();
+        ArrayList<BufferedImage> adjustedFrames = frames.parallelStream()
+                .map(frame -> rotateOrFlipWithoutCaching(frame, roundedDegrees, false))
+                .collect(Collectors.toCollection(ArrayList::new));
 
 
         ImageCropper.getInstance().cropFramesToUniformContent(adjustedFrames);
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putFrames(keyString, adjustedFrames);
         // Return the list of adjusted frames
         return adjustedFrames;
@@ -92,7 +92,9 @@ public class ImageRotator {
             return cachedImage;
         }
 
+        long buildStart = System.nanoTime();
         BufferedImage rotatedImage = rotateWithoutCaching(image, roundedDegrees, crop);
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putImage(keyString, rotatedImage);
         return rotatedImage;
     }
@@ -241,7 +243,9 @@ public class ImageRotator {
         }
 
         // Mirror the angle for rotation, then apply the vertical flip after rotation. Only the flipped result is cached.
+        long buildStart = System.nanoTime();
         BufferedImage flippedImage = flipVertically(rotateWithoutCaching(image, 360 - wholeDegree, crop));
+        cache.recordBuild(keyString, System.nanoTime() - buildStart);
         cache.putImage(keyString, flippedImage);
         return flippedImage;
     }
