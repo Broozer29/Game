@@ -55,7 +55,10 @@ Searching the whole codebase is expensive. Start from these files for a subject 
   any of his text to English first, and reason only on the English version.
 - Work happens on the `Nelis` branch or on a branch made from it. Commit only there. A branch goes
   into `Nelis` as one squash commit (`git merge --squash`, then one commit), so `Nelis` shows each
-  finished change as a single commit.
+  finished change as a single commit. Once that commit is pushed, clean the branch up in the same
+  session: save anything still needed from its worktree (recordings and logs go to `target/perf/`),
+  remove the worktree, delete the local branch (`git branch -D`), and tell Nelis to delete the
+  remote branch.
 - Every change we commit gets a line in `CHANGELOG.md` under today's date (Added / Changed / Fixed),
   in the same commit.
 - Project bindings live in `.claude/bindings/`.

@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-17
+
+### Changed
+- Internal: Claude setup: a finished branch is cleaned up once its squash commit is pushed (worktree removed, local branch deleted).
+
 ## 2026-10-15
 
 ### Changed
