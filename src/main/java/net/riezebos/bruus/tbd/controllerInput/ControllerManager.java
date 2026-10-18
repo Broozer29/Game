@@ -17,6 +17,7 @@ import java.util.Set;
 public class ControllerManager {
     private static ControllerManager instance = new ControllerManager();
     private static final int CONTROLLER_CLOCK_DELAY = 15;
+    private static final int VIRTUAL_DEVICE_INSTANCE_ID = -2; // a real device instance id is never negative
     private final List<Seat> seats = new ArrayList<>();
     private com.studiohartman.jamepad.ControllerManager sdlManager;
     private Configuration configuration;
@@ -106,7 +107,7 @@ public class ControllerManager {
 
         // A controller that disappeared leaves its seat
         for (Seat seat : seats) {
-            if (seat.hasRealController() && !connected.containsKey(seat.getDeviceInstanceId())) {
+            if (seat.hasRealController() && !seat.getReader().isVirtual() && !connected.containsKey(seat.getDeviceInstanceId())) {
                 seat.getReader().resetInputStates(); //So no direction or fire stays held on a ship that still holds this reader
                 seat.clearController();
                 if (seat.getNumber() == 1) {
@@ -132,7 +133,7 @@ public class ControllerManager {
 
         // Every seated reader reads its controller; slots shift, so the reader gets the slot that now holds its id
         for (Seat seat : seats) {
-            if (seat.hasRealController() && !justJoined.contains(seat.getNumber())) {
+            if (seat.hasRealController() && !seat.getReader().isVirtual() && !justJoined.contains(seat.getNumber())) {
                 seat.getReader().readController(connected.get(seat.getDeviceInstanceId()));
             }
         }
@@ -152,6 +153,14 @@ public class ControllerManager {
             name = "unknown";
         }
         logDiagnostic("Controllers: controller joined seat " + seat.getNumber() + ": " + name);
+    }
+
+    // Gives the autoplay bot a seat of its own, as if a controller had joined. The controller clock never reads or removes it.
+    public Seat installVirtualController(BotInputReader reader) {
+        Seat seat = findFreeSeat();
+        seat.setController(VIRTUAL_DEVICE_INSTANCE_ID, reader);
+        logDiagnostic("Controllers: autoplay bot took seat " + seat.getNumber());
+        return seat;
     }
 
     // The lowest seat that is in the run but has no controller, else the lowest seat without a controller, else a new seat

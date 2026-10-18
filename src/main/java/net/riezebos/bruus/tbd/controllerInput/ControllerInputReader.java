@@ -44,6 +44,11 @@ public class ControllerInputReader {
     // Buttons that went down, for the CONTROLS tab: filled by the controller clock, drained by the settings page (both on the Swing thread); a full queue drops new presses
     private final BlockingQueue<ControllerButton> pressedButtons = new ArrayBlockingQueue<>(MAX_QUEUED_BUTTONS);
 
+    // True for a reader that is not backed by a real controller (the autoplay bot); the controller clock leaves its seat alone
+    public boolean isVirtual() {
+        return false;
+    }
+
     // After joining a seat, the input that joined is ignored until everything is let go
     public void ignoreInputUntilReleased() {
         waitingForRelease = true;

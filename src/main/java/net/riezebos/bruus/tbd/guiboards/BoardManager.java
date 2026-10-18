@@ -27,6 +27,7 @@ public class BoardManager extends JFrame {
     private AudioManager audioManager = AudioManager.getInstance();
 
     private JPanel currentBoard = null;
+    private ScreenType currentScreen = null; // the screen type of currentBoard; null until the first screen opens
     private JPanel loadingScreen = null;
 
     // Single instance cache for each board type
@@ -141,6 +142,11 @@ public class BoardManager extends JFrame {
         return instance;
     }
 
+    // Which screen is shown now; null before the first screen opens
+    public ScreenType getCurrentScreen() {
+        return currentScreen;
+    }
+
 
     private void playMenuMusic() {
 //        if(audioManager.getBackGroundMusicCustomAudioclip() != null && !audioManager.getBackGroundMusicCustomAudioclip().getAudioType().equals(AudioEnums.mainmenu)) {
@@ -179,6 +185,7 @@ public class BoardManager extends JFrame {
         JPanel newBoard = createBoardForType(screenType);
         logDiagnostic("Board created, adding to frame...");
         currentBoard = newBoard;
+        currentScreen = screenType;
         add(currentBoard);
         logDiagnostic("Revalidating and repainting...");
         currentBoard.revalidate();

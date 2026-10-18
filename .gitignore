@@ -26,3 +26,10 @@ startup_log.txt
 savefile.json
 /settings.json
 *.prefs
+
+# Autoplay bot results: only each run's report.md is shared
+tools/bot/results/*
+!tools/bot/results/*/
+tools/bot/results/*/*
+!tools/bot/results/*/report.md
+!tools/bot/results/.gitkeep

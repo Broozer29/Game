@@ -1,6 +1,8 @@
 package net.riezebos.bruus.tbd;
 
 import javafx.application.Platform;
+import net.riezebos.bruus.tbd.bot.AutoPlayBot;
+import net.riezebos.bruus.tbd.bot.BotSettings;
 import net.riezebos.bruus.tbd.controllerInput.ControllerManager;
 import net.riezebos.bruus.tbd.game.items.ItemDescriptionRetriever;
 import net.riezebos.bruus.tbd.game.level.PermanentImageBuilder;
@@ -19,6 +21,7 @@ public class Game {
     private static volatile boolean assetsLoaded = false;
 
     public static void main(String[] args) {
+        BotSettings.apply(); // -Dgame.bot / -Dgame.dev.* flags; before anything reads DevTestSettings or the logger properties
         // Start watchdog thread to detect GUI initialization failures
         startInitializationWatchdog();
 
@@ -96,6 +99,7 @@ public class Game {
                                 logDiagnostic("Calling recalcDimensions()...");
                                 SpawningCoordinator.getInstance().recalcDimensions();
                                 logDiagnostic("=== Application fully initialized ===");
+                                AutoPlayBot.startIfEnabled();
                             });
                         }).start();
                     } catch (Exception e) {

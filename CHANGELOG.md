@@ -2,9 +2,15 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-18
+
+### Added
+- Internal: the autoplay bot is steered by JSON scenario files in `tools/bot/scenarios/` (class, minutes, dev switches, dodging, target, special attack, firing, screenshots, optional start save, optional pass limits). Run one with `bash .claude/scripts/bot-run.sh --scenario smoke`. Every run writes a `report.md` with PASS or FAIL per limit into `tools/bot/results/`. A wrong scenario stops before the window opens. Nothing changes for players.
+
 ## 2026-10-17
 
 ### Changed
+- Internal: an autoplay bot can play the game by itself for test runs (`-Dgame.bot=true`, started with `.claude/scripts/bot-run.sh`). It flies, shoots, picks relics, restarts after a death, and leaves a summary, performance CSV, GC log and screenshots in `target/perf/bot-<time>/`. Nothing changes for players.
 - Internal: Claude setup: a finished branch is cleaned up once its squash commit is pushed (worktree removed, local branch deleted).
 - Internal: planboard follow-ups from the boss preloading: rotations during play, the relic crash after Continue Run from a mid-level save, the `instantlySpawnPortal` dev setting, the Final boss clone crash with the Guillotine, and the open Final boss sound check.
 

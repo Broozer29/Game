@@ -244,6 +244,10 @@ public class FriendlyManager {
     }
 
 
+    public Portal getFinishedLevelPortal() {
+        return finishedLevelPortal;
+    }
+
     public List<Drone> getDrones() {
         return this.drones;
     }

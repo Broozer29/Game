@@ -1,0 +1,18 @@
+{
+  "description": "Long memory and stutter check: 30 minutes on boss levels with 5x spawns and an immune ship, fewer screenshots. Fails on a crash, heap above 6.5 GB, or a long tick, gap or GC pause.",
+  "class": "Captain",
+  "minutes": 30,
+  "devSwitches": ["playerIsImmune", "onlyBossLevels", "stressTestSpawns"],
+  "screenshots": {
+    "intervalSeconds": 120,
+    "width": 960,
+    "events": ["boss", "dead"]
+  },
+  "expect": {
+    "noCrash": true,
+    "maxHeapMb": 6500,
+    "maxTickMs": 150,
+    "maxGapMs": 3000,
+    "maxGcPauseMs": 100
+  }
+}
