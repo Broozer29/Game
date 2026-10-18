@@ -17,9 +17,7 @@ import net.riezebos.bruus.tbd.game.movement.pathfinders.RegularPathFinder;
 import net.riezebos.bruus.tbd.game.util.OrbitingObjectsFormatter;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
-import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
-import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
 import java.util.ArrayList;
@@ -34,17 +32,26 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
 
     private SpriteAnimation attackingAnimation;
 
-    private static float firstRingDistance = 200;
-    private static float secondRingDistance = 275;
-    private static float thirdRingDistance = 350;
+    // Preset values for ring formations of 2 and 3 wide. >4 is not supported in this implementation
+    private static float[] ringDistances = {200, 275, 350};
+    private static boolean[] ringReversed = {false, true, false};
+    private static int[] ringMissileAmounts = {20, 25, 30};
+
+    private int amountOfRings;
+    private int bossPhase;
+
+    public FinalBossCreateRotatingReflectingBlocks(int amountOfRings, int bossPhase) {
+        this.amountOfRings = Math.min(amountOfRings, ringDistances.length);
+        this.bossPhase = bossPhase;
+    }
 
     @Override
     public boolean activateBehaviour(Enemy enemy) {
         if (hasInitialized) {
             if (!hasRecenteredMissiles) {
-                OrbitingObjectsFormatter.reformatOrbitingObjects(enemy, firstRingDistance, 0, false);
-                OrbitingObjectsFormatter.reformatOrbitingObjects(enemy, secondRingDistance, 1, true);
-                OrbitingObjectsFormatter.reformatOrbitingObjects(enemy, thirdRingDistance, 2, false);
+                for (int i = 0; i < amountOfRings; i++) {
+                    OrbitingObjectsFormatter.reformatOrbitingObjects(enemy, ringDistances[i], i, ringReversed[i]);
+                }
                 hasRecenteredMissiles = true;
             }
             return true; //early exit
@@ -63,32 +70,16 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
     }
 
 
-    private void initAttackAnimation(Enemy enemy) {
-        SpriteConfiguration spriteConfiguration = new SpriteConfiguration();
-        spriteConfiguration.setxCoordinate(enemy.getXCoordinate());
-        spriteConfiguration.setyCoordinate(enemy.getCenterYCoordinate());
-        spriteConfiguration.setScale(1);
-        spriteConfiguration.setImageType(ImageEnums.WarpIn); //vervangen met de daadwerkelijke anim
-
-        SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 1, false);
-        attackingAnimation = new SpriteAnimation(spriteAnimationConfiguration);
-        attackingAnimation.setAnimationScale(0.5f);
-        attackingAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
-        attackingAnimation.addXOffset(Math.round(attackingAnimation.getWidth() * 0.1f));
-    }
-
-    private void updateAttackAnimationLocation(Enemy enemy) {
-        attackingAnimation.setCenterCoordinates(enemy.getXCoordinate(), enemy.getCenterYCoordinate());
-    }
-
     private void teleportBoss(Enemy enemy) {
-        enemy.resetMovementPath();
-        enemy.setAllowedToMove(false);
-        enemy.setAllowedVisualsToRotate(false);
-        int xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() * 0.5f));
-        int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;
-        enemy.setCenterCoordinates(xCoordinate, yCoordinate);
-        enemy.move();
+        if(bossPhase == FinalBoss.BOSSPHASE_1) {
+            enemy.resetMovementPath();
+            enemy.setAllowedToMove(false);
+            enemy.setAllowedVisualsToRotate(false);
+            int xCoordinate = Math.round((DataClass.getInstance().getWindowWidth() * 0.5f));
+            int yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() / 2;
+            enemy.setCenterCoordinates(xCoordinate, yCoordinate);
+            enemy.move();
+        }
     }
 
     private void doTheThing(Enemy enemy) {
@@ -99,9 +90,9 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
 
 
     private void createMissiles(Enemy enemy) {
-        createMissileRing(enemy, firstRingDistance, false, 20, 0);
-        createMissileRing(enemy, secondRingDistance, true, 25, 1);
-        createMissileRing(enemy, thirdRingDistance, false, 30, 2);
+        for (int i = 0; i < amountOfRings; i++) {
+            createMissileRing(enemy, ringDistances[i], ringReversed[i], ringMissileAmounts[i], i);
+        }
     }
 
 
@@ -172,7 +163,7 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
         if (enemy instanceof FinalBoss finalBoss) {
             return finalBoss.isAllowedToFire()
                     && !hasRecenteredMissiles
-                    && finalBoss.getBossPhase() == FinalBoss.BOSSPHASE_1
+                    && finalBoss.getBossPhase() == bossPhase
                     && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                     && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss);
         }

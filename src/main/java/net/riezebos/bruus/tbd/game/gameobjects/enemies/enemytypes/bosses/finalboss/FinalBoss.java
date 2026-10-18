@@ -8,6 +8,8 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossCreateRotatingReflectingBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPeriodicMissileBarrage;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPhaseOneLaserbeamAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.MissileBarrageAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.straightLineMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossDropMineCharge;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossLaserbeamCloneAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossOrbitMissileAttack;
@@ -64,6 +66,10 @@ public class FinalBoss extends Enemy {
     private FinalBossSpreadMissileAttack phase2SpreadMissileAttack;
     private FinalBossLaserbeamCloneAttack phase2LaserbeamCloneAttack;
 
+    private straightLineMissileAttack phase3StraightLineMissileAttack;
+    private MissileBarrageAttack phase3MissileBarrageAttack;
+    private FinalBossCreateRotatingReflectingBlocks phase3CreateRotatingReflectingBlocks;
+
     public FinalBoss(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
 
@@ -78,7 +84,7 @@ public class FinalBoss extends Enemy {
         this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
 
         //phase 1 abilities
-        FinalBossCreateRotatingReflectingBlocks finalBossCreateRotatingReflectingBlocks = new FinalBossCreateRotatingReflectingBlocks();
+        FinalBossCreateRotatingReflectingBlocks finalBossCreateRotatingReflectingBlocks = new FinalBossCreateRotatingReflectingBlocks(3, BOSSPHASE_1);
         FinalBossPhaseOneLaserbeamAttack finalBossPhaseOneLaserbeamAttack = new FinalBossPhaseOneLaserbeamAttack();
 
         bossBehaviourList.add(finalBossCreateRotatingReflectingBlocks);
@@ -97,6 +103,14 @@ public class FinalBoss extends Enemy {
 
 
         //phase 3 abilities
+        phase3StraightLineMissileAttack = new straightLineMissileAttack();
+        phase3MissileBarrageAttack = new MissileBarrageAttack();
+        phase3CreateRotatingReflectingBlocks = new FinalBossCreateRotatingReflectingBlocks(2, BOSSPHASE_3);
+
+        bossBehaviourList.add(phase3StraightLineMissileAttack);
+        bossBehaviourList.add(phase3MissileBarrageAttack);
+        bossBehaviourList.add(phase3CreateRotatingReflectingBlocks);
+
 
         bossBehaviourList = bossBehaviourList.stream()
                 .sorted(Comparator.comparingInt(BossActionable::getPriority).reversed())
@@ -124,13 +138,19 @@ public class FinalBoss extends Enemy {
         }
 
         if (getBossPhase() == BOSSPHASE_1) {
-            firePhaseOnePassiveAbilities();
+            changePhaseToNextPhase();
+            changePhaseToNextPhase();
+//            firePhaseOnePassiveAbilities();
+        }
+
+        if (getBossPhase() == BOSSPHASE_3) {
+            firePhaseThreePassiveAbilities();
         }
 
         attemptBark();
 
 
-        if(!(this.currentActiveBehavior instanceof FinalBossDropMineCharge)) {
+        if (!(this.currentActiveBehavior instanceof FinalBossDropMineCharge)) {
             this.setAllowedVisualsToRotate(true);
             this.rotateGameObjectTowards(PlayerManager.getInstance().getClosestSpaceShip(this));
             this.setAllowedVisualsToRotate(false);
@@ -189,6 +209,14 @@ public class FinalBoss extends Enemy {
             lastGameSecondsMissileSpawned = currentTime;
         }
         finalBossPeriodicMissileBarrage.activateBehaviour(this);
+    }
+
+    private void firePhaseThreePassiveAbilities() {
+        double currentTime = GameState.getInstance().getGameSeconds();
+        if (currentTime >= lastGameSecondsMissileSpawned + spawnCornerReflectingBlocksCooldown) {
+            firePhaseOneReflectingBarriers();
+            lastGameSecondsMissileSpawned = currentTime;
+        }
     }
 
     private void firePhaseOneReflectingBarriers() {
@@ -309,16 +337,36 @@ public class FinalBoss extends Enemy {
             );
             AudioManager.getInstance().playDefaultBackgroundMusicForALevel(secondPhaseAudioEnum, true);
             setPhaseTwoCooldowns();
-            teleportToBackLine();
+            phase2Teleport();
 
         } else if (bossPhase == BOSSPHASE_2) {
             attemptPhaseTransitionBark();
             bossPhase = BOSSPHASE_3;
+            setPhaseThreeCooldowns();
+            phase3Teleport();
             AudioManager.getInstance().playDefaultBackgroundMusicForALevel(thirdPhaseAudioEnum, true);
         }
     }
 
-    private void teleportToBackLine() {
+    private void phase3Teleport() {
+        //todo dit is een sloppy copy-paste van phase2teleport met alleen de bestemming als verschil
+        lastAttackTime = GameState.getInstance().getGameSeconds();
+        Point teleportPoint = new Point(DataClass.getInstance().getWindowWidth() - (this.getWidth() * 2), DataClass.getInstance().getWindowHeight() * 0.5f);
+        this.setCenterCoordinates(teleportPoint.getX(), teleportPoint.getY());
+        playSmokeAnimation(this); //Place it at the current location
+        playSmokeAnimationAtFirstStep(this); //Place it at the location the boss teleports back to
+
+        HoverPathFinder hoverPathFinder = new HoverPathFinder();
+        hoverPathFinder.setSecondsToHoverStill(0);
+        hoverPathFinder.setShouldDecreaseBoardBlock(false);
+        hoverPathFinder.setShouldChangeBoardBlockEverXHover(2);
+        this.getMovementConfiguration().setBoardBlockToHoverIn(7);
+        this.getMovementConfiguration().setPathFinder(hoverPathFinder);
+        this.resetMovementPath();
+        this.setAllowedToMove(false);
+    }
+
+    private void phase2Teleport() {
         lastAttackTime = GameState.getInstance().getGameSeconds();
         Point teleportPoint = BoardBlockUpdater.getRandomCoordinateInBlock(7, this.getWidth(), this.getHeight());
         this.setCenterCoordinates(teleportPoint.getX(), teleportPoint.getY());
@@ -462,14 +510,16 @@ public class FinalBoss extends Enemy {
         return bossBarker;
     }
 
-    private void setPhaseTwoCooldowns(){
+    private void setPhaseTwoCooldowns() {
         phase2DropMineCharge.setLastAttackTime(GameState.getInstance().getGameSeconds() - 22);
         phase2OrbitMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds());
         phase2SpreadMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 5);
         phase2LaserbeamCloneAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 34);
     }
 
-    private void setPhaseThreeCooldowns(){
+    private void setPhaseThreeCooldowns() {
         //tbd
+        phase3MissileBarrageAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 5);
+        phase3StraightLineMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 5);
     }
 }

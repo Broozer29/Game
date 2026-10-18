@@ -20,7 +20,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 public class FinalBossSpreadMissileAttack implements BossActionable {
     private double lastAttackedTime = GameState.getInstance().getGameSeconds() - 15;
-    private double attackCooldown = 15;
+    private double attackCooldown = 25;
     private int priority = 10;
     private int missilesPerBoardBlock = 3;
     private int missileWavesFired = 1;
@@ -29,7 +29,6 @@ public class FinalBossSpreadMissileAttack implements BossActionable {
 
     @Override
     public boolean activateBehaviour(Enemy enemy) {
-        attackCooldown = 30;
 
         double currentTime = GameState.getInstance().getGameSeconds();
         if (attackingAnimation == null) {
@@ -125,7 +124,7 @@ public class FinalBossSpreadMissileAttack implements BossActionable {
                         Math.pow(destination.getY() - missile.getCenterYCoordinate(), 2)
         );
 
-        float baseMovementSpeed = 7; // adjust as needed
+        float baseMovementSpeed = 8; // adjust as needed
         int maxDistanceRange = DataClass.getInstance().getWindowWidth(); // adjust based on your max possible distance
 
         return (float) (distance / maxDistanceRange) * baseMovementSpeed;

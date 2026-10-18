@@ -25,6 +25,12 @@ public class FinalBossOrbitMissile extends Missile {
     private double timeToOrbit = 2;
     private double timeToMoveBackSlightly = 0.35f;
     private double timeAllowedToCharge = 0.5f;
+    private float moveBackDistance = 25;
+
+    // Missiles without a pathfinder (like the straight line attack) are held at a fixed offset from the target during the orbit stage
+    private boolean followTargetWithOffset = false;
+    private float offsetFromTargetX = 0;
+    private float offsetFromTargetY = 0;
 
     public FinalBossOrbitMissile(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, missileConfiguration, movementConfiguration);
@@ -52,9 +58,14 @@ public class FinalBossOrbitMissile extends Missile {
 
     public void missileAction() {
         if(this.currentStage == orbitStage){
+            if(followTargetWithOffset){
+                stayAtOffsetFromTarget();
+            }
+
             if(GameState.getInstance().getGameSeconds() - timeLastStepFinished > timeToOrbit){
                 currentStage = moveBackStage;
                 timeLastStepFinished = GameState.getInstance().getGameSeconds();
+                this.allowedToMove = true;
                 chargeAwayFromTarget();
             }
         }
@@ -88,15 +99,15 @@ public class FinalBossOrbitMissile extends Missile {
         float deltaY = thisCenterYCoordinate - targetCenterYCoordinate;
         double angle = Math.atan2(deltaY, deltaX);
 
-        // Calculate a point 100 pixels away from the target using the calculated angle
-        float distance = 200;
+        // Calculate a point moveBackDistance pixels further away from the target using the calculated angle
+        float distance = (float) Math.hypot(deltaX, deltaY) + moveBackDistance;
         float newX = (targetCenterXCoordinate + (float)(Math.cos(angle) * distance)) - this.getWidth() / 2;
         float newY = (targetCenterYCoordinate + (float)(Math.sin(angle) * distance)) - this.getHeight() / 2;
 
         Point point = new Point(newX, newY);
 
         this.movementConfiguration.resetMovementPath();
-        this.movementConfiguration.setMovementSpeed(2f); //todo placeholder speed, should be variable if this is to be reused
+        this.movementConfiguration.setMovementSpeed(2f);
         this.movementConfiguration.setDestination(point);
         this.movementConfiguration.setDirection(Direction.RIGHT);
         this.movementConfiguration.setCurrentLocation(new Point(thisCenterXCoordinate, thisCenterYCoordinate));
@@ -106,11 +117,23 @@ public class FinalBossOrbitMissile extends Missile {
 
     private void chargeToTarget(){
         this.movementConfiguration.resetMovementPath();
-        this.movementConfiguration.setMovementSpeed(7); //todo placeholder speed, should be variable if this is to be reused
+        this.movementConfiguration.setMovementSpeed(followTargetWithOffset ? 9 : 7);
         this.movementConfiguration.setDestination(target.getCurrentCenterLocation());
         this.movementConfiguration.setDirection(Direction.RIGHT);
         this.movementConfiguration.setCurrentLocation(new Point(this.getCenterXCoordinate(), this.getCenterYCoordinate()));
         this.movementConfiguration.setPathFinder(new StraightLinePathFinder());
+    }
+
+    public void followTargetWithOffset(float offsetX, float offsetY) {
+        this.followTargetWithOffset = true;
+        this.offsetFromTargetX = offsetX;
+        this.offsetFromTargetY = offsetY;
+        this.allowedToMove = false;
+        stayAtOffsetFromTarget();
+    }
+
+    private void stayAtOffsetFromTarget() {
+        this.setCenterCoordinates(Math.round(target.getCenterXCoordinate() + offsetFromTargetX), Math.round(target.getCenterYCoordinate() + offsetFromTargetY));
     }
 
     public void setTimeLastStepFinished(double timeLastStepFinished) {
