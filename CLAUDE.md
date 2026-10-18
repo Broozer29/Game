@@ -32,6 +32,9 @@ Any run configuration needs those two JVM settings: `-Xms4g -Xmx8g` raises memor
 The packaged jar is about 560 MB because all assets go into it, so prefer `mvn -q compile` to check a
 change.
 
+To play the game unattended for a performance, memory, crash or visual check, use the autoplay bot: see the skill
+`bot-run` and `.claude/how-to/bot-run.md`.
+
 ## Where to start looking
 
 Searching the whole codebase is expensive. Start from these files for a subject (paths under
