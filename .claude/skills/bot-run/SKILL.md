@@ -8,7 +8,7 @@ description: Explains how to set up and use the autoplay bot that plays the game
 The autoplay bot plays the game by itself, so a performance, memory, crash or visual check needs nobody at the PC.
 A scenario file says what the bot plays and what counts as a pass. A run ends with a report.
 Commands, flags, exit codes and troubleshooting are in `.claude/how-to/bot-run.md`: read it before the first run of a session.
-The scenario keys are documented in the bot's own README, named by the `bot-readme` row of `.claude/bindings/doc-index.md`.
+The scenario keys are in the bot's own README, which the how-to file names.
 
 ## Choose the run
 

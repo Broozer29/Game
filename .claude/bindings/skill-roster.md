@@ -8,6 +8,7 @@
 | design of a non-trivial change | `design-session`, `design-review` |
 | docs under `docs/**` | `docs-authoring` |
 | running the autoplay bot, or adding or editing a bot scenario | `bot-run` |
+| merging a branch whose merge conflicts in the developers' changelog | `changelog` |
 
 Every row lists ALL governing skills — invoke all of them, never pick one. The base row is the row
 whose work type ends in `(always)`; it is listed first and applies to every task. A table with no
