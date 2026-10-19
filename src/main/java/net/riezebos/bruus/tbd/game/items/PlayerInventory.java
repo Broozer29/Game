@@ -14,6 +14,7 @@ import net.riezebos.bruus.tbd.game.items.items.deprecated.RepulsionArmorPlate;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.*;
 import net.riezebos.bruus.tbd.game.items.items.mutalisk.*;
 import net.riezebos.bruus.tbd.game.items.items.util.ContractType;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfile;
 import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.AchievementUnlockHelper;
@@ -89,6 +90,20 @@ public class PlayerInventory {
 
 //        checkClubAccessUnlockCondition();
 //        checkTreasureHunterUnlockCondition();
+    }
+
+    //Records an item as seen in the ARMORY and writes the profile at once; called only for a shop purchase and a relic pick, after addItem
+    //Returns true only when the item was not recorded before; with no loaded profile it does nothing and returns false
+    public boolean discoverItem(ItemEnums itemEnum) {
+        if (PlayerProfileManager.getInstance().getLoadedProfile() == null) {
+            return false;
+        }
+        PlayerProfile profile = PlayerProfileManager.getInstance().getLoadedProfile();
+        if (!profile.getDiscoveredItems().add(itemEnum.name())) {
+            return false;
+        }
+        PlayerProfileManager.getInstance().exportCurrentProfile();
+        return true;
     }
 
     private void checkClubAccessUnlockCondition() {

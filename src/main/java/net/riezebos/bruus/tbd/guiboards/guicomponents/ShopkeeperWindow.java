@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.guicomponents;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.controllerInput.InputDevice;
 import net.riezebos.bruus.tbd.controllerInput.MenuAction;
 import net.riezebos.bruus.tbd.controllerInput.MenuInput;
@@ -9,6 +10,8 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemClassAvailability;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemTypeEnums;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfile;
+import net.riezebos.bruus.tbd.game.playerprofile.PlayerProfileManager;
 import net.riezebos.bruus.tbd.game.settings.SettingsManager;
 import net.riezebos.bruus.tbd.guiboards.boards.ShopFreezeEffect;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -81,7 +84,7 @@ public class ShopkeeperWindow {
     private ResizableCard card;
     private ResizableCard gridCard; //The grid box and the details box, cut from Card X5 and Card X1
     private ResizableCard detailsCard;
-    private List<ItemEnums> allItems; //Every item the page lists
+    private List<ItemEnums> allItems; //Every enabled item; the ones not bought or picked yet are drawn locked
     private List<ItemEnums> items; //The ones that pass the filters, which the grid shows
     private final ShopkeeperFilterState filters = new ShopkeeperFilterState(); //Loaded from the saved settings when the page opens, and saved at once after every change
     private boolean filterPaneOpen = false;
@@ -114,6 +117,15 @@ public class ShopkeeperWindow {
     //The items the page lists: the ones that can be bought or found, which leaves out the disabled ones and the Locked placeholder
     public static boolean isShownInShopkeeper (ItemEnums item) {
         return item.isEnabled() && item.getItemRarity() != ItemRarityEnums.Locked;
+    }
+
+    //Whether the player has bought or picked the item (the profile lists it), or showFullArmory shows everything; the grid and the details draw an item that is not discovered locked
+    public static boolean isDiscovered (ItemEnums item) {
+        if (DevTestSettings.showFullArmory) {
+            return true;
+        }
+        PlayerProfile profile = PlayerProfileManager.getInstance().getLoadedProfile();
+        return profile != null && profile.getDiscoveredItems().contains(item.name());
     }
 
     private int scaled (int size) {
@@ -544,7 +556,7 @@ public class ShopkeeperWindow {
                 }
                 int x = gridLeft + column * step;
                 int y = gridTop + row * step;
-                BufferedImage icon = ImageDatabase.getInstance().getImage(items.get(index).getItemIcon());
+                BufferedImage icon = ImageDatabase.getInstance().getImage(isDiscovered(items.get(index)) ? items.get(index).getItemIcon() : ImageEnums.LockedIcon);
                 if (icon != null) {
                     g2d.drawImage(icon, x, y, tile, tile, null);
                 }
@@ -643,6 +655,7 @@ public class ShopkeeperWindow {
         drawCenteredText(g2d, toggleLabel(row), boxX + box + scaled(6), y, height, on ? ACCENT : Color.WHITE);
     }
 
+    //An item that is not discovered shows only the lock icon, "???" and the rarity badge
     //The header (icon, name in its rarity colour, rarity badge), the rows CLASS, TYPE and PRICE, and the description in an inset box that stays inside the details box
     private void drawDetails (Graphics2D g2d, ItemEnums item, int boxLeft, int boxTop, int boxWidth, int boxHeight) {
         int padding = scaled(DETAIL_PADDING);
@@ -650,16 +663,17 @@ public class ShopkeeperWindow {
         int right = boxLeft + boxWidth - padding;
         int top = boxTop + padding;
         Color rarityColor = item.getItemRarity().getColor();
+        boolean discovered = isDiscovered(item);
 
         int iconSize = scaled(DETAIL_ICON_SIZE);
-        BufferedImage icon = ImageDatabase.getInstance().getImage(item.getItemIcon());
+        BufferedImage icon = ImageDatabase.getInstance().getImage(discovered ? item.getItemIcon() : ImageEnums.LockedIcon);
         if (icon != null) {
             g2d.drawImage(icon, left, top, iconSize, iconSize, null);
         }
         int textX = left + iconSize + scaled(16);
         g2d.setFont(font(Font.BOLD, 26));
         FontMetrics nameMetrics = g2d.getFontMetrics();
-        List<String> nameLines = wrapLines(item.getItemName(), nameMetrics, right - textX);
+        List<String> nameLines = wrapLines(discovered ? item.getItemName() : "???", nameMetrics, right - textX);
         int badgeHeight = scaled(22);
         int textHeight = nameLines.size() * nameMetrics.getHeight() + scaled(8) + badgeHeight;
         int y = top + Math.max(0, (iconSize - textHeight) / 2) + nameMetrics.getAscent();
@@ -676,6 +690,9 @@ public class ShopkeeperWindow {
         g2d.setColor(rarityColor);
         g2d.fillRoundRect(textX, badgeTop, badgeWidth, badgeHeight, scaled(8), scaled(8));
         drawCenteredText(g2d, rarity, textX + scaled(10), badgeTop, badgeHeight, new Color(5, 21, 20));
+        if (!discovered) {
+            return;
+        }
 
         //The labelled rows
         int rowsTop = Math.max(top + iconSize, badgeTop + badgeHeight) + scaled(20);

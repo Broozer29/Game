@@ -102,7 +102,7 @@ public class ShopBoardCreator {
         xCoordinate = backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2);
         textCollection.setStartingXCoordinate(xCoordinate);
         textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Shopkeeper);
-        textCollection.getComponents().get(0).setDescriptionOfComponent("Shows every item you can find or buy, with its description.");
+        textCollection.getComponents().get(0).setDescriptionOfComponent("Shows the items you can find or buy. Items you have not bought or picked yet are locked.");
         return textCollection;
     }
 

@@ -843,6 +843,9 @@ public class ShopBoard extends JPanel implements TimerHolder {
                     drawItemsInShop(g, shopItem);
                 }
                 drawGUIComponent(g, component);
+                if (component instanceof ShopItem cardItem && !ShopkeeperWindow.isDiscovered(cardItem.getShopItemInformation().getItem())) {
+                    cardItem.drawNotInArmoryMark(g); //Drawn over the card; it only marks Available slots
+                }
             }
         }
 

@@ -61,6 +61,8 @@ import net.riezebos.bruus.tbd.guiboards.guicomponents.BossHealthBar;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuWindow;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.SettingsWindow;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ShopItem;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ShopkeeperWindow;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DescriptionTextQuality;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
@@ -633,6 +635,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             for (int i = 0; i < this.relicBackgroundCards.size(); i++) {
                 drawGUIComponent(g, this.relicBackgroundCards.get(i));
                 drawGUIComponent(g, this.relicSelectionGrid.get(i));
+                if (this.relicSelectionGrid.get(i) instanceof ShopItem relicCard && !ShopkeeperWindow.isDiscovered(relicCard.getShopItemInformation().getItem())) {
+                    relicCard.drawNotInArmoryMark(g);
+                }
                 drawDescriptionInfo(g, this.relicSelectionGrid.get(i), this.relicBackgroundCards.get(i));
             }
             drawGUIComponent(g, chooseOne);
