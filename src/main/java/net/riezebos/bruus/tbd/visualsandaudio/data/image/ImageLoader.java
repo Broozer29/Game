@@ -405,6 +405,10 @@ public class ImageLoader {
                 return "/images/UI/Cards/Long Card.png";
             case Square_Card:
                 return "/images/UI/Cards/Square Card.png";
+            case Card_X5:
+                return "/images/UI/Cards/Card X5.png";
+            case Card_X1:
+                return "/images/UI/Cards/Card X1.png";
             case Invisible:
                 System.out.println("Loading a star.png for INVISIBLE");
                 return "/images/background/star.png";

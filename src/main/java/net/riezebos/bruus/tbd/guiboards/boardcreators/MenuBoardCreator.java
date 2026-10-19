@@ -127,7 +127,7 @@ public class MenuBoardCreator {
         int xCoordinate = component.getXCoordinate();
         int yCoordinate = component.getYCoordinate() + 75; // 50 plus a gap of 25 before this group
 
-        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "SHOPKEEPER");
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "ARMORY");
         textCollection.setScale(resolutionFactor);
         textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Shopkeeper);
         return textCollection;

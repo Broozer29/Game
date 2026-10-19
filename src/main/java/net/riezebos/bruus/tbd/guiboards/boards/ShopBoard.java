@@ -27,6 +27,7 @@ import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DescriptionTextQuality;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -764,6 +765,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private static int verticalPadding = Math.round(50 * DataClass.getInstance().getResolutionFactor());
 
     private void drawDescriptionInfo(Graphics2D g2d, DescriptionInfo descriptionInfo) {
+        //Crisp text: the same antialiasing as the ARMORY page, set for the description text only
+        DescriptionTextQuality quality = DescriptionTextQuality.apply(g2d);
         int boxWidth = descriptionBackgroundCard.getWidth();
         int boxHeight = descriptionBackgroundCard.getHeight();
         String textFont = DataClass.getInstance().getTextFont();
@@ -795,6 +798,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
             int costY = itemDescription.getYCoordinate() + boxHeight - verticalPadding - costMetrics.getHeight();
             drawDescriptionText(g2d, descriptionInfo.cost, descriptionX, costY, maxTextWidth, Color.WHITE);
         }
+        quality.restore(g2d);
     }
 
     //Helper method to centralize the actual drawing on the screen

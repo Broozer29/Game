@@ -95,7 +95,7 @@ public class ShopBoardCreator {
     public GUITextCollection createShopkeeperButton(GUIComponent backgroundCard) {
         int xCoordinate = backgroundCard.getCenterXCoordinate();
         int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(5 * objectScale);
-        String text = "SHOPKEEPER";
+        String text = "ARMORY";
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
         textCollection.setScale(objectScale);

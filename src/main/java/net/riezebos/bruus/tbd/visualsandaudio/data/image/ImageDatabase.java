@@ -88,6 +88,8 @@ public class ImageDatabase {
     private BufferedImage longCard;
     private BufferedImage wideCard;
     private BufferedImage squareCard;
+    private BufferedImage cardX5;
+    private BufferedImage cardX1;
     private BufferedImage sc2GradeBronze;
     private BufferedImage sc2GradeSilver;
     private BufferedImage sc2GradeGold;
@@ -678,6 +680,8 @@ public class ImageDatabase {
         this.longCard = imgLoader.getImage(ImageEnums.Long_Card);
         this.wideCard = imgLoader.getImage(ImageEnums.Wide_Card);
         this.squareCard = imgLoader.getImage(ImageEnums.Square_Card);
+        this.cardX5 = imgLoader.getImage(ImageEnums.Card_X5);
+        this.cardX1 = imgLoader.getImage(ImageEnums.Card_X1);
 
         this.purpleWings1 = imgLoader.getImage(ImageEnums.PurpleWings1);
         this.purpleWings2 = imgLoader.getImage(ImageEnums.PurpleWings2);
@@ -1709,6 +1713,10 @@ public class ImageDatabase {
                 return longCard;
             case Square_Card:
                 return squareCard;
+            case Card_X5:
+                return cardX5;
+            case Card_X1:
+                return cardX1;
             case Wide_Card:
                 return wideCard;
             case Letter_Percentage:
