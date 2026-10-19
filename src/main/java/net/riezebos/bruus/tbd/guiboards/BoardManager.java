@@ -304,10 +304,12 @@ public class BoardManager extends JFrame {
         }
     }
 
-    //Opens the SHOPKEEPER page on the main menu
+    //Opens the SHOPKEEPER page on the screen that is shown: the main menu or the shop
     public void openShopkeeper() {
         if (mainMenuBoard != null && currentBoard == mainMenuBoard) {
             mainMenuBoard.openShopkeeper();
+        } else if (shopBoard != null && currentBoard == shopBoard) {
+            shopBoard.openShopkeeper();
         }
     }
 

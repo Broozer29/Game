@@ -1,9 +1,9 @@
 # Shopkeeper
 
-SHOPKEEPER is a page on the main menu that lists every item with its details. It works outside a run,
+SHOPKEEPER is a page on the main menu and in the shop that lists every item with its details. It works outside a run,
 so it cannot ask an item which classes may get it. Every `ItemEnums` entry therefore carries a class
 group and its item types as compiled-in data, and the page reads those. This doc covers that data, the
-overlay and the base-value descriptions.
+overlay, its filters and the base-value descriptions.
 
 ## Item data
 
@@ -27,7 +27,7 @@ one is made in the other by hand. The class group All covers Captain, FireFighte
 
 ## The overlay
 
-`ShopkeeperWindow` is a singleton overlay on the main menu, modelled on `SettingsWindow`. The main menu
+`ShopkeeperWindow` is a singleton overlay on the main menu and the shop, modelled on `SettingsWindow`. The main menu
 sends all input to it while `isOpen()` is true, draws `getComponents()` and then calls `draw`, and closes
 it with `closeSilently()` when the window is recreated.
 
@@ -46,6 +46,29 @@ The SHOPKEEPER row sits above SETTINGS in the main menu card. Its button carries
 `MenuFunctionEnums.Open_Shopkeeper` function, which `MenuButton.activateComponent` sends to
 `BoardManager.openShopkeeper()`, and that opens the page through `MainMenuBoard.openShopkeeper()`.
 
+The shop hosts the same overlay. Its inventory card has a SHOPKEEPER button right of INVENTORY in the
+card's bottom row, drawn only while the inventory card is open. `BoardManager.openShopkeeper()` sends it to
+`ShopBoard.openShopkeeper()` when the shop is the current board, and `ShopBoard.executeMenuInput` gives all
+input to the overlay while it is open. The shop draws the overlay after its item description and
+animations. BACK returns to the open inventory card with the cursor on SHOPKEEPER, and the shop's slots are
+unchanged.
+
+## Filters
+
+X on a controller or F on the keyboard (`MenuAction.OPEN_FILTERS`) opens a filter pane over the item
+details. It has three groups: class (Captain, Firefighter, Carrier), rarity (Common, Rare, Legendary,
+Relic) and type (Offensive, Defensive, Economy, Utility), then a Clear all filters row. Up and down move
+through the toggles and CONFIRM switches one. X, F, B or Escape close the pane; B or Escape close the page
+only when the pane is closed. Y or C (`MenuAction.CLEAR_FILTERS`) clears every filter.
+
+Toggles in one group add up, and the groups narrow each other (`ShopkeeperWindow.matchesFilters`). A class
+toggle matches every item whose class group contains that class, so Captain also shows the All,
+CaptainFireFighter and CaptainCarrier items. Mutalisk-only items match no class toggle. Each toggle shows
+how many items would show if only it changed, and the bar above the grid lists the active filters and
+"N of M items" (M is every item the page lists). When nothing matches, the grid shows "No items found".
+
+The filters live in one `ShopkeeperFilterState` held by `ShopkeeperWindow`. They are kept in memory only.
+
 ## Base-value descriptions
 
 The page never depends on a run. It reads `ItemDescriptionRetriever.getDescriptionOfItem(ItemEnums, boolean baseValues)`
@@ -59,8 +82,7 @@ upgrades (`FriendlyStation.getStationDamage(null)`), and Gasoline uses the ignit
 <!-- Unbuilt / deferred -->
 ## Designed but not yet built
 
-- Filters on the class group and the types.
-- A SHOPKEEPER entry from the shop.
+- Saving the filters in `settings.json`.
 - Showing only discovered items, through `isShownInShopkeeper`.
 
 ## Cross-references

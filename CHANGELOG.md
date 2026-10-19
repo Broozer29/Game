@@ -6,6 +6,8 @@ All notable changes on the `Nelis` branch.
 
 ### Added
 - A new SHOPKEEPER row on the main menu, above SETTINGS, opens a page that lists every item in the game with its icon. Move over an item to see its name in its rarity colour, rarity, which classes can get it, what kind of item it is, its full description and its price. The descriptions show the starting values, so they never change with your run. B or Escape closes the page.
+- The shop's inventory now has a SHOPKEEPER button next to INVENTORY. It opens the SHOPKEEPER page with every item and its details, and BACK returns you to the inventory.
+- SHOPKEEPER has a filter pane: press X (controller) or F (keyboard) to filter the items by class, rarity and type. Each filter shows how many items it would show, the bar above the grid lists the active filters and how many items are left, and Y or C clears all filters.
 - Internal: every item now has a class group (which classes can get it) and at least one item type (Offensive, Defensive, Economy or Utility), so a new item cannot be added without them. SHOPKEEPER reads them; nothing else does yet.
 - Internal: Claude setup: the patch-notes guide to where names live lists the class group and item types on an `ItemEnums` line.
 

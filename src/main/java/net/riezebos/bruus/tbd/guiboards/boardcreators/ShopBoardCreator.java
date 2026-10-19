@@ -92,6 +92,20 @@ public class ShopBoardCreator {
         return textCollection;
     }
 
+    public GUITextCollection createShopkeeperButton(GUIComponent backgroundCard) {
+        int xCoordinate = backgroundCard.getCenterXCoordinate();
+        int yCoordinate = backgroundCard.getCenterYCoordinate() - Math.round(5 * objectScale);
+        String text = "SHOPKEEPER";
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate, yCoordinate, text);
+        textCollection.setScale(objectScale);
+        xCoordinate = backgroundCard.getCenterXCoordinate() - (textCollection.getWidth() / 2);
+        textCollection.setStartingXCoordinate(xCoordinate);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Shopkeeper);
+        textCollection.getComponents().get(0).setDescriptionOfComponent("Shows every item you can find or buy, with its description.");
+        return textCollection;
+    }
+
     public DisplayOnly createReturnToMainMenuBackgroundCard(GUIComponent backgroundCard) {
         int xCoordinate = Math.round(boardWidth * 0.06944f);
         int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 1.1f);
@@ -107,6 +121,19 @@ public class ShopBoardCreator {
     public DisplayOnly createInventoryButtonBackgroundCard(GUIComponent backgroundCard) {
         int xCoordinate = Math.round(boardWidth * 0.3472f);
         int yCoordinate = backgroundCard.getYCoordinate() + Math.round(backgroundCard.getHeight() * 1.1f);
+
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
+        DisplayOnly displayOnly = new DisplayOnly(spriteConfiguration);
+        int width = Math.round(220 * objectScale);
+        int height = Math.round(50 * objectScale);
+        displayOnly.setImageDimensions(width, height);
+        return displayOnly;
+    }
+
+    //Sits right of the INVENTORY card, between it and the START NEXT LEVEL card
+    public DisplayOnly createShopkeeperButtonBackgroundCard(GUIComponent inventoryButtonCard) {
+        int xCoordinate = inventoryButtonCard.getXCoordinate() + inventoryButtonCard.getWidth() + Math.round(20 * objectScale);
+        int yCoordinate = inventoryButtonCard.getYCoordinate();
 
         SpriteConfiguration spriteConfiguration = createSpriteConfiguration(xCoordinate, yCoordinate, 1, ImageEnums.Wide_Card);
         DisplayOnly displayOnly = new DisplayOnly(spriteConfiguration);
