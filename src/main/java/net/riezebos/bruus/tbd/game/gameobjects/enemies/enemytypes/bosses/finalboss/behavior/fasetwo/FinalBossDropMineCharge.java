@@ -110,6 +110,7 @@ public class FinalBossDropMineCharge implements BossActionable {
             chargingUpMovement.startClip();
             enemy.setAllowedToMove(false);
             chargingUp = true;
+            detonateMinesFromPreviousCharge(enemy);
             playSmokeAnimation(enemy);
             teleportBossToStartingLocation(enemy);
             playSmokeAnimation(enemy);
@@ -173,8 +174,8 @@ public class FinalBossDropMineCharge implements BossActionable {
     }
 
     private void startCharging(Enemy enemy){
-        selectedEndDestination = calculateEndDestination(enemy);
-        enemy.setAllowedVisualsToRotate(true);
+        //Keep the y coordinate the boss was teleported to, so the charge goes straight left
+        selectedEndDestination = new Point(calculateEndDestination(enemy).getX(), enemy.getYCoordinate());
         enemy.getMovementConfiguration().setPathFinder(new DestinationPathFinder());
         enemy.getMovementConfiguration().setDestination(selectedEndDestination);
         enemy.resetMovementPath();
@@ -182,9 +183,7 @@ public class FinalBossDropMineCharge implements BossActionable {
         enemy.getMovementConfiguration().setDestination(selectedEndDestination);
         enemy.getMovementConfiguration().setLastUsedMovementSpeed(enemy.getEnemyType().getMovementSpeed());
         enemy.getMovementConfiguration().setMovementSpeed(enemy.getEnemyType().getMovementSpeed() * 7.5f);
-        enemy.rotateObjectTowardsDestination(false);
-
-        enemy.setAllowedVisualsToRotate(false);
+        //No rotation here, the boss already faces left since the teleport. Rotating towards the destination could tilt it slightly and resize the animation
         enemy.move();
         isCharging = true;
         chargingUp = false;
@@ -204,6 +203,13 @@ public class FinalBossDropMineCharge implements BossActionable {
             createFinalBossMine(enemy, Direction.UP);
             createFinalBossMine(enemy, Direction.DOWN);
         }
+    }
+
+    //Mines no longer detonate on a timer, so clear the ones left from the previous charge to keep the mine count in check
+    private void detonateMinesFromPreviousCharge(Enemy enemy) {
+        MissileManager.getInstance().getMissiles().stream()
+                .filter(missile -> missile instanceof FinalBossMine && missile.isVisible() && missile.getOwnerOrCreator() == enemy)
+                .forEach(missile -> ((FinalBossMine) missile).detonateMissile());
     }
 
     private void createFinalBossMine(Enemy enemy, Direction direction) {
@@ -234,6 +240,7 @@ public class FinalBossDropMineCharge implements BossActionable {
         //Create the missile and finalize the creation process, then add it to the manager and consequently the game
         FinalBossMine missile = (FinalBossMine) MissileCreator.getInstance().createMissile(spriteConfiguration, missileConfiguration, movementConfiguration);
         missile.setOwnerOrCreator(enemy);
+        missile.setDetonatesAfterTimer(false);
         missile.setCenterCoordinates(enemy.getCenterXCoordinate(), enemy.getCenterYCoordinate());
         missile.setAllowedVisualsToRotate(false);
         missile.getAnimation().setFrameDelay(4);
@@ -274,11 +281,13 @@ public class FinalBossDropMineCharge implements BossActionable {
 
 
     private void teleportBossToStartingLocation(Enemy boss) {
-        boss.setCenterCoordinates(DataClass.getInstance().getWindowWidth() * 0.9f, DataClass.getInstance().getPlayableWindowMaxHeight() * 0.5f);
         boss.setAllowedToMove(false);
+        //Rotate first: rotating changes the animation's size, which the centering below depends on
         boss.setAllowedVisualsToRotate(true);
         boss.rotateGameObjectTowards(Direction.LEFT, false);
         boss.setAllowedVisualsToRotate(false);
+        //Int overload on purpose: the float overload is Sprite's, which ignores the animation's size and doesn't update the current location
+        boss.setCenterCoordinates(Math.round(DataClass.getInstance().getWindowWidth() * 0.9f), Math.round(DataClass.getInstance().getPlayableWindowMaxHeight() * 0.5f));
     }
 
     private void teleportBossToBackLine(Enemy boss) {

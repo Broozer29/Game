@@ -33,9 +33,9 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
     private SpriteAnimation attackingAnimation;
 
     // Preset values for ring formations of 2 and 3 wide. >4 is not supported in this implementation
-    private static float[] ringDistances = {200, 275, 350};
-    private static boolean[] ringReversed = {false, true, false};
-    private static int[] ringMissileAmounts = {20, 25, 30};
+    private static float[] ringDistances = {200, 275, 350, 425};
+    private static boolean[] ringReversed = {false, true, false, true};
+    private static int[] ringMissileAmounts = {20, 25, 30, 35};
 
     private int amountOfRings;
     private int bossPhase;
@@ -130,7 +130,7 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
 
 
         boolean isFriendly = false;
-        float maxHitPoints = Math.min(60 * (GameState.getInstance().getDifficultyCoefficient()), 500); //max 500 hp
+        float maxHitPoints = Math.min(80 * (GameState.getInstance().getDifficultyCoefficient()), 500); //max 500 hp
         float damage = enemy.getDamage() * 0.4f;
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,

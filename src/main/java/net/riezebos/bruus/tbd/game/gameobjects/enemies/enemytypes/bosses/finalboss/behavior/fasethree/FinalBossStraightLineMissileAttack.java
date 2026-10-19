@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class straightLineMissileAttack implements BossActionable {
-    private double attackCooldown = 7;
+public class FinalBossStraightLineMissileAttack implements BossActionable {
+    private double attackCooldown = 8;
     private double lastAttackedTime = 0 - attackCooldown;
     private int priority = 2;
 

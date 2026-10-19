@@ -17,6 +17,8 @@ public class LaserbeamIndicator {
     private double currentAngleDegrees = 0;
     private GameObject owner;
     private int length;
+    //Rotates the drawn line away from the tracked angle, same as Laserbeam.angleOffset
+    private float angleOffset = 0;
 
     public LaserbeamIndicator(int startingXCoordinate, int startingYCoordinate, int endingXCoordinate, int endingYCoordinate, float maxAngleDegreeChange, GameObject owner) {
         this.startingXCoordinate = startingXCoordinate;
@@ -77,7 +79,7 @@ public class LaserbeamIndicator {
         // Calculate ending coordinates based on the new angle
         // Use a fixed distance (e.g., screen width/height or a large value to ensure the line extends far enough)
         double distance = this.length <= 1 ? DataClass.getInstance().getWindowWidth() : this.length; // You can adjust this value based on your game's dimensions
-        double angleRadians = Math.toRadians(currentAngleDegrees);
+        double angleRadians = Math.toRadians(currentAngleDegrees + angleOffset);
 
         endingXCoordinate = (int) (startingXCoordinate + Math.cos(angleRadians) * distance);
         endingYCoordinate = (int) (startingYCoordinate + Math.sin(angleRadians) * distance);
@@ -149,6 +151,14 @@ public class LaserbeamIndicator {
 
     public void setOwner(GameObject owner) {
         this.owner = owner;
+    }
+
+    public float getAngleOffset() {
+        return angleOffset;
+    }
+
+    public void setAngleOffset(float angleOffset) {
+        this.angleOffset = angleOffset;
     }
 
     public int getLength() {

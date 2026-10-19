@@ -125,7 +125,7 @@ public class ReflectiveBlocks extends Missile {
                 300, missile.getCenterXCoordinate(), missile.getCenterYCoordinate());
         missile.resetMovementPath();
         missile.setPathFinder(new StraightLinePathFinder());
-        missile.getMovementConfiguration().setMovementSpeed(Math.max(missile.getMovementConfiguration().getMovementSpeed() * 0.5f, 1.75f));
+        missile.getMovementConfiguration().setMovementSpeed(Math.max(missile.getMovementConfiguration().getMovementSpeed() * 0.4f, 1.75f));
         newDestination.setX(newDestination.getX() - missile.getWidth() / 2);
         newDestination.setY(newDestination.getY() - missile.getHeight() / 2);
         missile.setAllowedVisualsToRotate(true);

@@ -48,13 +48,9 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.CalmInChaos);
             addItem(ItemEnums.RegenerativeSteel);
-            addItem(ItemEnums.RegenerativeSteel);
-            addItem(ItemEnums.RegenerativeSteel);
-            addItem(ItemEnums.RegenerativeSteel);
-            addItem(ItemEnums.RegenerativeSteel);
-            addItem(ItemEnums.RegenerativeSteel);
+            addItem(ItemEnums.GuardianDrone);
+            addItem(ItemEnums.GuardianDrone);
         } else {
             cashMoney = 0;
         }

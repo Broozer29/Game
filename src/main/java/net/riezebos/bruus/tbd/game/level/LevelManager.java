@@ -355,6 +355,13 @@ public class LevelManager {
         return false;
     }
 
+    public boolean isNextLevelTheFinalBossLevel() {
+        if (GameState.getInstance().isSpawnFinalBoss()) {
+            return true;
+        }
+        return DevTestSettings.testFinalBossMode && isNextLevelABossLevel();
+    }
+
     public boolean isNextLevelABossLevel() {
         if (GameState.getInstance().getGameMode().equals(GameMode.ManMode) || DevTestSettings.onlyBossLevels) {
             return true;

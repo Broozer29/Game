@@ -6,7 +6,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.bluebos
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.blueboss.BlueBossFactoryDefender;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.carrier.CarrierBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossLaserbeamClone;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.FinalBossLaserbeamClone;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.redboss.RedBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.spacestation.SpaceStationBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.striker.StrikerBoss;

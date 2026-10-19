@@ -18,6 +18,8 @@ public class FinalBossMine extends Missile {
     private int rangeThreshold = 150;
     private boolean activated = false;
     private double timeLastSpedUp = 0;
+    //If false, the mine stays until the player comes close or destroys it, instead of blinking faster and detonating on a timer
+    private boolean detonatesAfterTimer = true;
 
     public FinalBossMine(SpriteAnimationConfiguration spriteConfiguration, MissileConfiguration missileConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, missileConfiguration, movementConfiguration);
@@ -52,13 +54,13 @@ public class FinalBossMine extends Missile {
                 this.activated = true;
             }
 
-            if(!activated && GameState.getInstance().getGameSeconds() - timeLastSpedUp > 1.5f && this.animation.getFrameDelay() > 0) {
+            if(!activated && detonatesAfterTimer && GameState.getInstance().getGameSeconds() - timeLastSpedUp > 1.5f && this.animation.getFrameDelay() > 0) {
                 int newFrameDelay = Math.max(0, this.animation.getFrameDelay() - 1);
                 this.animation.setFrameDelay(newFrameDelay);
                 timeLastSpedUp = GameState.getInstance().getGameSeconds();
             }
 
-            if(!activated && this.animation.getFrameDelay() == 0 && GameState.getInstance().getGameSeconds() - timeLastSpedUp > 1.5f){
+            if(!activated && detonatesAfterTimer && this.animation.getFrameDelay() == 0 && GameState.getInstance().getGameSeconds() - timeLastSpedUp > 1.5f){
                 detonateMissile();
             }
         }
@@ -81,6 +83,14 @@ public class FinalBossMine extends Missile {
     @Override
     public void triggerOnDeathActions() {
         createMissiles();
+    }
+
+    public boolean isDetonatesAfterTimer() {
+        return detonatesAfterTimer;
+    }
+
+    public void setDetonatesAfterTimer(boolean detonatesAfterTimer) {
+        this.detonatesAfterTimer = detonatesAfterTimer;
     }
 
     @Override

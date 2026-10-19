@@ -8,11 +8,13 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossCreateRotatingReflectingBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPeriodicMissileBarrage;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPhaseOneLaserbeamAttack;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.MissileBarrageAttack;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.straightLineMissileAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossMissileBarrageAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossPhase3LaserbeamCloneAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossSpawnFourDirectionalDrones;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossStraightLineMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossDropMineCharge;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossLaserbeamCloneAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossOrbitMissileAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossPhase1LaserbeamCloneAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossSpreadMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
@@ -54,24 +56,34 @@ public class FinalBoss extends Enemy {
     public static int BOSSPHASE_2 = 2;
     public static int BOSSPHASE_3 = 3;
 
+    //Share of the total hitpoints each phase lasts, phase 3 gets whatever remains (60% by default)
+    private float phaseOneHitpointsRatio = 0.1f;
+    private float phaseTwoHitpointsRatio = 0.3f;
+    //Multiplies the level scaled maxHitPoints from Enemy. Every phase used to refill to full hitpoints, so 3 keeps the whole fight as long as before
+    private float totalHitpointsMultiplier = 3f;
+
 
     private AudioEnums firstPhaseAudioEnum = AudioEnums.FinalBossPhase1;
     private AudioEnums secondPhaseAudioEnum = AudioEnums.FinalBossPhase2;
     private AudioEnums thirdPhaseAudioEnum = AudioEnums.FinalBossPhase3;
-    private FinalBossBarker bossBarker = new FinalBossBarker();
+    private static FinalBossBarker bossBarker = new FinalBossBarker(); //static so attemptMockingBark can be called without a boss instance
     private FinalBossPeriodicMissileBarrage finalBossPeriodicMissileBarrage = new FinalBossPeriodicMissileBarrage();
 
     private FinalBossOrbitMissileAttack phase2OrbitMissileAttack;
     private FinalBossDropMineCharge phase2DropMineCharge;
     private FinalBossSpreadMissileAttack phase2SpreadMissileAttack;
-    private FinalBossLaserbeamCloneAttack phase2LaserbeamCloneAttack;
+    private FinalBossPhase1LaserbeamCloneAttack phase2LaserbeamCloneAttack;
 
-    private straightLineMissileAttack phase3StraightLineMissileAttack;
-    private MissileBarrageAttack phase3MissileBarrageAttack;
+    private FinalBossStraightLineMissileAttack phase3FinalBossStraightLineMissileAttack;
+    private FinalBossMissileBarrageAttack phase3MissileBarrageAttack;
     private FinalBossCreateRotatingReflectingBlocks phase3CreateRotatingReflectingBlocks;
+    private FinalBossSpawnFourDirectionalDrones phase3SpawnFourDirectionalDrones;
+    private FinalBossPhase3LaserbeamCloneAttack phase3LaserbeamCloneAttack;
 
     public FinalBoss(SpriteAnimationConfiguration spriteConfiguration, EnemyConfiguration enemyConfiguration, MovementConfiguration movementConfiguration) {
         super(spriteConfiguration, enemyConfiguration, movementConfiguration);
+        this.maxHitPoints *= totalHitpointsMultiplier;
+        this.currentHitpoints = this.maxHitPoints;
 
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 2, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(ImageEnums.BossExplosion);
@@ -84,7 +96,7 @@ public class FinalBoss extends Enemy {
         this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.15f);
 
         //phase 1 abilities
-        FinalBossCreateRotatingReflectingBlocks finalBossCreateRotatingReflectingBlocks = new FinalBossCreateRotatingReflectingBlocks(3, BOSSPHASE_1);
+        FinalBossCreateRotatingReflectingBlocks finalBossCreateRotatingReflectingBlocks = new FinalBossCreateRotatingReflectingBlocks(4, BOSSPHASE_1);
         FinalBossPhaseOneLaserbeamAttack finalBossPhaseOneLaserbeamAttack = new FinalBossPhaseOneLaserbeamAttack();
 
         bossBehaviourList.add(finalBossCreateRotatingReflectingBlocks);
@@ -94,7 +106,7 @@ public class FinalBoss extends Enemy {
         phase2OrbitMissileAttack = new FinalBossOrbitMissileAttack();
         phase2DropMineCharge = new FinalBossDropMineCharge();
         phase2SpreadMissileAttack = new FinalBossSpreadMissileAttack();
-        phase2LaserbeamCloneAttack = new FinalBossLaserbeamCloneAttack();
+        phase2LaserbeamCloneAttack = new FinalBossPhase1LaserbeamCloneAttack();
 
         bossBehaviourList.add(phase2OrbitMissileAttack);
         bossBehaviourList.add(phase2DropMineCharge);
@@ -103,13 +115,17 @@ public class FinalBoss extends Enemy {
 
 
         //phase 3 abilities
-        phase3StraightLineMissileAttack = new straightLineMissileAttack();
-        phase3MissileBarrageAttack = new MissileBarrageAttack();
+        phase3FinalBossStraightLineMissileAttack = new FinalBossStraightLineMissileAttack();
+        phase3MissileBarrageAttack = new FinalBossMissileBarrageAttack();
         phase3CreateRotatingReflectingBlocks = new FinalBossCreateRotatingReflectingBlocks(2, BOSSPHASE_3);
+        phase3SpawnFourDirectionalDrones = new FinalBossSpawnFourDirectionalDrones();
+        phase3LaserbeamCloneAttack = new FinalBossPhase3LaserbeamCloneAttack();
 
-        bossBehaviourList.add(phase3StraightLineMissileAttack);
+        bossBehaviourList.add(phase3FinalBossStraightLineMissileAttack);
         bossBehaviourList.add(phase3MissileBarrageAttack);
         bossBehaviourList.add(phase3CreateRotatingReflectingBlocks);
+//        bossBehaviourList.add(phase3SpawnFourDirectionalDrones);
+        bossBehaviourList.add(phase3LaserbeamCloneAttack);
 
 
         bossBehaviourList = bossBehaviourList.stream()
@@ -138,9 +154,9 @@ public class FinalBoss extends Enemy {
         }
 
         if (getBossPhase() == BOSSPHASE_1) {
-            changePhaseToNextPhase();
-            changePhaseToNextPhase();
-//            firePhaseOnePassiveAbilities();
+//            changePhaseToNextPhase();
+//            changePhaseToNextPhase();
+            firePhaseOnePassiveAbilities();
         }
 
         if (getBossPhase() == BOSSPHASE_3) {
@@ -269,14 +285,6 @@ public class FinalBoss extends Enemy {
     }
 
     public void takeDamage(float damageTaken) {
-        if (currentHitpoints - damageTaken <= 0) {
-            if (this.getBossPhase() == BOSSPHASE_1 || this.getBossPhase() == BOSSPHASE_2) {
-                changePhaseToNextPhase();
-                this.currentHitpoints = this.maxHitPoints;
-                return;
-            }
-        }
-
         if (damageTaken > 0) {
             damageTaken = (ArmorCalculator.calculateDamage(damageTaken, this) * damageReductionMultiplier);
         }
@@ -288,6 +296,13 @@ public class FinalBoss extends Enemy {
         this.currentHitpoints -= damageTaken;
         if (currentHitpoints > maxHitPoints) {
             currentHitpoints = maxHitPoints;
+        }
+
+        if (this.getBossPhase() != BOSSPHASE_3 && currentHitpoints <= getEndOfPhaseHitpoints()) {
+            //Clamp to the threshold so one big hit can't skip a phase
+            currentHitpoints = getEndOfPhaseHitpoints();
+            changePhaseToNextPhase();
+            return;
         }
 
         if (this.currentHitpoints <= 0) {
@@ -325,6 +340,16 @@ public class FinalBoss extends Enemy {
             //todo end the game and return to main menu
 
         }
+    }
+
+    //The hitpoints at which the current phase ends and the next one starts
+    private float getEndOfPhaseHitpoints() {
+        if (bossPhase == BOSSPHASE_1) {
+            return maxHitPoints * (1 - phaseOneHitpointsRatio);
+        } else if (bossPhase == BOSSPHASE_2) {
+            return maxHitPoints * (1 - phaseOneHitpointsRatio - phaseTwoHitpointsRatio);
+        }
+        return 0;
     }
 
     private void changePhaseToNextPhase() {
@@ -448,11 +473,10 @@ public class FinalBoss extends Enemy {
     }
 
 
-    //should be called from gameboard
-    public void attemptMockingBark() {
-        if (!AudioManager.getInstance().bossIsBarking(this)) {
+    //Called from GameBoard when the player dies and the game-over screen is shown
+    public static void attemptMockingBark() {
+        if (!AudioManager.getInstance().bossIsBarking(bossBarker)) {
             AudioManager.getInstance().addAudio(bossBarker.getRandomMockBark());
-            //should this have a cooldown? its supposed to be played when the player dies, so a cooldown makes no sense right?
         }
     }
 
@@ -512,14 +536,15 @@ public class FinalBoss extends Enemy {
 
     private void setPhaseTwoCooldowns() {
         phase2DropMineCharge.setLastAttackTime(GameState.getInstance().getGameSeconds() - 22);
-        phase2OrbitMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds());
+        phase2OrbitMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 10);
         phase2SpreadMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 5);
-        phase2LaserbeamCloneAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 34);
+        phase2LaserbeamCloneAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 20);
     }
 
     private void setPhaseThreeCooldowns() {
         //tbd
         phase3MissileBarrageAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 5);
-        phase3StraightLineMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 5);
+        phase3FinalBossStraightLineMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 5);
+        phase3SpawnFourDirectionalDrones.setLastAttackTime(GameState.getInstance().getGameSeconds() - 15);
     }
 }

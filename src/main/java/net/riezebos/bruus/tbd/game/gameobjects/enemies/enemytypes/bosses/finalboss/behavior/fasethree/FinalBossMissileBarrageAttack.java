@@ -40,13 +40,13 @@ import java.util.Random;
  */
 
 
-public class MissileBarrageAttack implements BossActionable {
+public class FinalBossMissileBarrageAttack implements BossActionable {
     private double lastAttackedTime = 0;
-    private double attackCooldown = 20;
+    private double attackCooldown = 22;
     private int priority = 3;
 
-    private int angleIncrement = 1; // How many degrees the gap moves with each wave
-    private int angleGapSize = 15; // Width of the gap in degrees
+    private float angleIncrement = 1.5f; // How many degrees the gap moves with each wave
+    private int angleGapSize = 17; // Width of the gap in degrees
     private double timeBetweenMissileWave = 0.06;
     private int angleBetweenMissiles = 2; // Degrees between two missiles of the same wave
 
@@ -57,7 +57,7 @@ public class MissileBarrageAttack implements BossActionable {
     private boolean barrageActive = false;
     private double gapStartAngle;
     private int gapDirection; // 1 moves the gap towards UP, -1 moves it towards DOWN
-    private int wavesRemaining;
+    private long wavesRemaining;
     private double lastWaveTime;
     private Random random = new Random();
 
@@ -65,6 +65,7 @@ public class MissileBarrageAttack implements BossActionable {
 
     @Override
     public boolean activateBehaviour(Enemy enemy) {
+        angleGapSize = 20;
         double currentTime = GameState.getInstance().getGameSeconds();
         if (attackingAnimation == null) {
             initAttackAnimation(enemy);
@@ -136,7 +137,7 @@ public class MissileBarrageAttack implements BossActionable {
         }
 
         // Keep firing waves until the gap reaches the edge it moves towards
-        wavesRemaining = (int) ((travelRange - randomOffset) / angleIncrement) + 1;
+        wavesRemaining = Math.round((travelRange - randomOffset) / angleIncrement) + 1;
         barrageActive = true;
         fireWave(enemy);
     }
@@ -160,7 +161,7 @@ public class MissileBarrageAttack implements BossActionable {
                 ImageEnums.LaserBullet, 0.5f);
 
 
-        float movementSpeed = 3.75f;
+        float movementSpeed = 3.25f;
         MissileEnums missileType = MissileEnums.DefaultLaserBullet;
         PathFinder missilePathFinder = new StraightLinePathFinder();
         MovementConfiguration movementConfiguration = MissileCreator.getInstance().createMissileMovementConfig(

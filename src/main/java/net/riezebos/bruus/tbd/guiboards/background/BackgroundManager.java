@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.guiboards.background;
 
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.SpawningCoordinator;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
@@ -28,6 +29,9 @@ public class BackgroundManager {
     private NebulaThemeEnums nebulaTheme;
     private PerformanceLogger performanceLogger = null;
 
+    //Fixed background for the final boss level instead of a random one
+    private SpaceThemeEnums finalBossSpaceTheme = SpaceThemeEnums.Star_Clear;
+
     private BackgroundManager() {
         initManager();
         this.performanceLogger = new PerformanceLogger("Background Manager");
@@ -44,9 +48,15 @@ public class BackgroundManager {
     }
 
     private void initManager() {
-        this.spaceTheme = SpaceThemeEnums.selectRandomSpaceTheme();
-        initSpaceTheme();
-        this.nebulaTheme = NebulaThemeEnums.selectRandomNebulaScene(spaceTheme);
+        if (LevelManager.getInstance().isNextLevelTheFinalBossLevel()) {
+            this.spaceTheme = finalBossSpaceTheme;
+            initSpaceTheme();
+            this.nebulaTheme = NebulaThemeEnums.selectRandomNebulaScene(spaceTheme);
+        } else {
+            this.spaceTheme = SpaceThemeEnums.selectRandomSpaceTheme();
+            initSpaceTheme();
+            this.nebulaTheme = NebulaThemeEnums.selectRandomNebulaScene(spaceTheme);
+        }
         initBackgroundObjects();
     }
 

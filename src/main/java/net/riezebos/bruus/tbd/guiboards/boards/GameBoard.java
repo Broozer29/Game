@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.UI.UIObject;
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBossManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.friendlies.FriendlyStation;
@@ -362,6 +363,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         if (!hasSurvived && !isPlayingDeathMusic) {
             playDeathMusic();
+            FinalBoss.attemptMockingBark();
             isPlayingDeathMusic = true;
             LevelManager.getInstance().resetBossUsed(); //sloppy fix to reset the boss used flag, this could be refactored into something better
             SaveManager.getInstance().deleteSaveFile();

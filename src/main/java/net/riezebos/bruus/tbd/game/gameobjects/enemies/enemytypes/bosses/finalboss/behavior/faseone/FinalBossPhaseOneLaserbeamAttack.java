@@ -39,6 +39,8 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
 
     private GameObject target;
     private float angleDegreeIncrement = 0.14f;
+    //Upper laserbeam aims this many degrees off the target, the lower one the same amount the other way. Indicators use the same offset
+    private float laserbeamAngleOffset = 10;
 
 
     @Override
@@ -84,10 +86,12 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
         if (this.isLiningUp && this.upperLaserbeamIndicator == null) {
             upperLaserbeamIndicator = new LaserbeamIndicator(chargingAnimation.getCenterXCoordinate(), chargingAnimation.getCenterYCoordinate(), target.getCenterXCoordinate(), target.getCenterYCoordinate(), 1, enemy);
             upperLaserbeamIndicator.setLength(20 * Laserbeam.bodyWidth);
+            upperLaserbeamIndicator.setAngleOffset(laserbeamAngleOffset);
             MissileManager.getInstance().addLaserbeamIndicator(upperLaserbeamIndicator);
 
             lowerLaserbeamIndicator = new LaserbeamIndicator(chargingAnimation.getCenterXCoordinate(), chargingAnimation.getCenterYCoordinate(), target.getCenterXCoordinate(), target.getCenterYCoordinate(), 1, enemy);
             lowerLaserbeamIndicator.setLength(20 * Laserbeam.bodyWidth);
+            lowerLaserbeamIndicator.setAngleOffset(-laserbeamAngleOffset);
             MissileManager.getInstance().addLaserbeamIndicator(lowerLaserbeamIndicator);
         }
 
@@ -154,7 +158,7 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
         updateLaserbeamOriginPoints(enemy);
         upperTrackingLaserbeam.setOwner(enemy);
         upperTrackingLaserbeam.setMaxRotationPerUpdate(angleDegreeIncrement);
-        upperTrackingLaserbeam.setAngleOffset(10);
+        upperTrackingLaserbeam.setAngleOffset(laserbeamAngleOffset);
 
         if (lowerTrackingLaserbeam != null) {
             lowerTrackingLaserbeam.setVisible(false);
@@ -163,7 +167,7 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
         updateLaserbeamOriginPoints(enemy);
         lowerTrackingLaserbeam.setOwner(enemy);
         lowerTrackingLaserbeam.setMaxRotationPerUpdate(angleDegreeIncrement);
-        lowerTrackingLaserbeam.setAngleOffset(-10);
+        lowerTrackingLaserbeam.setAngleOffset(-laserbeamAngleOffset);
     }
 
     private void updateLaserbeamChargeAnimation(Enemy enemy) {

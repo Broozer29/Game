@@ -29,7 +29,7 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
     private Random random;
     private int priority = 3;
     private int amountToSpawn = 3;
-
+    private int spawnedCounter = 0;
     private SpriteAnimation spawnAnimation;
 
     @Override
@@ -97,7 +97,6 @@ public class RedBossSpawnFourDirectionalDrone implements BossActionable {
         return random.nextInt(1, 3);
     }
 
-    private int spawnedCounter = 0;
 
     private Enemy createFourDirectionalDrone(Enemy enemy) {
         EnemyEnums enemyEnums = EnemyEnums.FourDirectionalDrone;
