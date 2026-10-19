@@ -67,9 +67,9 @@ An item is discovered once the player has bought it in the shop or picked it as 
 | Callers | Only `ShopItem.purchaseItemInShop` calls it, once per purchase or pick and after `addItem`. Continue Run, test saves, the `infiniteMoney` grant, the Bargain Bucket items and contract rewards record nothing, so an item got that way stays locked until it is bought or picked |
 | Dev switch | `DevTestSettings.showFullArmory` makes `isDiscovered` true for every item. It changes what is shown, not what is recorded |
 
-When `discoverItem` returns true, `ShopItem` shows an ITEM DISCOVERED popup: the item icon with "ITEM DISCOVERED:" and the item name in menu letters under it, fading out like the contract popup of `ShopManager`. A purchase sends it to `ShopBoard.addGUIAnimation` and a relic pick to `GameBoard.addGUIAnimation`. Characters without a menu letter are left out of the name.
+When `discoverItem` returns true, `ShopItem` shows an ITEM DISCOVERED popup: the item icon with "ITEM DISCOVERED:" and the item name in menu letters under it, standing together just above the card that was bought or picked (centred on it, kept on screen) and fading out like the contract popup of `ShopManager`. A purchase sends it to `ShopBoard.addGUIAnimation` and a relic pick to `GameBoard.addGUIAnimation`. Characters without a menu letter are left out of the name.
 
-Shop cards and relic cards that show an item for sale or pick which fails `ShopkeeperWindow.isDiscovered` carry a small teal mark in their top right corner (`ShopItem.drawNotInArmoryMark`, called from `ShopBoard` and `GameBoard`). Bought and locked slots carry none.
+Shop cards and relic cards that show an item for sale or pick which fails `ShopkeeperWindow.isDiscovered` carry the quest mark (`images/Icons/QuestMark.png`, `ImageEnums.QuestMarkIcon`: a black-outlined exclamation point on a transparent background, about 26 px tall at resolution factor 1, aspect ratio kept) in their top right corner (`ShopItem.drawNotInArmoryMark`, called from `ShopBoard` and `GameBoard`). Bought and locked slots carry none.
 
 ## Filters
 

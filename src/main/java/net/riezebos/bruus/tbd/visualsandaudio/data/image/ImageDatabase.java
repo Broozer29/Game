@@ -460,6 +460,7 @@ public class ImageDatabase {
     private BufferedImage purpleWings5;
     private BufferedImage informationCard;
     private BufferedImage lockedIcon;
+    private BufferedImage questMarkIcon;
     private BufferedImage sc2ConcentratedLaser;
     private BufferedImage sc2RepairBeam;
     private BufferedImage protossCarrierNoEngine;
@@ -863,6 +864,7 @@ public class ImageDatabase {
         this.redPlanet8 = imgLoader.getImage(ImageEnums.RedPlanet8);
 
         this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
+        this.questMarkIcon = imgLoader.getImage(ImageEnums.QuestMarkIcon);
         this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
         this.guirefresh = imgLoader.getImage(ImageEnums.GUIRefresh);
         this.guifreeze = imgLoader.getImage(ImageEnums.GUIFreeze);
@@ -1371,6 +1373,8 @@ public class ImageDatabase {
                 return emeraldGem5;
             case LockedIcon:
                 return lockedIcon;
+            case QuestMarkIcon:
+                return questMarkIcon;
             case InformationCard:
                 return informationCard;
             case Moon2:

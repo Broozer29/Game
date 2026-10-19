@@ -8,7 +8,7 @@ All notable changes on the `Nelis` branch.
 - A new ARMORY row on the main menu, above SETTINGS, opens a page that lists the items in the game with their icon. Move over an item to see its name in its rarity colour, rarity, which classes can get it, what kind of item it is, its full description and its price. The descriptions show the starting values, so they never change with your run. B or Escape closes the page.
 - The shop's inventory now has an ARMORY button next to INVENTORY. It opens the ARMORY page, and BACK returns you to the inventory.
 - ARMORY shows an item only once you have bought it in the shop or picked it as a relic. Items you have not got yet show as locked: a lock icon, "???" and their rarity, and they still follow the filters. The items you have seen are saved in `playerprofile.json`. The dev setting `showFullArmory` shows everything.
-- The first time you buy or pick an item, an ITEM DISCOVERED popup shows its icon and name. Shop and relic cards of items that are not in the ARMORY yet carry a small teal mark in the corner.
+- The first time you buy or pick an item, an ITEM DISCOVERED popup shows its icon and name. Shop and relic cards of items that are not in the ARMORY yet carry a small black-outlined exclamation point in the top right corner.
 - ARMORY has a filter pane: press X (controller) or F (keyboard) to filter the items by class, rarity and type. The bar above the grid lists the active filters and how many items are left, and Y or C clears all filters.
 - The ARMORY filters are remembered: the class, rarity and type filters you switch on are still on the next time you open the page, even after closing or crashing the game.
 - Internal: every item now has a class group (which classes can get it) and at least one item type (Offensive, Defensive, Economy or Utility), so a new item cannot be added without them. ARMORY reads them; nothing else does yet.
@@ -16,6 +16,7 @@ All notable changes on the `Nelis` branch.
 
 ### Changed
 - Item descriptions in the shop, the relic choice and the class descriptions are drawn smoother and sharper.
+- In the shop, the price of the selected item is no longer a line inside the description, where it overlapped the text. It now has its own small card below the description card: the minerals icon, then the cost, in white when you can afford it and in red when you cannot.
 
 ## 2026-10-18
 

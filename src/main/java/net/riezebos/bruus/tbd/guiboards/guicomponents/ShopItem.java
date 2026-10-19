@@ -19,12 +19,13 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
 import static net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator.shopItemIconDimensions;
@@ -103,12 +104,12 @@ public class ShopItem extends GUIComponent {
         }
     }
 
-    //The popup of a first purchase or pick, built like the contract popup of ShopManager: the item icon, with "ITEM DISCOVERED:" and the item name in menu letters under it, all fading out together
+    //The popup of a first purchase or pick, built like the contract popup of ShopManager: the item icon, with "ITEM DISCOVERED:" and the item name in menu letters under it, all fading out together, placed just above the card that was bought or picked
     //Each component goes through addGUIAnimation so the board stacks it above earlier popups; the letters are placed under the icon afterwards
     private void showDiscoveredPopup(ItemEnums item, Consumer<GUIComponent> addToBoard) {
         DataClass data = DataClass.getInstance();
-        int centerX = data.getWindowWidth() / 2;
-        int centerY = data.getWindowHeight() / 2;
+        int centerX = getCenterXCoordinate(); //The popup rises from this card, the one just bought or picked
+        int centerY = getYCoordinate();
         float fadeStep = -0.00175f; //The same fade as the contract popup
 
         SpriteConfiguration iconConfiguration = new SpriteConfiguration();
@@ -130,7 +131,7 @@ public class ShopItem extends GUIComponent {
         int textHeight = lineHeight + (nameText == null ? 0 : gap + lineHeight);
 
         addToBoard.accept(icon);
-        icon.setYCoordinate(icon.getYCoordinate() - gap - textHeight); //Makes room under the icon for the text, so the text does not cover the popup of earlier items
+        icon.setYCoordinate(Math.max(0, getYCoordinate() - icon.getHeight() - 2 * gap - textHeight)); //Icon and text stand together just above the card
         int titleTop = icon.getYCoordinate() + icon.getHeight() + gap;
         placeLetters(titleText, titleTop, fadeStep, addToBoard);
         if (nameText != null) {
@@ -164,27 +165,24 @@ public class ShopItem extends GUIComponent {
         return letters.toString();
     }
 
-    //A small teal mark in the top right corner of a card that shows an item for sale or pick which is not in the ARMORY yet; the caller decides that with ShopkeeperWindow.isDiscovered
+    //The quest mark (an exclamation point) in the top right corner of a card that shows an item for sale or pick which is not in the ARMORY yet; the caller decides that with ShopkeeperWindow.isDiscovered
     public void drawNotInArmoryMark(Graphics2D g) {
         if (slot.getStatus() != ShopSlotStatusEnums.Available) {
             return;
         }
-        int size = Math.max(8, getWidth() / 4);
-        int x = getXCoordinate() + getWidth() - size - 2;
+        BufferedImage icon = ImageDatabase.getInstance().getImage(ImageEnums.QuestMarkIcon);
+        if (icon == null) {
+            return;
+        }
+        int height = Math.max(13, Math.round(26 * DataClass.getInstance().getResolutionFactor()));
+        int width = Math.max(1, Math.round(height * (float) icon.getWidth() / icon.getHeight()));
+        int x = getXCoordinate() + getWidth() - width - 2;
         int y = getYCoordinate() + 2;
-        Object oldAntialiasing = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Color dark = new Color(5, 21, 20);
-        g.setColor(dark);
-        g.fillOval(x - 1, y - 1, size + 2, size + 2);
-        g.setColor(new Color(95, 242, 222));
-        g.fillOval(x, y, size, size);
-        g.setColor(dark);
-        int stroke = Math.max(2, size / 6);
-        g.fillRect(x + (size - stroke) / 2, y + size / 5, stroke, size / 3);
-        g.fillRect(x + (size - stroke) / 2, y + size * 3 / 5, stroke, stroke);
-        if (oldAntialiasing != null) {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAntialiasing);
+        Object oldInterpolation = g.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.drawImage(icon, x, y, width, height, null);
+        if (oldInterpolation != null) {
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, oldInterpolation);
         }
     }
 

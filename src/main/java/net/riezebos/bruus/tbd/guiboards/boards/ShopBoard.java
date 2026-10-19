@@ -28,6 +28,7 @@ import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DescriptionTextQuality;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -37,6 +38,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -73,6 +75,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private DisplayOnly songLengthBackgroundCard;
     private DisplayOnly songDifficultyBackgroundCard;
     private DisplayOnly descriptionBackgroundCard;
+    private DisplayOnly costBackgroundCard;
     private DisplayOnly inventoryBackgroundCard;
     private DisplayOnly nextLevelDifficultyBackground;
     private DisplayOnly returnToMainMenuBackgroundCard;
@@ -115,6 +118,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private static class DescriptionInfo {
         String title = null;
         String cost = null;
+        Integer mineralCost = null; //Shop price, drawn in its own card below the description card
+        boolean canAffordCost = false; //The same check the purchase uses, so the colour matches whether buying works
         String descriptionText = null;
         Color rarityColor = null;
     }
@@ -157,6 +162,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
         inventoryBackgroundCard = shopBoardCreator.createInventoryBackgroundCard();
         rerollBackgroundCard = shopBoardCreator.createRerollBackgroundCard(itemRowsBackgroundCard);
         descriptionBackgroundCard = shopBoardCreator.createDescriptionRowsBackgroundCard(rerollBackgroundCard);
+        costBackgroundCard = shopBoardCreator.createCostBackgroundCard(descriptionBackgroundCard);
         nextLevelDifficultyBackground = shopBoardCreator.createShowNextLevelDifficultyBackground(songLengthBackgroundCard);
         nextLevelModifiersTextCollection = shopBoardCreator.createLevelModifiersText(songLengthBackgroundCard);
         // Create items from the shop contents
@@ -523,7 +529,8 @@ public class ShopBoard extends JPanel implements TimerHolder {
             descriptionInfo.rarityColor = selectedTileHelper.getShopItemInformation().getItemRarity().getColor();
 
             if (!showInventory) {
-                descriptionInfo.cost = "Costs: " + Math.round(selectedTileHelper.getShopItemInformation().getCost()) + " minerals. You have: " + Math.round(PlayerInventory.getInstance().getCashMoney());
+                descriptionInfo.mineralCost = Math.round(selectedTileHelper.getShopItemInformation().getCost());
+                descriptionInfo.canAffordCost = selectedTileHelper.getShopItemInformation().canAfford();
             } else {
                 //Replacing the itemcost with the amount the player has
                 descriptionInfo.cost = "You have: " + PlayerInventory.getInstance().getItemFromInventoryIfExists(selectedTileHelper.getShopItemInformation().getItem()).getQuantity() + " of this item.";
@@ -791,13 +798,39 @@ public class ShopBoard extends JPanel implements TimerHolder {
             descriptionY += descriptionMetrics.getHeight() * ((descriptionInfo.descriptionText.length() / maxTextWidth) + 1); // Estimate line height
         }
 
-        // Set font and draw the cost if available
+        // Set font and draw the cost if available (the inventory's "You have" line; the shop price has its own card)
         if (descriptionInfo.cost != null) {
             g2d.setFont(new Font(textFont, Font.ITALIC, Math.round(16 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor))));  // Slightly smaller italic font for the cost
             FontMetrics costMetrics = g2d.getFontMetrics();
             int costY = itemDescription.getYCoordinate() + boxHeight - verticalPadding - costMetrics.getHeight();
             drawDescriptionText(g2d, descriptionInfo.cost, descriptionX, costY, maxTextWidth, Color.WHITE);
         }
+        quality.restore(g2d);
+        drawMineralCost(g2d, descriptionInfo);
+    }
+
+    //Draws the shop price in its own small card below the description card: the mineral icon, then ": <cost>", white when the player can pay it and red when not
+    private void drawMineralCost(Graphics2D g2d, DescriptionInfo descriptionInfo) {
+        if (descriptionInfo.mineralCost == null) {
+            return;
+        }
+        drawGUIComponent(g2d, costBackgroundCard);
+        float fontScale = Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor);
+        g2d.setFont(new Font(DataClass.getInstance().getTextFont(), Font.BOLD, Math.round(22 * fontScale)));
+        FontMetrics metrics = g2d.getFontMetrics();
+        String text = ": " + descriptionInfo.mineralCost;
+        BufferedImage icon = ImageDatabase.getInstance().getImage(ImageEnums.TopazGem7);
+        int iconHeight = metrics.getHeight();
+        int iconWidth = icon == null ? 0 : Math.round(iconHeight * (float) icon.getWidth() / icon.getHeight());
+        int totalWidth = iconWidth + metrics.stringWidth(text);
+        int x = costBackgroundCard.getCenterXCoordinate() - totalWidth / 2;
+        int centerY = costBackgroundCard.getCenterYCoordinate();
+        if (icon != null) {
+            g2d.drawImage(icon, x, centerY - iconHeight / 2, iconWidth, iconHeight, null);
+        }
+        DescriptionTextQuality quality = DescriptionTextQuality.apply(g2d);
+        g2d.setColor(descriptionInfo.canAffordCost ? Color.WHITE : Color.RED);
+        g2d.drawString(text, x + iconWidth, centerY - iconHeight / 2 + metrics.getAscent());
         quality.restore(g2d);
     }
 

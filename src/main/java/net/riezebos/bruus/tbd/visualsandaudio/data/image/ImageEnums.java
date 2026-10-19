@@ -301,6 +301,7 @@ public enum ImageEnums {
     PurpleWings1, PurpleWings2, PurpleWings3, PurpleWings4, PurpleWings5, RedWings1, RedWings2, RedWings3, RedWings4, RedWings5,
     // Icons
     LockedIcon,
+    QuestMarkIcon,
     TopazGem7,
     EmeraldGem5,
     Starcraft2_Protoss_Shield_Disintegrate,

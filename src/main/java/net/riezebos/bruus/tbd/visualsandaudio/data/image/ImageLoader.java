@@ -651,6 +651,8 @@ public class ImageLoader {
                 return "/images/UI/Wings/Red/05.png";
             case LockedIcon:
                 return "/images/Icons/Locked.png";
+            case QuestMarkIcon:
+                return "/images/Icons/QuestMark.png";
             case FrenzyIcon:
                 return "/images/Icons/frenzyicon.png";
             case ShieldStabilizer:
