@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemClassAvailability;
 import net.riezebos.bruus.tbd.game.items.enums.ItemRarityEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemTypeEnums;
+import net.riezebos.bruus.tbd.game.settings.SettingsManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
@@ -53,7 +54,7 @@ public class ShopkeeperWindow {
     private ResizableCard card;
     private List<ItemEnums> allItems; //Every item the page lists
     private List<ItemEnums> items; //The ones that pass the filters, which the grid shows
-    private final ShopkeeperFilterState filters = new ShopkeeperFilterState(); //Stays when the page closes, so it can be loaded and saved as one object
+    private final ShopkeeperFilterState filters = new ShopkeeperFilterState(); //Loaded from the saved settings when the page opens, and saved at once after every change
     private boolean filterPaneOpen = false;
     private int filterCursor = 0; //The row of the filter pane under the cursor
     private int columns;
@@ -120,6 +121,7 @@ public class ShopkeeperWindow {
     //Shows the page with the first item selected; onClosed says what the screen does once the page is closed
     public void open (Runnable onClosed) {
         this.onClosed = onClosed;
+        filters.load(SettingsManager.getInstance().getSavedSettings().getShopkeeperFilters());
         build(); //Built again, so it follows the size of the window
         selectedIndex = 0;
         firstVisibleRow = 0;
@@ -193,6 +195,7 @@ public class ShopkeeperWindow {
             } else {
                 flipToggle(filterCursor);
                 applyFilters();
+                saveFilters();
             }
         } else if (action == MenuAction.BACK) {
             filterPaneOpen = false;
@@ -202,6 +205,11 @@ public class ShopkeeperWindow {
     private void clearFilters () {
         filters.clear();
         applyFilters();
+        saveFilters();
+    }
+
+    private void saveFilters () {
+        SettingsManager.getInstance().saveShopkeeperFilters(filters.toSaved());
     }
 
     //Toggles in one group add up, and the groups narrow each other; a group with nothing switched on lets every item through

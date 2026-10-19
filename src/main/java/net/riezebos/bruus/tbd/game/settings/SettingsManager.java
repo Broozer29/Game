@@ -58,6 +58,8 @@ public class SettingsManager {
         //The setters clamp, but Jackson sets the fields through them, so a value outside 0-100 is already clamped here
         //Invalid bindings fall back to their defaults
         loaded.getInputBindings().repair();
+        //Filter names that are no longer valid are dropped
+        loaded.getShopkeeperFilters().repair();
         this.savedSettings = loaded.copyOf();
         this.settings = loaded;
     }
@@ -67,6 +69,19 @@ public class SettingsManager {
         try {
             new ObjectMapper().writeValue(new File(SETTINGS_FILE_PATH), getSettings());
             this.savedSettings = getSettings().copyOf();
+        } catch (IOException e) {
+            System.out.println("Could not write " + SETTINGS_FILE_PATH + ": " + e.getMessage());
+        }
+    }
+
+    //Saves the SHOPKEEPER filters at once; only the saved settings are written, so an unsaved settings change is never written by accident
+    public synchronized void saveShopkeeperFilters(ShopkeeperFilters filters) {
+        Settings current = getSettings();
+        Settings saved = getSavedSettings();
+        current.setShopkeeperFilters(filters.copyOf());
+        saved.setShopkeeperFilters(filters.copyOf());
+        try {
+            new ObjectMapper().writeValue(new File(SETTINGS_FILE_PATH), saved);
         } catch (IOException e) {
             System.out.println("Could not write " + SETTINGS_FILE_PATH + ": " + e.getMessage());
         }

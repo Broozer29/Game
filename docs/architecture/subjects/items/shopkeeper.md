@@ -67,7 +67,7 @@ CaptainFireFighter and CaptainCarrier items. Mutalisk-only items match no class 
 how many items would show if only it changed, and the bar above the grid lists the active filters and
 "N of M items" (M is every item the page lists). When nothing matches, the grid shows "No items found".
 
-The filters live in one `ShopkeeperFilterState` held by `ShopkeeperWindow`. They are kept in memory only.
+The filters live in one `ShopkeeperFilterState` held by `ShopkeeperWindow`. They are stored in `settings.json` as `ShopkeeperFilters`: three lists of enum names for class, rarity and type. `ShopkeeperWindow.open` loads them from the saved settings. Every toggle change and every clear calls `SettingsManager.saveShopkeeperFilters`, which writes the filters at once and never writes other unsaved settings. A name that is no longer a valid enum value is dropped by `ShopkeeperFilters.repair` when the file is read, and the other settings stay as they are. The filters are not part of `Settings.hasSameValuesAs`, so changing them never makes the settings page ask to save.
 
 ## Base-value descriptions
 
@@ -82,7 +82,6 @@ upgrades (`FriendlyStation.getStationDamage(null)`), and Gasoline uses the ignit
 <!-- Unbuilt / deferred -->
 ## Designed but not yet built
 
-- Saving the filters in `settings.json`.
 - Showing only discovered items, through `isShownInShopkeeper`.
 
 ## Cross-references
