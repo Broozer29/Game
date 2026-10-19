@@ -18,7 +18,7 @@ Java paths are under `src/main/java/net/riezebos/bruus/tbd/`.
 
 | what | where |
 | --- | --- |
-| item display name, rarity, enabled or disabled | `game/items/ItemEnums.java` (constructor: rarity, image, display name, enabled) |
+| item display name, rarity, enabled or disabled | `game/items/ItemEnums.java` (constructor: rarity, image, display name, enabled, class group, item types) |
 | item description text with its numbers | `game/items/ItemDescriptionRetriever.java` |
 | item price per rarity | `game/items/enums/ItemRarityEnums.java` |
 | item limited to a class | the item's `isAvailable()` comparing `PlayerClass`, in `game/items/items/**` |
