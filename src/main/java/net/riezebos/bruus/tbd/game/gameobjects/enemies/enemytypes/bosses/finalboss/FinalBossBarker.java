@@ -20,7 +20,8 @@ public class FinalBossBarker {
     private Random random = new Random();
 
     public FinalBossBarker() {
-        loadBarkLists();
+//        loadBarkLists();
+        loadFemaleBarkLists();
     }
 
     private void loadBarkLists() {
@@ -62,6 +63,40 @@ public class FinalBossBarker {
         allBarkEnums.addAll(lowHealthBarks);
     }
 
+    private void loadFemaleBarkLists() {
+        greetingBarks.add(AudioEnums.FinalBossFemaleGreeting);
+
+        mockingBarks.add(AudioEnums.FinalBossFemaleMock1);
+        mockingBarks.add(AudioEnums.FinalBossFemaleMock2);
+        mockingBarks.add(AudioEnums.FinalBossFemaleMock3);
+        mockingBarks.add(AudioEnums.FinalBossFemaleMock4);
+        mockingBarks.add(AudioEnums.FinalBossFemaleMock5);
+
+        tauntingBarks.add(AudioEnums.FinalBossFemaleTaunt1);
+//        tauntingBarks.add(AudioEnums.FinalBossFemaleTaunt2);
+        tauntingBarks.add(AudioEnums.FinalBossFemaleTaunt3);
+        tauntingBarks.add(AudioEnums.FinalBossFemaleTaunt4);
+        tauntingBarks.add(AudioEnums.FinalBossFemaleTaunt5);
+        tauntingBarks.add(AudioEnums.FinalBossFemaleTaunt6);
+        tauntingBarks.add(AudioEnums.FinalBossFemaleTaunt7);
+
+        phaseTransitionBarks.add(AudioEnums.FinalBossFemalePhaseTransition1);
+        phaseTransitionBarks.add(AudioEnums.FinalBossFemalePhaseTransition2);
+        phaseTransitionBarks.add(AudioEnums.FinalBossFemalePhaseTransition3);
+        phaseTransitionBarks.add(AudioEnums.FinalBossFemalePhaseTransition4);
+        phaseTransitionBarks.add(AudioEnums.FinalBossFemalePhaseTransition5);
+
+        //No female many bullet or low health barks exist, so those lists stay empty
+
+        allBarkEnums = new HashSet<>();
+        allBarkEnums.addAll(greetingBarks);
+        allBarkEnums.addAll(mockingBarks);
+        allBarkEnums.addAll(tauntingBarks);
+        allBarkEnums.addAll(phaseTransitionBarks);
+        allBarkEnums.addAll(manyBulletBarks);
+        allBarkEnums.addAll(lowHealthBarks);
+    }
+
     public AudioEnums getRandomGreetingBark() {
         return greetingBarks.get(random.nextInt(greetingBarks.size()));
     }
@@ -69,7 +104,7 @@ public class FinalBossBarker {
     public AudioEnums getRandomTauntBark() {
         int amountOfBulletsThatAreReflected = Math.toIntExact(MissileManager.getInstance().getMissiles().stream().filter(missile -> missile.getTimesReflected() >= 1).count());
 
-        if (amountOfBulletsThatAreReflected > BULLETS_FOR_MANY_BULLET_BARKS) {
+        if (amountOfBulletsThatAreReflected > BULLETS_FOR_MANY_BULLET_BARKS && !manyBulletBarks.isEmpty()) {
             return manyBulletBarks.get(random.nextInt(manyBulletBarks.size()));
         }
 
@@ -85,6 +120,9 @@ public class FinalBossBarker {
     }
 
     public AudioEnums getLowHealthBark() {
+        if (lowHealthBarks.isEmpty()) {
+            return null;
+        }
         return lowHealthBarks.get(random.nextInt(lowHealthBarks.size()));
     }
 

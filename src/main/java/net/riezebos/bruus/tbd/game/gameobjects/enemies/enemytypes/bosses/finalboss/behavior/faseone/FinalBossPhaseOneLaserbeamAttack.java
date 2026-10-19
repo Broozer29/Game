@@ -5,10 +5,10 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.LaserbeamIndicator;
-import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.TrackingLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -21,8 +21,10 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+import java.util.Random;
+
 public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
-    //Vuurt een tracking laserbeam vanaf de neus die de speler volgt
+    //Fires two laserbeams from the nose around the player, aimed by tracking indicators. Once fired, both sweep the same way to drag the trap along
     private int priority = 15;
     private float cooldown = 7.5f;
     private double lastFiredTime = GameState.getInstance().getGameSeconds();
@@ -32,13 +34,17 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
     private boolean isLiningUp = false;
 
     private SpriteAnimation chargingAnimation;
-    private TrackingLaserBeam upperTrackingLaserbeam;
+    private AngledLaserBeam upperTrackingLaserbeam;
     private LaserbeamIndicator upperLaserbeamIndicator;
-    private TrackingLaserBeam lowerTrackingLaserbeam;
+    private AngledLaserBeam lowerTrackingLaserbeam;
     private LaserbeamIndicator lowerLaserbeamIndicator;
 
     private GameObject target;
+    //Degrees both laserbeams rotate per update once fired. setAngleDegrees rounds to 0.2, so this effectively moves 0.2 degrees per update
     private float angleDegreeIncrement = 0.14f;
+    //1 sweeps clockwise, -1 counterclockwise. Picked randomly every time the laserbeams fire
+    private int rotationDirection = 1;
+    private Random random = new Random();
     //Upper laserbeam aims this many degrees off the target, the lower one the same amount the other way. Indicators use the same offset
     private float laserbeamAngleOffset = 10;
 
@@ -69,10 +75,8 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
                     !isFiringLaserbeams) {
                 createLaserbeams(enemy);
 
-                for (int i = 0; i < 200; i++) {
-                    upperTrackingLaserbeam.update(); //Engine bug: Prevents the laserbeams from "jumping" to the right position by doing it before adding them to missilemanager
-                    lowerTrackingLaserbeam.update();
-                }
+                upperTrackingLaserbeam.update(); //Place the segments before adding them to missilemanager
+                lowerTrackingLaserbeam.update();
                 chargingAnimation.setVisible(false);
                 MissileManager.getInstance().addLaserBeam(upperTrackingLaserbeam);
                 MissileManager.getInstance().addLaserBeam(lowerTrackingLaserbeam);
@@ -106,6 +110,7 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
 
         if (isFiringLaserbeams) {
             updateLaserbeamOriginPoints(enemy);
+            rotateLaserbeams();
             updateLaserbeamVisibility();
             if (upperLaserbeamIndicator != null && upperLaserbeamIndicator.isActive()) {
                 upperLaserbeamIndicator.setActive(false);
@@ -134,6 +139,24 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
         }
     }
 
+    private void rotateLaserbeams() {
+        if (upperTrackingLaserbeam != null && lowerTrackingLaserbeam != null) {
+            upperTrackingLaserbeam.setAngleDegrees(upperTrackingLaserbeam.getAngleDegrees() + angleDegreeIncrement * rotationDirection);
+            lowerTrackingLaserbeam.setAngleDegrees(lowerTrackingLaserbeam.getAngleDegrees() + angleDegreeIncrement * rotationDirection);
+        }
+    }
+
+    //The angle the indicators tracked towards, so the laserbeams fire exactly where the telegraph pointed
+    private double getAimedAngleDegrees() {
+        if (upperLaserbeamIndicator != null) {
+            return upperLaserbeamIndicator.getCurrentAngleDegrees();
+        }
+        return Math.toDegrees(Math.atan2(
+                target.getCenterYCoordinate() - chargingAnimation.getCenterYCoordinate(),
+                target.getCenterXCoordinate() - chargingAnimation.getCenterXCoordinate()
+        ));
+    }
+
     private void lockOnTarget(Enemy enemy) {
         target = PlayerManager.getInstance().getFurthestSpaceShip(enemy);
     }
@@ -141,9 +164,11 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
     private void createLaserbeams(Enemy enemy) {
         //Create upper laserbeam
         float damage = enemy.getDamage() * 0.2f;
+        double aimedAngleDegrees = getAimedAngleDegrees();
+        rotationDirection = random.nextBoolean() ? 1 : -1;
+
         LaserbeamConfiguration laserbeamConfiguration = new LaserbeamConfiguration(true, damage);
         laserbeamConfiguration.setAmountOfLaserbeamSegments(20);
-        laserbeamConfiguration.setTargetToAimAt(target);
         laserbeamConfiguration.setOriginPoint(new Point(
                 chargingAnimation.getCenterXCoordinate() - Laserbeam.bodyWidth / 2 + 4,
                 chargingAnimation.getCenterYCoordinate() - Laserbeam.bodyWidth / 2 + 12
@@ -154,20 +179,18 @@ public class FinalBossPhaseOneLaserbeamAttack implements BossActionable {
             upperTrackingLaserbeam.setVisible(false);
         }
 
-        upperTrackingLaserbeam = new TrackingLaserBeam(laserbeamConfiguration);
+        laserbeamConfiguration.setAngleDegrees(aimedAngleDegrees + laserbeamAngleOffset);
+        upperTrackingLaserbeam = new AngledLaserBeam(laserbeamConfiguration);
         updateLaserbeamOriginPoints(enemy);
         upperTrackingLaserbeam.setOwner(enemy);
-        upperTrackingLaserbeam.setMaxRotationPerUpdate(angleDegreeIncrement);
-        upperTrackingLaserbeam.setAngleOffset(laserbeamAngleOffset);
 
         if (lowerTrackingLaserbeam != null) {
             lowerTrackingLaserbeam.setVisible(false);
         }
-        lowerTrackingLaserbeam = new TrackingLaserBeam(laserbeamConfiguration);
+        laserbeamConfiguration.setAngleDegrees(aimedAngleDegrees - laserbeamAngleOffset);
+        lowerTrackingLaserbeam = new AngledLaserBeam(laserbeamConfiguration);
         updateLaserbeamOriginPoints(enemy);
         lowerTrackingLaserbeam.setOwner(enemy);
-        lowerTrackingLaserbeam.setMaxRotationPerUpdate(angleDegreeIncrement);
-        lowerTrackingLaserbeam.setAngleOffset(-laserbeamAngleOffset);
     }
 
     private void updateLaserbeamChargeAnimation(Enemy enemy) {

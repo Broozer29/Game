@@ -167,6 +167,11 @@ public class AudioManager {
         }
     }
 
+    //True once the given song is the current background music and has played to its end
+    public boolean isBackgroundMusicFinished(AudioEnums song) {
+        return backGroundMusic != null && song.equals(currentSong) && backGroundMusic.isFinished();
+    }
+
     public boolean isLevelMusicFinished() {
         if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             if (backGroundMusic != null) {

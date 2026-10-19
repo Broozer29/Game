@@ -37,11 +37,11 @@ public class ReflectiveBlocks extends Missile {
             this.rotateGameObjectTowards(this.ownerOrCreator.getCenterXCoordinate(), this.ownerOrCreator.getCenterYCoordinate(), true);
             this.allowedVisualsToRotate = false;
 
-            float currentHitPoints = Math.max(0.05f, this.getCurrentHitpoints() / this.getMaxHitPoints());
-            if (currentHitPoints <= 0.2f) {
+            float currentHitPointsPercentage = Math.max(0.4f, this.getCurrentHitpoints() / this.getMaxHitPoints());
+            if (this.getCurrentHitpoints() <= 0) { //todo voegt deze if check nu uberhaupt nog iets toe? vgm niet, wordt al op false gezet als dood is
                 this.setVisible(false);
             } else {
-                this.setTransparancyAlpha(false, currentHitPoints, 0.0f);
+                this.setTransparancyAlpha(false, currentHitPointsPercentage, 0.0f);
             }
             return;
         }

@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone;
 
+import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.FinalBoss;
@@ -24,11 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
-    private double lastAttackedTime = -50;
+    private double lastAttackedTime = -500;
     private double attackCooldown = 0;
     private int priority = 99999;
     private boolean hasInitialized = false;
     private boolean hasRecenteredMissiles = false;
+    //Phase 3 only: rebuilds the rings every refreshCooldown seconds. Phase 1 rings are never replenished
+    private double refreshCooldown = 90;
 
     private SpriteAnimation attackingAnimation;
 
@@ -47,6 +50,12 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
 
     @Override
     public boolean activateBehaviour(Enemy enemy) {
+        if (hasInitialized && isRefreshDue()) {
+            removeRemainingRings(enemy);
+            hasInitialized = false;
+            hasRecenteredMissiles = false;
+        }
+
         if (hasInitialized) {
             if (!hasRecenteredMissiles) {
                 for (int i = 0; i < amountOfRings; i++) {
@@ -69,6 +78,20 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
 
     }
 
+
+    private boolean isRefreshDue() {
+        return bossPhase == FinalBoss.BOSSPHASE_3
+                && GameState.getInstance().getGameSeconds() >= lastAttackedTime + refreshCooldown;
+    }
+
+    //Removes the blocks left from the previous rings, so the new rings are full and evenly spaced instead of stacked on the old ones
+    private void removeRemainingRings(Enemy enemy) {
+        for (int i = 0; i < amountOfRings; i++) {
+            List<GameObject> ring = enemy.getOrbitingObjectsAtLayer(i);
+            ring.forEach(block -> block.setVisible(false));
+            ring.clear();
+        }
+    }
 
     private void teleportBoss(Enemy enemy) {
         if(bossPhase == FinalBoss.BOSSPHASE_1) {
@@ -130,7 +153,7 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
 
 
         boolean isFriendly = false;
-        float maxHitPoints = Math.min(80 * (GameState.getInstance().getDifficultyCoefficient()), 500); //max 500 hp
+        float maxHitPoints = Math.min(60 * (GameState.getInstance().getDifficultyCoefficient()), 300); //max 500 hp
         float damage = enemy.getDamage() * 0.4f;
 
         MissileConfiguration missileConfiguration = MissileCreator.getInstance().createMissileConfiguration(missileType,
@@ -149,6 +172,11 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
         return missile;
     }
 
+    //Distance of the widest ring that can exist, used by other attacks to stay clear of the rings
+    public static float getOutermostRingDistance() {
+        return ringDistances[ringDistances.length - 1];
+    }
+
     @Override
     public int getPriority() {
         return priority;
@@ -162,7 +190,7 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
     public boolean isAvailable(Enemy enemy) {
         if (enemy instanceof FinalBoss finalBoss) {
             return finalBoss.isAllowedToFire()
-                    && !hasRecenteredMissiles
+                    && (!hasRecenteredMissiles || isRefreshDue())
                     && finalBoss.getBossPhase() == bossPhase
                     && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
                     && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss);

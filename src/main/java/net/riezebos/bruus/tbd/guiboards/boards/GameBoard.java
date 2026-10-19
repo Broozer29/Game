@@ -362,8 +362,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         if (!hasSurvived && !isPlayingDeathMusic) {
-            playDeathMusic();
-            FinalBoss.attemptMockingBark();
+            if(LevelManager.getInstance().isNextLevelTheFinalBossLevel()) {
+                FinalBoss.attemptMockingBark();
+            } else {
+                playDeathMusic();
+            }
             isPlayingDeathMusic = true;
             LevelManager.getInstance().resetBossUsed(); //sloppy fix to reset the boss used flag, this could be refactored into something better
             SaveManager.getInstance().deleteSaveFile();

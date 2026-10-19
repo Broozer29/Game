@@ -12,6 +12,7 @@ public class ElectroShred extends SpecialAttack {
         this.appliesOnHitEffects = true;
         super.internalTickCooldown = 0.15f;
         super.showDamage = false;
+        super.damagesMissiles = true;
     }
 
     @Override

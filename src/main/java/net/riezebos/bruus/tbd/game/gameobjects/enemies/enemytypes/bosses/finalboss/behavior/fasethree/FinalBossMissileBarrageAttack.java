@@ -42,8 +42,8 @@ import java.util.Random;
 
 public class FinalBossMissileBarrageAttack implements BossActionable {
     private double lastAttackedTime = 0;
-    private double attackCooldown = 22;
-    private int priority = 3;
+    private double attackCooldown = 18;
+    private int priority = 5;
 
     private float angleIncrement = 1.5f; // How many degrees the gap moves with each wave
     private int angleGapSize = 17; // Width of the gap in degrees

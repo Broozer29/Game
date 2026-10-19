@@ -72,6 +72,26 @@ public class AudioDatabase {
         put(AudioEnums.FinalBossManyBulletsTaunt1, 1);
         put(AudioEnums.FinalBossManyBulletsTaunt2, 1);
         put(AudioEnums.FinalBossManyBulletsTaunt3, 1);
+        put(AudioEnums.FinalBossFemaleGreeting, 1);
+        put(AudioEnums.FinalBossFemaleIdk1, 1);
+        put(AudioEnums.FinalBossFemaleIdk2, 1);
+        put(AudioEnums.FinalBossFemaleMock1, 1);
+        put(AudioEnums.FinalBossFemaleMock2, 1);
+        put(AudioEnums.FinalBossFemaleMock3, 1);
+        put(AudioEnums.FinalBossFemaleMock4, 1);
+        put(AudioEnums.FinalBossFemaleMock5, 1);
+        put(AudioEnums.FinalBossFemalePhaseTransition1, 1);
+        put(AudioEnums.FinalBossFemalePhaseTransition2, 1);
+        put(AudioEnums.FinalBossFemalePhaseTransition3, 1);
+        put(AudioEnums.FinalBossFemalePhaseTransition4, 1);
+        put(AudioEnums.FinalBossFemalePhaseTransition5, 1);
+        put(AudioEnums.FinalBossFemaleTaunt1, 1);
+        put(AudioEnums.FinalBossFemaleTaunt2, 1);
+        put(AudioEnums.FinalBossFemaleTaunt3, 1);
+        put(AudioEnums.FinalBossFemaleTaunt4, 1);
+        put(AudioEnums.FinalBossFemaleTaunt5, 1);
+        put(AudioEnums.FinalBossFemaleTaunt6, 1);
+        put(AudioEnums.FinalBossFemaleTaunt7, 1);
 
 
 

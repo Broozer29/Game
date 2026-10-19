@@ -124,7 +124,7 @@ public class FinalBossSpreadMissileAttack implements BossActionable {
                         Math.pow(destination.getY() - missile.getCenterYCoordinate(), 2)
         );
 
-        float baseMovementSpeed = 8; // adjust as needed
+        float baseMovementSpeed = 11; // adjust as needed
         int maxDistanceRange = DataClass.getInstance().getWindowWidth(); // adjust based on your max possible distance
 
         return (float) (distance / maxDistanceRange) * baseMovementSpeed;

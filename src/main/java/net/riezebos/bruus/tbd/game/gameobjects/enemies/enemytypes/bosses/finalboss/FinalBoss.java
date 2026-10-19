@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossCreateRotatingReflectingBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPeriodicMissileBarrage;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPhaseOneLaserbeamAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossTeleportMine;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossMissileBarrageAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossPhase3LaserbeamCloneAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossSpawnFourDirectionalDrones;
@@ -18,6 +19,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalbo
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossSpreadMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.finalboss.FinalBossMine;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
@@ -68,6 +70,7 @@ public class FinalBoss extends Enemy {
     private AudioEnums thirdPhaseAudioEnum = AudioEnums.FinalBossPhase3;
     private static FinalBossBarker bossBarker = new FinalBossBarker(); //static so attemptMockingBark can be called without a boss instance
     private FinalBossPeriodicMissileBarrage finalBossPeriodicMissileBarrage = new FinalBossPeriodicMissileBarrage();
+    private FinalBossTeleportMine phase1FinalBossTeleportMine = new FinalBossTeleportMine();
 
     private FinalBossOrbitMissileAttack phase2OrbitMissileAttack;
     private FinalBossDropMineCharge phase2DropMineCharge;
@@ -101,6 +104,7 @@ public class FinalBoss extends Enemy {
 
         bossBehaviourList.add(finalBossCreateRotatingReflectingBlocks);
         bossBehaviourList.add(finalBossPhaseOneLaserbeamAttack);
+        bossBehaviourList.add(phase1FinalBossTeleportMine);
 
         //phase 2 abilities
         phase2OrbitMissileAttack = new FinalBossOrbitMissileAttack();
@@ -124,7 +128,7 @@ public class FinalBoss extends Enemy {
         bossBehaviourList.add(phase3FinalBossStraightLineMissileAttack);
         bossBehaviourList.add(phase3MissileBarrageAttack);
         bossBehaviourList.add(phase3CreateRotatingReflectingBlocks);
-//        bossBehaviourList.add(phase3SpawnFourDirectionalDrones);
+        bossBehaviourList.add(phase3SpawnFourDirectionalDrones);
         bossBehaviourList.add(phase3LaserbeamCloneAttack);
 
 
@@ -193,6 +197,11 @@ public class FinalBoss extends Enemy {
             }
         }
 
+
+        //Only change phases between attacks, so the boss never teleports away in the middle of one
+        if (shouldChangePhase()) {
+            changePhaseToNextPhase();
+        }
 
         //Wait 0.5 seconds between attacks
         if (finishedAttackTime + 0.5 <= GameState.getInstance().getGameSeconds()) {
@@ -299,9 +308,8 @@ public class FinalBoss extends Enemy {
         }
 
         if (this.getBossPhase() != BOSSPHASE_3 && currentHitpoints <= getEndOfPhaseHitpoints()) {
-            //Clamp to the threshold so one big hit can't skip a phase
+            //Clamp to the threshold so one big hit can't skip a phase. The phase change itself happens in fireAction once the current attack is finished
             currentHitpoints = getEndOfPhaseHitpoints();
-            changePhaseToNextPhase();
             return;
         }
 
@@ -342,7 +350,17 @@ public class FinalBoss extends Enemy {
         }
     }
 
-    //The hitpoints at which the current phase ends and the next one starts
+    //Phase 1 ends on hitpoints, phase 2 ends when its music has finished playing
+    private boolean shouldChangePhase() {
+        if (bossPhase == BOSSPHASE_1) {
+            return currentHitpoints <= getEndOfPhaseHitpoints();
+        } else if (bossPhase == BOSSPHASE_2) {
+            return AudioManager.getInstance().isBackgroundMusicFinished(secondPhaseAudioEnum);
+        }
+        return false;
+    }
+
+    //The hitpoints at which the current phase ends and the next one starts. In phase 2 this is only a floor, the phase ends when its music finishes
     private float getEndOfPhaseHitpoints() {
         if (bossPhase == BOSSPHASE_1) {
             return maxHitPoints * (1 - phaseOneHitpointsRatio);
@@ -350,6 +368,14 @@ public class FinalBoss extends Enemy {
             return maxHitPoints * (1 - phaseOneHitpointsRatio - phaseTwoHitpointsRatio);
         }
         return 0;
+    }
+
+    //Detonate the mines placed by FinalBossTeleportMine
+    private void detonatePhaseOneMines() {
+        MissileManager.getInstance().getMissiles().stream()
+                .filter(missile -> missile instanceof FinalBossMine && missile.isVisible() && missile.getOwnerOrCreator() == this)
+                .toList()
+                .forEach(missile -> ((FinalBossMine) missile).detonateMissile());
     }
 
     private void changePhaseToNextPhase() {
@@ -360,7 +386,8 @@ public class FinalBoss extends Enemy {
             MissileManager.getInstance().getMissiles().stream().filter(missile -> !missile.isFriendly()).forEach(
                     missile -> missile.setTransparancyAlpha(true, missile.getTransparancyAlpha(), -0.05f)
             );
-            AudioManager.getInstance().playDefaultBackgroundMusicForALevel(secondPhaseAudioEnum, true);
+            detonatePhaseOneMines(); //After the fade-out, so the bullets from the mines stay for a chaotic transition
+            AudioManager.getInstance().playDefaultBackgroundMusicForALevel(secondPhaseAudioEnum, false); //No loop, phase 3 starts when this song ends
             setPhaseTwoCooldowns();
             phase2Teleport();
 
@@ -535,16 +562,16 @@ public class FinalBoss extends Enemy {
     }
 
     private void setPhaseTwoCooldowns() {
-        phase2DropMineCharge.setLastAttackTime(GameState.getInstance().getGameSeconds() - 22);
-        phase2OrbitMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 10);
-        phase2SpreadMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 5);
-        phase2LaserbeamCloneAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 20);
+        phase2DropMineCharge.setLastAttackTime(GameState.getInstance().getGameSeconds() - 60); //instantly do this one
+        phase2OrbitMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 3);
+        phase2SpreadMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 15);
+        phase2LaserbeamCloneAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 10);
     }
 
     private void setPhaseThreeCooldowns() {
         //tbd
         phase3MissileBarrageAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 5);
-        phase3FinalBossStraightLineMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 5);
+        phase3FinalBossStraightLineMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 10);
         phase3SpawnFourDirectionalDrones.setLastAttackTime(GameState.getInstance().getGameSeconds() - 15);
     }
 }
