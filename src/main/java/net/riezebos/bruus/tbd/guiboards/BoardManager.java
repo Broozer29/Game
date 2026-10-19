@@ -304,6 +304,13 @@ public class BoardManager extends JFrame {
         }
     }
 
+    //Opens the SHOPKEEPER page on the main menu
+    public void openShopkeeper() {
+        if (mainMenuBoard != null && currentBoard == mainMenuBoard) {
+            mainMenuBoard.openShopkeeper();
+        }
+    }
+
     public GameBoard getGameBoard() {
         if (gameBoard == null) {
             gameBoard = new GameBoard();

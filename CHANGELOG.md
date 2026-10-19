@@ -2,6 +2,12 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-19
+
+### Added
+- A new SHOPKEEPER row on the main menu, above SETTINGS, opens a page that lists every item in the game with its icon. Move over an item to see its name in its rarity colour, rarity, which classes can get it, what kind of item it is, its full description and its price. The descriptions show the starting values, so they never change with your run. B or Escape closes the page.
+- Internal: every item now has a class group (which classes can get it) and at least one item type (Offensive, Defensive, Economy or Utility), so a new item cannot be added without them. SHOPKEEPER reads them; nothing else does yet.
+
 ## 2026-10-18
 
 ### Added

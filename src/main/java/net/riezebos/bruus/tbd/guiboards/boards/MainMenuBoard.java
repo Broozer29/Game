@@ -17,6 +17,7 @@ import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.SettingsWindow;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ShopkeeperWindow;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -43,6 +44,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private GUIComponent selectMusicOptionBackgroundCard;
     private GUITextCollection openShopButton;
     private GUITextCollection continueSaveFile;
+    private GUITextCollection shopkeeperButton;
     private GUITextCollection settingsButton;
     private GUITextCollection selectMacOSMediaPlayerButton;
     private GUITextCollection selectDefaultMusicButton;
@@ -100,6 +102,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     public void recreateWindow() {
         if (initializedMenuObjects) {
             SettingsWindow.getInstance().closeSilently();
+            ShopkeeperWindow.getInstance().closeSilently();
             createCardAndButtons();
             animationManager.resetManager();
 
@@ -136,7 +139,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private void createCardAndButtons() {
         boolean showContinue = SaveManager.getInstance().doesSaveFileExist();
         boolean showShop = DevTestSettings.enableDirectShopAccess;
-        int buttonCount = 3 + (showContinue ? 1 : 0) + (showShop ? 1 : 0); // SELECT CLASS, SETTINGS and CLOSE GAME are always shown
+        int buttonCount = 4 + (showContinue ? 1 : 0) + (showShop ? 1 : 0); // SELECT CLASS, SHOPKEEPER, SETTINGS and CLOSE GAME are always shown
 
         startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard(buttonCount);
         selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
@@ -149,7 +152,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         if (showShop) {
             lastButton = openShopButton;
         }
-        settingsButton = MenuBoardCreator.settingsButton(lastButton);
+        shopkeeperButton = MenuBoardCreator.shopkeeperButton(lastButton);
+        settingsButton = MenuBoardCreator.settingsButton(shopkeeperButton);
         closeGameButton = MenuBoardCreator.testingButton(settingsButton);
     }
 
@@ -176,6 +180,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         if (DevTestSettings.enableDirectShopAccess) {
             addAllButFirstComponent(openShopButton);
         }
+        addAllButFirstComponent(shopkeeperButton);
         addAllButFirstComponent(settingsButton);
         addAllButFirstComponent(closeGameButton);
     }
@@ -190,6 +195,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         if(DevTestSettings.enableDirectShopAccess) {
             addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 0);
         }
+
+        addToGrid(firstColumn, shopkeeperButton.getComponents().get(0), 0, 0);
 
         addToGrid(firstColumn, settingsButton.getComponents().get(0), 0, 0);
 
@@ -316,6 +323,16 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         });
     }
 
+    // Shows the SHOPKEEPER page over the main menu; when it closes, SHOPKEEPER is selected again
+    public void openShopkeeper() {
+        ShopkeeperWindow.getInstance().open(() -> {
+            selectedRow = 0;
+            selectedColumn = firstColumn.indexOf(shopkeeperButton.getComponents().get(0));
+            updateCursor();
+            MenuInput.getInstance().startScreen();
+        });
+    }
+
     public void closeGame() {
         System.exit(1);
     }
@@ -324,6 +341,10 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     public void executeMenuInput() {
         if (SettingsWindow.getInstance().isOpen()) {
             SettingsWindow.getInstance().handleInput(MenuInput.getInstance().poll()); // The page takes the input, the menu does not move
+            return;
+        }
+        if (ShopkeeperWindow.getInstance().isOpen()) {
+            ShopkeeperWindow.getInstance().handleInput(MenuInput.getInstance().poll()); // The page takes the input, the menu does not move
             return;
         }
         boolean needsUpdate = false;
@@ -432,6 +453,13 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             for (GUIComponent component : SettingsWindow.getInstance().getComponents()) {
                 drawGUIComponent(g, component);
             }
+        }
+
+        if (ShopkeeperWindow.getInstance().isOpen()) {
+            for (GUIComponent component : ShopkeeperWindow.getInstance().getComponents()) {
+                drawGUIComponent(g, component);
+            }
+            ShopkeeperWindow.getInstance().draw(g);
         }
     }
 
