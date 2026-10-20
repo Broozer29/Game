@@ -2,6 +2,12 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-20
+
+### Changed
+- ARMORY item types reviewed: Contract, Help Requested and Bonus Kaart are Utility instead of Economy, Stuivie is Defensive, special attack items (Battery, Recycler) are Utility, and most items now have one main type.
+- The shop no longer shows a price card when a locked or bought slot is selected.
+
 ## 2026-10-19
 
 ### Added

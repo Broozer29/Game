@@ -37,21 +37,21 @@ public enum ItemEnums {
     //Relics 2.0
     //generic relics
     Placeholder(ItemRarityEnums.Relic, ImageEnums.SmallDroneItemIcon, "Placeholder", true, ItemClassAvailability.All, ItemTypeEnums.Offensive),
-    BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true, ItemClassAvailability.All, ItemTypeEnums.Economy),
+    BonusKaart(ItemRarityEnums.Relic, ImageEnums.BonusKaart, "Bonus Kaart", true, ItemClassAvailability.All, ItemTypeEnums.Utility),
     CashInfusion(ItemRarityEnums.Relic, ImageEnums.CashInfusion, "Cash Infusion", true, ItemClassAvailability.All, ItemTypeEnums.Economy),
     ShieldStabilizer(ItemRarityEnums.Relic, ImageEnums.ShieldStabilizer, "Shield Stabilizer", true, ItemClassAvailability.All, ItemTypeEnums.Defensive),
     GlassCannon(ItemRarityEnums.Relic, ImageEnums.GlassCannon, "Glass Cannon", true, ItemClassAvailability.All, ItemTypeEnums.Offensive),
-    HelpRequested(ItemRarityEnums.Relic, ImageEnums.MoneyPrinter, "Help Requested", true, ItemClassAvailability.All, ItemTypeEnums.Economy),
+    HelpRequested(ItemRarityEnums.Relic, ImageEnums.MoneyPrinter, "Help Requested", true, ItemClassAvailability.All, ItemTypeEnums.Utility),
     WisdomBall(ItemRarityEnums.Relic, ImageEnums.WondrousWisdomball, "Wondrous Wisdomball", true, ItemClassAvailability.All, ItemTypeEnums.Utility),
-    Stuivie(ItemRarityEnums.Relic, ImageEnums.StuiversBestFriend, "Stuivie", true, ItemClassAvailability.All, ItemTypeEnums.Utility),
+    Stuivie(ItemRarityEnums.Relic, ImageEnums.StuiversBestFriend, "Stuivie", true, ItemClassAvailability.All, ItemTypeEnums.Defensive),
 
     //captain relics
-    ModuleAccuracy(ItemRarityEnums.Relic, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true, ItemClassAvailability.CaptainFireFighter, ItemTypeEnums.Offensive, ItemTypeEnums.Utility),
+    ModuleAccuracy(ItemRarityEnums.Relic, ImageEnums.Starcraft2LockOn, "Module: Accuracy", true, ItemClassAvailability.CaptainFireFighter, ItemTypeEnums.Offensive),
     BouncingLasers(ItemRarityEnums.Relic, ImageEnums.Starcraft2BouncingLaser, "Bouncing Lasers", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
-    ModuleElectrify(ItemRarityEnums.Relic, ImageEnums.ModuleElectrify, "Module: Electric Razor", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive, ItemTypeEnums.Utility),
+    ModuleElectrify(ItemRarityEnums.Relic, ImageEnums.ModuleElectrify, "Module: Electric Razor", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
     ModuleCommand(ItemRarityEnums.Relic, ImageEnums.ModuleCommand, "Module: Synergize", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive, ItemTypeEnums.Utility),
-    UpgradeFocusFire(ItemRarityEnums.Relic, ImageEnums.ModuleFocusFire, "Upgrade: Focus Fire", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive, ItemTypeEnums.Utility),
-    AnionInverter(ItemRarityEnums.Relic, ImageEnums.AnionInverter, "Anion Inverter", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
+    UpgradeFocusFire(ItemRarityEnums.Relic, ImageEnums.ModuleFocusFire, "Upgrade: Focus Fire", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
+    AnionInverter(ItemRarityEnums.Relic, ImageEnums.AnionInverter, "Anion Inverter", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive, ItemTypeEnums.Utility),
     BigIron(ItemRarityEnums.Relic, ImageEnums.BigIron, "Big Iron", false, ItemClassAvailability.Captain, ItemTypeEnums.Offensive), //disabled want dit voelt buggy aan en ook niet echt fijn om mee te spelen
     OneShotOneKill(ItemRarityEnums.Relic, ImageEnums.OneShotOneKill, "One shot, one kill", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
     ElectricDestabilizer(ItemRarityEnums.Relic, ImageEnums.Starcraft2_Protoss_Shield_Disintegrate, "Electric Destabilizer", true, ItemClassAvailability.Captain, ItemTypeEnums.Defensive),
@@ -67,7 +67,7 @@ public enum ItemEnums {
     //carrier relics
     ArbiterDamage(ItemRarityEnums.Relic, ImageEnums.ArbiterDamage, "Arbit Inversion", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive),
     PulsingBeacon(ItemRarityEnums.Relic, ImageEnums.PulsingBeacon, "Pulsing Beacon", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive),
-    InverseRetrieval(ItemRarityEnums.Relic, ImageEnums.InversionRetrieval, "Inverse Retrieval", true, ItemClassAvailability.Carrier, ItemTypeEnums.Utility),
+    InverseRetrieval(ItemRarityEnums.Relic, ImageEnums.InversionRetrieval, "Inverse Retrieval", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive, ItemTypeEnums.Utility),
 
 
     //Mutalisk relics
@@ -88,11 +88,11 @@ public enum ItemEnums {
     LeechingLasers(ItemRarityEnums.Rare, ImageEnums.LeechingLasers, "Leeching Lasers", false, ItemClassAvailability.Captain, ItemTypeEnums.Defensive),
     ElectroShredding(ItemRarityEnums.Legendary, ImageEnums.Electroshedding, "Electro Shredding", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
     PlasmaCoatedBullets(ItemRarityEnums.Common, ImageEnums.Starcraft2_Blue_Flame, "Plasma Bullets", true, ItemClassAvailability.CaptainCarrier, ItemTypeEnums.Offensive),
-    Recycler(ItemRarityEnums.Rare, ImageEnums.Recycler, "Recycler", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive, ItemTypeEnums.Defensive, ItemTypeEnums.Utility),
+    Recycler(ItemRarityEnums.Rare, ImageEnums.Recycler, "Recycler", true, ItemClassAvailability.Captain, ItemTypeEnums.Utility),
     PhotonPiercer(ItemRarityEnums.Common, ImageEnums.Starcraft2_Concussive_Shells, "Photon Piercer", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
     CannisterOfGasoline(ItemRarityEnums.Rare, ImageEnums.CannisterOfGasoline, "Gasoline", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Offensive),
     RegenerativeSteel(ItemRarityEnums.Common, ImageEnums.Starcraft2_Heal, "Regenerative Steel", true, ItemClassAvailability.All, ItemTypeEnums.Defensive),
-    Battery(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Battery, "Battery", true, ItemClassAvailability.CaptainFireFighter, ItemTypeEnums.Offensive, ItemTypeEnums.Defensive, ItemTypeEnums.Utility),
+    Battery(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Battery, "Battery", true, ItemClassAvailability.CaptainFireFighter, ItemTypeEnums.Utility),
     FocusCrystal(ItemRarityEnums.Common, ImageEnums.Starcraft2Keystone, "Focus Crystal", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
     AdvancedOptics(ItemRarityEnums.Common, ImageEnums.Starcraft2_Advanced_Optics, "Advanced Optics", true, ItemClassAvailability.All, ItemTypeEnums.Offensive),
     PlatinumSponge(ItemRarityEnums.Rare, ImageEnums.Starcraft2_Platinum_Sponge, "Platinum Sponge", true, ItemClassAvailability.All, ItemTypeEnums.Defensive),
@@ -106,10 +106,10 @@ public enum ItemEnums {
     PiercingMissiles(ItemRarityEnums.Legendary, ImageEnums.PiercingLaser, "Piercing Lasers", true, ItemClassAvailability.CaptainCarrier, ItemTypeEnums.Offensive),
     VIPTicket(ItemRarityEnums.Legendary, ImageEnums.VIPTicket, "VIP Ticket", true, ItemClassAvailability.All, ItemTypeEnums.Economy),
     ElectricSupercharger(ItemRarityEnums.Legendary, ImageEnums.Starcraft2_Psi_Storm2, "Electric Supercharger", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
-    Adrenaline(ItemRarityEnums.Legendary, ImageEnums.Adrenaline, "Adrenaline", true, ItemClassAvailability.CaptainFireFighter, ItemTypeEnums.Offensive, ItemTypeEnums.Defensive),
+    Adrenaline(ItemRarityEnums.Legendary, ImageEnums.Adrenaline, "Adrenaline", true, ItemClassAvailability.CaptainFireFighter, ItemTypeEnums.Offensive),
     ExplosiveLaserbeams(ItemRarityEnums.Legendary, ImageEnums.ExplosiveLaserbeams, "Explosive Laserbeams", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
     ExplosiveGreed(ItemRarityEnums.Legendary, ImageEnums.ExplosiveGreed, "Explosive Greed", true, ItemClassAvailability.All, ItemTypeEnums.Offensive),
-    Contract(ItemRarityEnums.Common, ImageEnums.Contract, "Contract", true, ItemClassAvailability.All, ItemTypeEnums.Economy),
+    Contract(ItemRarityEnums.Common, ImageEnums.Contract, "Contract", true, ItemClassAvailability.All, ItemTypeEnums.Utility),
     StickyOil(ItemRarityEnums.Rare, ImageEnums.StickyOilIcon, "Sticky Oil", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Offensive),
     CorrosiveOil(ItemRarityEnums.Legendary, ImageEnums.CorrosiveOil, "Corrosive Oil", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Offensive),
     ScorchingFury(ItemRarityEnums.Common, ImageEnums.Starcraft2RepairBeam, "Scorching Fury", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Offensive),
@@ -122,7 +122,7 @@ public enum ItemEnums {
     ProtossShuttle(ItemRarityEnums.Common, ImageEnums.ShuttleItem, "Hangar Bay: Shuttle", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive),
     ProtossCorsair(ItemRarityEnums.Rare, ImageEnums.CorsairItemIcon, "Hangar Bay: Corsair", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive),
     HangarBayUpgrade(ItemRarityEnums.Legendary, ImageEnums.HangarBayIcon, "Hangar Bay Upgrade", true, ItemClassAvailability.Carrier, ItemTypeEnums.Utility),
-    RallyTheFleet(ItemRarityEnums.Rare, ImageEnums.RallyTheFleetIcon, "Rally the Fleet", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive, ItemTypeEnums.Defensive),
+    RallyTheFleet(ItemRarityEnums.Rare, ImageEnums.RallyTheFleetIcon, "Rally the Fleet", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive),
     Martyrdom(ItemRarityEnums.Legendary, ImageEnums.FrenzyIcon, "Martyrdom", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive),
     ArbiterMultiTargeting(ItemRarityEnums.Rare, ImageEnums.ArbiterMultiTargetIcon, "Arbiter Multi Targeting", true, ItemClassAvailability.Carrier, ItemTypeEnums.Defensive),
     ConstructionKit(ItemRarityEnums.Legendary, ImageEnums.ConstructionKitIcon, "Construction Kit", true, ItemClassAvailability.Carrier, ItemTypeEnums.Utility),
@@ -131,10 +131,10 @@ public enum ItemEnums {
     StickyDynamite(ItemRarityEnums.Common, ImageEnums.StickyDynamite, "Sticky Dynamite", true, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
     EternaFlame(ItemRarityEnums.Legendary, ImageEnums.Eternaflame, "EternaBurn", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Utility),
     EphemeralBlaze(ItemRarityEnums.Rare, ImageEnums.EphemeralBlaze, "Ephemeral Blaze", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Offensive),
-    AimAssist(ItemRarityEnums.Legendary, ImageEnums.AimAssist, "Aim Assist", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive, ItemTypeEnums.Utility),
+    AimAssist(ItemRarityEnums.Legendary, ImageEnums.AimAssist, "Aim Assist", true, ItemClassAvailability.Carrier, ItemTypeEnums.Offensive),
     HighVelocityLasers(ItemRarityEnums.Rare, ImageEnums.HighVelocityLasers, "High Velocity Lasers", false, ItemClassAvailability.Captain, ItemTypeEnums.Offensive),
     InfernalPreIgniter(ItemRarityEnums.Legendary, ImageEnums.InfernalPreIgniter, "Infernal Pre-igniter", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Offensive),
-    DistributedHeat(ItemRarityEnums.Relic, ImageEnums.DistributedHeatIcon, "Distributed Heat", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Offensive, ItemTypeEnums.Utility);
+    DistributedHeat(ItemRarityEnums.Relic, ImageEnums.DistributedHeatIcon, "Distributed Heat", true, ItemClassAvailability.FireFighter, ItemTypeEnums.Offensive);
 
     private ItemRarityEnums itemRarity;
     private ImageEnums itemIcon;

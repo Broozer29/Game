@@ -528,10 +528,10 @@ public class ShopBoard extends JPanel implements TimerHolder {
             descriptionInfo.descriptionText = selectedTileHelper.getShopItemInformation().getItemDescription();
             descriptionInfo.rarityColor = selectedTileHelper.getShopItemInformation().getItemRarity().getColor();
 
-            if (!showInventory) {
+            if (!showInventory && selectedTileHelper.getShopItemInformation().isAvailable()) { //A locked or bought slot has no price to show
                 descriptionInfo.mineralCost = Math.round(selectedTileHelper.getShopItemInformation().getCost());
                 descriptionInfo.canAffordCost = selectedTileHelper.getShopItemInformation().canAfford();
-            } else {
+            } else if (showInventory) {
                 //Replacing the itemcost with the amount the player has
                 descriptionInfo.cost = "You have: " + PlayerInventory.getInstance().getItemFromInventoryIfExists(selectedTileHelper.getShopItemInformation().getItem()).getQuantity() + " of this item.";
             }
