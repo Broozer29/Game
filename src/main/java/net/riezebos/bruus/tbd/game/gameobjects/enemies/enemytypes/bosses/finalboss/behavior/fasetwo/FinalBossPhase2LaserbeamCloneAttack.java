@@ -29,6 +29,7 @@ public class FinalBossPhase2LaserbeamCloneAttack implements BossActionable {
     private double lastAttackedTime = 0;
     private double attackCooldown = 20;
     private int priority = 20;
+    private double musicEndMargin = 11; //Roughly how long the attack takes: 25 clones spawning, then 25 laserbeams 0.35 seconds apart
 
 
     private int currentPhase = 0;
@@ -232,7 +233,8 @@ public class FinalBossPhase2LaserbeamCloneAttack implements BossActionable {
             return finalBoss.isAllowedToFire()
                     && finalBoss.getBossPhase() == FinalBoss.BOSSPHASE_2
                     && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
-                    && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss);
+                    && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss)
+                    && !finalBoss.isPhaseTwoMusicEndingWithin(musicEndMargin);
         }
         return false;
     }

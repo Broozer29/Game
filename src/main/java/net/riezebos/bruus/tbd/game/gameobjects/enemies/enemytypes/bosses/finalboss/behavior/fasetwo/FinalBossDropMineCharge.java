@@ -37,6 +37,7 @@ public class FinalBossDropMineCharge implements BossActionable {
     private double lastBombDroppedTime = 0;
     private double bombDropCooldown = 0.1f;
     private int priority = 13;
+    private double musicEndMargin = 6; //Roughly how long the attack takes: 2.75 seconds charging up, then the charge across the screen
 
     private CustomAudioClip chargingUpMovement = null;
     private CustomAudioClip boostingAway = null;
@@ -302,7 +303,8 @@ public class FinalBossDropMineCharge implements BossActionable {
             return finalBoss.isAllowedToFire()
                     && finalBoss.getBossPhase() == FinalBoss.BOSSPHASE_2
                     && GameState.getInstance().getGameSeconds() >= lastAttackTime + attackCooldown
-                    && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss);
+                    && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss)
+                    && !finalBoss.isPhaseTwoMusicEndingWithin(musicEndMargin);
         }
         return false;
     }

@@ -360,6 +360,11 @@ public class FinalBoss extends Enemy {
         return false;
     }
 
+    //Phase 2 attacks use this to not start when they'd still be running when the music ends, since the phase only changes between attacks
+    public boolean isPhaseTwoMusicEndingWithin(double seconds) {
+        return bossPhase == BOSSPHASE_2 && AudioManager.getInstance().getBackgroundMusicSecondsRemaining() <= seconds;
+    }
+
     //The hitpoints at which the current phase ends and the next one starts. In phase 2 this is only a floor, the phase ends when its music finishes
     private float getEndOfPhaseHitpoints() {
         if (bossPhase == BOSSPHASE_1) {

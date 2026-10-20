@@ -24,6 +24,7 @@ public class FinalBossSpreadMissileAttack implements BossActionable {
     private int priority = 10;
     private int missilesPerBoardBlock = 3;
     private int missileWavesFired = 1;
+    private double musicEndMargin = 5; //Roughly how long the 8 missile waves take
 
     private SpriteAnimation attackingAnimation;
 
@@ -150,7 +151,8 @@ public class FinalBossSpreadMissileAttack implements BossActionable {
             return finalBoss.isAllowedToFire()
                     && finalBoss.getBossPhase() == FinalBoss.BOSSPHASE_2
                     && GameState.getInstance().getGameSeconds() >= lastAttackedTime + attackCooldown
-                    && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss);
+                    && WithinVisualBoundariesCalculator.isWithinBoundaries(finalBoss)
+                    && !finalBoss.isPhaseTwoMusicEndingWithin(musicEndMargin);
         }
         return false;
     }

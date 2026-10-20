@@ -172,6 +172,11 @@ public class AudioManager {
         return backGroundMusic != null && song.equals(currentSong) && backGroundMusic.isFinished();
     }
 
+    //Seconds left until the given song ends. Double.MAX_VALUE when it isn't the current background music or its length isn't known yet
+    public double getBackgroundMusicSecondsRemaining() {
+        return backGroundMusic.getTotalSecondsInPlayback() - backGroundMusic.getCurrentSecondsInPlayback();
+    }
+
     public boolean isLevelMusicFinished() {
         if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) || this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             if (backGroundMusic != null) {
