@@ -133,6 +133,17 @@ public class MenuBoardCreator {
         return textCollection;
     }
 
+    public static GUITextCollection playlistButton(GUITextCollection previousButton){
+        GUIComponent component = previousButton.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 50;
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "PLAYLIST");
+        textCollection.setScale(resolutionFactor);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Playlist);
+        return textCollection;
+    }
+
     public static GUITextCollection settingsButton(GUITextCollection previousButton){
         GUIComponent component = previousButton.getComponents().get(0);
         int xCoordinate = component.getXCoordinate();

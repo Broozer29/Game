@@ -30,6 +30,7 @@ Sprites, effects, explosions, music and sounds.
 - A music list viewer that shows every track and where in the game it plays
   - The list itself is written up in `docs/architecture/subjects/audio/music.md`
   - Plan item `game-music-glossary` (2026-10-19)
+  - Plan theme `game-playlist` (2026-10-20)
   - Nelis and Bruus will fill in each song's real title and artist, so every song gets a proper model: file, title, artist and where it plays (level pool, which boss, menu, shop, game over) (Nelis, 2026-10-20)
   - Question for Bruus: should that model become the one place that knows every song, so the level pool, boss themes and menu music are picked from it? Or should it only add names beside the current audio code, linked by file name?
     - Bruus insight:

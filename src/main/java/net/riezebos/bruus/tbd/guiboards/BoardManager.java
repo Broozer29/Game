@@ -150,6 +150,7 @@ public class BoardManager extends JFrame {
 
     private void playMenuMusic() {
 //        if(audioManager.getCurrentSong() != MusicTrack.MAIN_MENU) {
+        audioManager.discardPreview();
         audioManager.stopMusicAudio();
         audioManager.playDefaultBackgroundMusicForALevel(MusicTrack.MAIN_MENU, true);
 //        }
@@ -157,6 +158,7 @@ public class BoardManager extends JFrame {
     }
 
     private void playShopMenuMusic() {
+        audioManager.discardPreview();
         audioManager.stopMusicAudio();
         audioManager.playDefaultBackgroundMusicForALevel(MusicTrack.SHOP, true);
     }
@@ -308,6 +310,13 @@ public class BoardManager extends JFrame {
     public void openShopkeeper() {
         if (mainMenuBoard != null && currentBoard == mainMenuBoard) {
             mainMenuBoard.openShopkeeper();
+        }
+    }
+
+    //Opens the PLAYLIST page on the screen that is shown: the main menu
+    public void openPlaylist() {
+        if (mainMenuBoard != null && currentBoard == mainMenuBoard) {
+            mainMenuBoard.openPlaylist();
         }
     }
 

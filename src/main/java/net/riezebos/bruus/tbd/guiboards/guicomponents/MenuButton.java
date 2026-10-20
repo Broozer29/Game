@@ -83,6 +83,9 @@ public class MenuButton extends GUIComponent {
             case Open_Shopkeeper:
                 boardManager.openShopkeeper();
                 break;
+            case Open_Playlist:
+                boardManager.openPlaylist();
+                break;
             case Save_Settings:
                 SettingsWindow.getInstance().saveAndClose();
                 break;

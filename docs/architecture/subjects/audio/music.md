@@ -102,6 +102,10 @@ it from being picked.
 | Blood_On_The_Dancefloor | nothing else |
 | Waveshaper - Monster | nothing else |
 
+## Preview from the PLAYLIST page
+
+The PLAYLIST page plays any track as a preview through `AudioManager.startPreview`. The preview is its own clip and never replaces `backGroundMusic`: the menu music is paused in place and resumes where it was when the page closes. The page and the preview are described in [Playlist](playlist.md).
+
 ## Files no code plays
 
 These files are in `audio/music/` but no code refers to them:
@@ -113,6 +117,7 @@ These files are in `audio/music/` but no code refers to them:
 
 - `src/main/java/net/riezebos/bruus/tbd/visualsandaudio/data/audio/enums/MusicTrack.java`: every
   track, the boss themes, the fallback tracks and the level pick.
+- [Playlist](playlist.md): the page that lists the tracks and previews them.
 - `src/main/java/net/riezebos/bruus/tbd/visualsandaudio/data/audio/AudioLoader.java`: builds a
   player from a track's path.
 - `src/main/java/net/riezebos/bruus/tbd/visualsandaudio/data/audio/AudioDatabase.java`: keeps one

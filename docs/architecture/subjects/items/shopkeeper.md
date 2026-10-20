@@ -45,7 +45,7 @@ single place that decides which items appear. `ShopkeeperWindow.isDiscovered` de
 | Confirm | Does nothing |
 | Back | Closes the page and runs the `onClosed` callback of the screen that opened it |
 
-The ARMORY row sits above SETTINGS in the main menu card. Its button carries the
+The ARMORY row sits above PLAYLIST and SETTINGS in the main menu card. Its button carries the
 `MenuFunctionEnums.Open_Shopkeeper` function, which `MenuButton.activateComponent` sends to
 `BoardManager.openShopkeeper()`, and that opens the page through `MainMenuBoard.openShopkeeper()`.
 

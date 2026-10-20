@@ -4,6 +4,9 @@ All notable changes on the `Nelis` branch.
 
 ## 2026-10-20
 
+### Added
+- A new PLAYLIST row on the main menu, between ARMORY and SETTINGS, opens a page that lists every song of the game by where it plays: level songs, boss songs, the final boss phases and the menu, shop and game over songs. Switch tabs with LB and RB (Tab on the keyboard), press A (Enter) to hear a song from the start with the progress bar and time, and B (Escape) to close. The menu music continues where it was when you close the page.
+
 ### Changed
 - Internal: Claude setup: the patch-notes guide to where names live points at `MusicTrack` for music.
 - Internal: every song is now a `MusicTrack` value (file, title, artist, where it plays, its boss) and `tracks.txt` and the music values in `AudioEnums` are gone; the game plays the same songs.
