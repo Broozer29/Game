@@ -5,13 +5,16 @@ import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.settings.Settings;
 import net.riezebos.bruus.tbd.game.settings.SettingsManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 
 
 public class CustomAudioClip {
 
     private AudioLoader audioLoader = AudioLoader.getInstance();
     private MediaPlayer mediaPlayer; // JavaFX MediaPlayer for in-memory audio
-    private AudioEnums clipType;
+    private AudioEnums clipType; // null for a music clip, which has a musicTrack instead
+    private MusicTrack musicTrack; // null for a sound effect
+    private boolean ownsPlayer = false; // Set for music clips created fresh; only those free their player in dispose()
     private boolean loop;
     private double pausedPosition = 0; // Position to remember on pause
 
@@ -21,7 +24,7 @@ public class CustomAudioClip {
     private boolean isMediaPlayerFinished = false; // Flag to track if MediaPlayer has finished
     private boolean isPaused = false; // Flag to track paused state
     private boolean startedSinceReset = false; // Set when the clip starts, so a reset only touches clips that played
-    private boolean music = false; // Set by the AudioManager while the clip is the background music; every other clip is an effect
+    private boolean music = false; // True for a music clip, which follows the music volume setting; every other clip is an effect
 
     public CustomAudioClip(AudioEnums clipType) {
         this.clipType = clipType;
@@ -30,9 +33,19 @@ public class CustomAudioClip {
         initMediaPlayer();
     }
 
+    //A music clip. ownsPlayer is true for a clip created fresh for one use, false for a clip kept in the AudioDatabase pool
+    public CustomAudioClip(MusicTrack musicTrack, boolean ownsPlayer) {
+        this.musicTrack = musicTrack;
+        this.ownsPlayer = ownsPlayer;
+        this.music = true;
+        this.loop = false;
+
+        initMediaPlayer();
+    }
+
     private void initMediaPlayer() {
         try {
-            mediaPlayer = audioLoader.getSoundfile(clipType);
+            mediaPlayer = musicTrack != null ? audioLoader.getMusicfile(musicTrack) : audioLoader.getSoundfile(clipType);
 
             if (mediaPlayer != null) {
                 isMediaPlayerFinished = false; // Media has not finished yet
@@ -49,12 +62,12 @@ public class CustomAudioClip {
                 });
 
 
-                if(clipType.equals(AudioEnums.CustomMusicFile)){
+                if(musicTrack != null){
                     this.songDuration = mediaPlayer.getTotalDuration().toSeconds(); //try to load it prematurely as a fallback
                 }
             }
         } catch (Exception e) {
-            System.out.println("Missing song file: " + this.getAudioType());
+            System.out.println("Missing song file: " + (musicTrack != null ? musicTrack : this.getAudioType()));
 
             e.printStackTrace();
         }
@@ -85,6 +98,9 @@ public class CustomAudioClip {
     }
 
     private boolean aboveThreshold() {
+        if (clipType == null) {
+            return false; //a music clip has no threshold
+        }
         switch (clipType) {
             case Large_Ship_Destroyed:
             case Alien_Bomb_Impact:
@@ -104,7 +120,7 @@ public class CustomAudioClip {
     }
 
     public void dispose() {
-        if (mediaPlayer != null && this.clipType.equals(AudioEnums.CustomMusicFile)) {
+        if (mediaPlayer != null && ownsPlayer) {
             mediaPlayer.stop();
             mediaPlayer.dispose(); // Release native resources
             mediaPlayer = null;
@@ -159,7 +175,7 @@ public class CustomAudioClip {
     //Dit is allemaa; "* 0.7f" omdat de default audio levels zijn veranderd met het gebruik van MediaPlayer ipv Clip objecten
     public void adjustVolume() {
         if (mediaPlayer != null) {
-            double volume = switch (clipType) {
+            double volume = clipType == null ? 0.7f : switch (clipType) {
                 case Player_Laserbeam -> 0.65 * 0.7f;
                 case Large_Ship_Destroyed -> 0.6 * 0.7f;
                 case Alien_Spaceship_Destroyed -> 0.4 * 0.7f;
@@ -197,10 +213,6 @@ public class CustomAudioClip {
     private double getSettingsFactor() {
         Settings settings = SettingsManager.getInstance().getSettings();
         return (music ? settings.getMusicVolume() : settings.getEffectsVolume()) / 100.0;
-    }
-
-    public void setMusic(boolean music) {
-        this.music = music;
     }
 
     public boolean hasStartedSinceReset() {
@@ -254,8 +266,14 @@ public class CustomAudioClip {
         }
     }
 
+    //Null for a music clip
     public AudioEnums getAudioType() {
         return this.clipType;
+    }
+
+    //Null for a sound effect
+    public MusicTrack getMusicTrack() {
+        return this.musicTrack;
     }
 
     public MediaPlayer getMediaPlayer() {

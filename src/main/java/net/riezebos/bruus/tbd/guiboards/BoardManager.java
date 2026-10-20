@@ -13,7 +13,7 @@ import net.riezebos.bruus.tbd.game.level.LevelPreloader;
 import net.riezebos.bruus.tbd.guiboards.boards.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 
 import javax.swing.*;
 import java.awt.*;
@@ -149,16 +149,16 @@ public class BoardManager extends JFrame {
 
 
     private void playMenuMusic() {
-//        if(audioManager.getBackGroundMusicCustomAudioclip() != null && !audioManager.getBackGroundMusicCustomAudioclip().getAudioType().equals(AudioEnums.mainmenu)) {
+//        if(audioManager.getCurrentSong() != MusicTrack.MAIN_MENU) {
         audioManager.stopMusicAudio();
-        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.mainmenu, true);
+        audioManager.playDefaultBackgroundMusicForALevel(MusicTrack.MAIN_MENU, true);
 //        }
 
     }
 
     private void playShopMenuMusic() {
         audioManager.stopMusicAudio();
-        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.Lemmino_Firecracker, true);
+        audioManager.playDefaultBackgroundMusicForALevel(MusicTrack.SHOP, true);
     }
 
     private void stopMusic() {

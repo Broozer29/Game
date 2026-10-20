@@ -2,8 +2,10 @@
 
 The game plays one music track at a time. Which track plays depends on the screen or level the
 player is on. Every track is an MP3 file under `src/main/resources/audio/music/`, and every track is
-played through `AudioManager.playDefaultBackgroundMusicForALevel`. This doc lists where each track
-plays and which code decides it.
+one value of the enum `MusicTrack`, which holds its resource path, title, artist, `MusicPlace` and,
+for boss songs, the boss and phase. Every track is played through
+`AudioManager.playDefaultBackgroundMusicForALevel`. This doc lists where each track plays and which
+code decides it.
 
 ## How a track is chosen
 
@@ -12,18 +14,19 @@ plays and which code decides it.
 | Main menu | `BoardManager.playMenuMusic`, when the `MAIN_MENU` screen opens | yes |
 | Shop between levels | `BoardManager.playShopMenuMusic`, when the `SHOP` screen opens | yes |
 | Game over | `GameBoard.playDeathMusic`, when the player has not survived | yes |
-| Regular level | `LevelManager.activateMusic`, which plays the `CustomMusicFile` track | no |
-| Boss level | `LevelManager.activateMusic`, with the track from `AudioEnums.getBossTheme` | yes |
-| Final boss phase change | `FinalBoss.changePhaseToNextPhase` | yes |
+| Regular level | `LevelManager.activateMusic`, with the track from `MusicTrack.getRandomLevelTrack` | no |
+| Boss level | `LevelManager.activateMusic`, with the track from `MusicTrack.getBossTheme` | yes |
+| Final boss phase change | `FinalBoss.changePhaseToNextPhase`, with the track from `MusicTrack.getFinalBossPhase` | yes |
 | Special level | `LevelManager.activateMusic` starts no music | not applicable |
 
 Opening the `GAME` screen stops the menu or shop music before a level starts.
 
 ## Regular levels
 
-A regular level picks a random track from the list in `audio/music/custom/tracks.txt`.
-`AudioLoader.getRandomCustomMusicFile` reads that list and avoids tracks that played recently.
-The level ends when its track ends, so the track does not loop.
+A regular level picks a random track among the `MusicTrack` values whose place is `MusicPlace.LEVEL`.
+`MusicTrack.getRandomLevelTrack` never picks one of the last 10 picks again.
+A level track is played from a clip created for that one play, and `CustomAudioClip.dispose` frees
+its player afterwards. The level ends when its track ends, so the track does not loop.
 
 A level cannot hang on its track. `AudioManager.isLevelMusicFinished` also ends the level when the
 track has not reported its end some time after its predicted end, or when the track failed to load
@@ -33,7 +36,7 @@ failed to load.
 This applies when the music source is `MusicMediaPlayer.LocalFiles`. The other music sources play
 from the player's own media app.
 
-The tracks in `tracks.txt`:
+The level tracks:
 
 | track | track |
 | --- | --- |
@@ -61,7 +64,7 @@ The tracks in `tracks.txt`:
 
 ## Boss levels
 
-Each boss has its own theme, mapped in `AudioEnums.getBossTheme`.
+Each boss has its own theme, mapped in `MusicTrack.getBossTheme`.
 
 | boss | track |
 | --- | --- |
@@ -84,13 +87,11 @@ The final boss switches track at each phase change:
 
 ## Fallback tracks
 
-`AudioEnums.getRandomBossSong` picks a random track from a fixed list. It plays in two cases:
+`MusicTrack.getRandomFallback` picks a random track among the values whose `isInFallbackPool` is
+true. It plays for a boss level whose boss has no theme in `MusicTrack.getBossTheme`.
 
-- a boss level whose boss has no theme in `AudioEnums.getBossTheme`;
-- a regular level when `tracks.txt` yields no usable track.
-
-Every boss that `LevelManager` can pick for a boss level has its own theme, and `tracks.txt` lists
-usable tracks, so neither case occurs in normal play. `FinalBossLaserbeamClone` is in the `Boss`
+Every boss that `LevelManager` can pick for a boss level has its own theme, so this case does not
+occur in normal play. `FinalBossLaserbeamClone` is in the `Boss`
 category without a theme, but its `getBossKillCountRequiredBeforeAllowedToSpawn` requirement keeps
 it from being picked.
 
@@ -110,7 +111,9 @@ These files are in `audio/music/` but no code refers to them:
 
 ## Cross-references
 
-- `src/main/java/net/riezebos/bruus/tbd/visualsandaudio/data/audio/AudioLoader.java`: maps each
-  track to its file path.
-- `src/main/java/net/riezebos/bruus/tbd/visualsandaudio/data/audio/enums/AudioEnums.java`: boss
-  themes and fallback tracks.
+- `src/main/java/net/riezebos/bruus/tbd/visualsandaudio/data/audio/enums/MusicTrack.java`: every
+  track, the boss themes, the fallback tracks and the level pick.
+- `src/main/java/net/riezebos/bruus/tbd/visualsandaudio/data/audio/AudioLoader.java`: builds a
+  player from a track's path.
+- `src/main/java/net/riezebos/bruus/tbd/visualsandaudio/data/audio/AudioDatabase.java`: keeps one
+  pooled clip per track that is not a level track, handed out by `getMusicClip`.

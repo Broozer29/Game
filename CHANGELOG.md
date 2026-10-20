@@ -5,6 +5,7 @@ All notable changes on the `Nelis` branch.
 ## 2026-10-20
 
 ### Changed
+- Internal: every song is now a `MusicTrack` value (file, title, artist, where it plays, its boss) and `tracks.txt` and the music values in `AudioEnums` are gone; the game plays the same songs.
 - Internal: planboard notes: Bruus's set-collection item idea, and his answer that a song list in code may replace `tracks.txt`.
 - The ARMORY button in the shop's inventory is removed; ARMORY opens from the main menu.
 - The ITEM DISCOVERED popup and the exclamation mark on shop and relic cards are removed again; ARMORY stays out of the way during play.

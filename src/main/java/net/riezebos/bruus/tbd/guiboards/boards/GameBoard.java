@@ -66,7 +66,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DescriptionTextQuality;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -349,7 +349,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private void playDeathMusic() {
         audioManager.stopMusicAudio();
-        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.VendlaSonrisa, true);
+        audioManager.playDefaultBackgroundMusicForALevel(MusicTrack.GAME_OVER, true);
     }
 
     // Draw the game over screen
