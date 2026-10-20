@@ -24,7 +24,7 @@ import java.util.Random;
 
 /*
    Claude instructions.
-   See FinalBossPhase1LaserbeamCloneAttack.java and FinalBossLaserbeamClone.java for an example of how to implement this.
+   See FinalBossPhase2LaserbeamCloneAttack.java and FinalBossLaserbeamClone.java for an example of how to implement this.
 
    Key differences:
    - Do NOT teleport the player anywhere.
@@ -72,7 +72,7 @@ public class FinalBossPhase3LaserbeamCloneAttack implements BossActionable {
     private float currentSpawnXCoordinate;
     private boolean currentSpawnIsTopside;
     private double lastGameSecondsCloneSpawned = 0;
-    private float cloneSpawnCooldown = 0.05f;
+    private float cloneSpawnCooldown = 0.1f;
     private List<FinalBossLaserbeamClone> clones = new ArrayList<>();
     private Random random = new Random();
 
@@ -131,7 +131,7 @@ public class FinalBossPhase3LaserbeamCloneAttack implements BossActionable {
     private void initSpawnFormation(Enemy enemy) {
         startingXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.9f);
         endingXCoordinate = Math.round(DataClass.getInstance().getWindowWidth() * 0.1f);
-        xCoordinateDistanceBetweenEachSpawn = -enemy.getWidth() * 0.8f;
+        xCoordinateDistanceBetweenEachSpawn = -enemy.getWidth() * 0.825f;
         upperYCoordinate = 0 + 15;
         lowerYCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() - 15;
         cloneSpawnCooldown = 0.25f;

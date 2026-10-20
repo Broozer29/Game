@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.TemporaryImmunity;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -24,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class FinalBossPhase1LaserbeamCloneAttack implements BossActionable {
+public class FinalBossPhase2LaserbeamCloneAttack implements BossActionable {
     private double lastAttackedTime = 0;
-    private double attackCooldown = 30;
+    private double attackCooldown = 20;
     private int priority = 20;
 
 
@@ -168,6 +169,9 @@ public class FinalBossPhase1LaserbeamCloneAttack implements BossActionable {
             SpriteAnimation smokeAnimation = createSmokeAnim();
             smokeAnimation.setCenterCoordinates(centerPoint.getX(), centerPoint.getY());
             AnimationManager.getInstance().addUpperAnimation(smokeAnimation);
+
+            TemporaryImmunity temporaryImmunity = new TemporaryImmunity(1); //short immunity to balance out the player teleporting in the middle of nowhere
+            spaceShip.addEffect(temporaryImmunity);
         }
     }
 

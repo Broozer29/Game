@@ -2,7 +2,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalb
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyConfiguration;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossPhase1LaserbeamCloneAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossPhase2LaserbeamCloneAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.AngledLaserBeam;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
@@ -75,7 +75,7 @@ public class FinalBossLaserbeamClone extends Enemy {
 
         if (isFiringLaserbeams) {
             updateLaserbeamOriginPoints();
-            if (GameState.getInstance().getGameSeconds() > timeStartedFiring + FinalBossPhase1LaserbeamCloneAttack.laserbeamFiringTime) {
+            if (GameState.getInstance().getGameSeconds() > timeStartedFiring + FinalBossPhase2LaserbeamCloneAttack.laserbeamFiringTime) {
                 angledLaserbeam.setVisible(false);
                 setAllowedToFire(false);
             }
@@ -137,7 +137,7 @@ public class FinalBossLaserbeamClone extends Enemy {
     }
 
     private void createLaserbeams() {
-        float damage = this.getDamage() * FinalBossPhase1LaserbeamCloneAttack.damageRatio;
+        float damage = this.getDamage() * FinalBossPhase2LaserbeamCloneAttack.damageRatio;
         LaserbeamConfiguration upperLaserbeamConfiguration = new LaserbeamConfiguration(true, damage);
         upperLaserbeamConfiguration.setAmountOfLaserbeamSegments(laserbeamBodyLength);
         upperLaserbeamConfiguration.setAngleDegrees(this.laserbeamAngle);

@@ -92,7 +92,7 @@ public class FinalBossSpawnFourDirectionalDrones implements BossActionable {
             random = new Random();
         }
 
-        return random.nextInt(0, 5);
+        return random.nextInt(1, 3);
     }
 
 

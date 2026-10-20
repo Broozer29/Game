@@ -15,7 +15,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalbo
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossStraightLineMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossDropMineCharge;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossOrbitMissileAttack;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossPhase1LaserbeamCloneAttack;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossPhase2LaserbeamCloneAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasetwo.FinalBossSpreadMissileAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.*;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.ReflectiveBlocks;
@@ -75,7 +75,7 @@ public class FinalBoss extends Enemy {
     private FinalBossOrbitMissileAttack phase2OrbitMissileAttack;
     private FinalBossDropMineCharge phase2DropMineCharge;
     private FinalBossSpreadMissileAttack phase2SpreadMissileAttack;
-    private FinalBossPhase1LaserbeamCloneAttack phase2LaserbeamCloneAttack;
+    private FinalBossPhase2LaserbeamCloneAttack phase2LaserbeamCloneAttack;
 
     private FinalBossStraightLineMissileAttack phase3FinalBossStraightLineMissileAttack;
     private FinalBossMissileBarrageAttack phase3MissileBarrageAttack;
@@ -110,7 +110,7 @@ public class FinalBoss extends Enemy {
         phase2OrbitMissileAttack = new FinalBossOrbitMissileAttack();
         phase2DropMineCharge = new FinalBossDropMineCharge();
         phase2SpreadMissileAttack = new FinalBossSpreadMissileAttack();
-        phase2LaserbeamCloneAttack = new FinalBossPhase1LaserbeamCloneAttack();
+        phase2LaserbeamCloneAttack = new FinalBossPhase2LaserbeamCloneAttack();
 
         bossBehaviourList.add(phase2OrbitMissileAttack);
         bossBehaviourList.add(phase2DropMineCharge);
@@ -568,7 +568,7 @@ public class FinalBoss extends Enemy {
         phase2DropMineCharge.setLastAttackTime(GameState.getInstance().getGameSeconds() - 60); //instantly do this one
         phase2OrbitMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 3);
         phase2SpreadMissileAttack.setLastAttackTime(GameState.getInstance().getGameSeconds() - 15);
-        phase2LaserbeamCloneAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds() - 10);
+        phase2LaserbeamCloneAttack.setLastAttackedTime(GameState.getInstance().getGameSeconds());
     }
 
     private void setPhaseThreeCooldowns() {

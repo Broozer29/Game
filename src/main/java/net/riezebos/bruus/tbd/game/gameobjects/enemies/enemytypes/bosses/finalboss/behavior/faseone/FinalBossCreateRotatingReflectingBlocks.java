@@ -31,7 +31,7 @@ public class FinalBossCreateRotatingReflectingBlocks implements BossActionable {
     private boolean hasInitialized = false;
     private boolean hasRecenteredMissiles = false;
     //Phase 3 only: rebuilds the rings every refreshCooldown seconds. Phase 1 rings are never replenished
-    private double refreshCooldown = 90;
+    private double refreshCooldown = 120;
 
     private SpriteAnimation attackingAnimation;
 
