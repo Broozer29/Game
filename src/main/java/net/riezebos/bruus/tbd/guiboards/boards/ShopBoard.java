@@ -98,8 +98,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
     private GUITextCollection returnToMainMenu;
     private GUITextCollection nextLevelButton;
     private GUITextCollection playerInventoryButton;
-    private DisplayOnly shopkeeperButtonBackgroundCard;
-    private GUITextCollection shopkeeperButton; //Only shown while the inventory card is open
     private GUITextCollection nextLevelModifiersTextCollection;
     private GUIComponent itemDescription;
     private GUIComponent rerollButton;
@@ -151,8 +149,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
         }
         offTheGridObjects.clear();
 
-
-        ShopkeeperWindow.getInstance().closeSilently(); //The shop is built again, so a page opened over the old one has no shop to return to
 
         // Initialize background cards first since they are dependencies
         itemRowsBackgroundCard = shopBoardCreator.createShopItemsBackground();
@@ -222,8 +218,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
         inventoryButtonBackgroundCard = shopBoardCreator.createInventoryButtonBackgroundCard(nextLevelDifficultyBackground);
         playerInventoryButton = shopBoardCreator.createPlayerInventoryButton(inventoryButtonBackgroundCard);
-        shopkeeperButtonBackgroundCard = shopBoardCreator.createShopkeeperButtonBackgroundCard(inventoryButtonBackgroundCard);
-        shopkeeperButton = shopBoardCreator.createShopkeeperButton(shopkeeperButtonBackgroundCard);
 
         rerollCostText = shopBoardCreator.createRerollText(rerollBackgroundCard);
         rerollCost = shopBoardCreator.createRerollCostText(rerollBackgroundCard);
@@ -373,7 +367,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
         inventoryGrid.clear();
         inventoryGridSixthRow.clear();
         inventoryGridSixthRow.add(playerInventoryButton.getComponents().get(0));
-        inventoryGridSixthRow.add(shopkeeperButton.getComponents().get(0));
         inventoryGrid.add(inventoryGridFirstRow);
         inventoryGrid.add(inventoryGridSecondRow);
         inventoryGrid.add(inventoryGridThirdRow);
@@ -382,8 +375,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
         inventoryGrid.add(inventoryGridSixthRow);
 
         allInventoryGUIComponents.add(inventoryBackgroundCard);
-        allInventoryGUIComponents.add(shopkeeperButtonBackgroundCard);
-        allInventoryGUIComponents.addAll(shopkeeperButton.getComponents()); //Drawn with the inventory card, so the button is only there while it is open
     }
 
     private void buildItemRows() {
@@ -671,10 +662,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
     // Acts on what MenuInput reports: keys and the main controller, one set of rules for every menu screen
     public void executeMenuInput() {
-        if (ShopkeeperWindow.getInstance().isOpen()) {
-            ShopkeeperWindow.getInstance().handleInput(MenuInput.getInstance().poll()); // The page takes the input, the shop does not move
-            return;
-        }
         boolean needsUpdate = false;
         for (MenuAction action : MenuInput.getInstance().poll()) {
             switch (action) {
@@ -734,13 +721,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
             for (SpriteAnimation animation : animationManager.getUpperAnimations()) {
                 drawAnimation(g2d, animation);
-            }
-
-            if (ShopkeeperWindow.getInstance().isOpen()) {
-                for (GUIComponent component : ShopkeeperWindow.getInstance().getComponents()) {
-                    drawGUIComponent(g2d, component);
-                }
-                ShopkeeperWindow.getInstance().draw(g2d);
             }
 
             ControllerNotices.getInstance().draw(g2d);
@@ -876,9 +856,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
                     drawItemsInShop(g, shopItem);
                 }
                 drawGUIComponent(g, component);
-                if (component instanceof ShopItem cardItem && !ShopkeeperWindow.isDiscovered(cardItem.getShopItemInformation().getItem())) {
-                    cardItem.drawNotInArmoryMark(g); //Drawn over the card; it only marks Available slots
-                }
             }
         }
 
@@ -988,17 +965,6 @@ public class ShopBoard extends JPanel implements TimerHolder {
 
         }
         updateCursor();  //update the cursor because we move it
-    }
-
-    // Shows the SHOPKEEPER page over the shop; when it closes, the inventory card is still open and SHOPKEEPER is selected again
-    public void openShopkeeper() {
-        ShopkeeperWindow.getInstance().open(() -> {
-            selectedGrid = inventoryGrid;
-            selectedRow = 5;
-            selectedColumn = 1;
-            updateCursor();
-            MenuInput.getInstance().startScreen();
-        });
     }
 
     public void addGUIAnimation(GUIComponent incomingComponent) {

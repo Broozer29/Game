@@ -5,6 +5,8 @@ All notable changes on the `Nelis` branch.
 ## 2026-10-20
 
 ### Changed
+- The ARMORY button in the shop's inventory is removed; ARMORY opens from the main menu.
+- The ITEM DISCOVERED popup and the exclamation mark on shop and relic cards are removed again; ARMORY stays out of the way during play.
 - ARMORY item types reviewed: Contract, Help Requested and Bonus Kaart are Utility instead of Economy, Stuivie is Defensive, special attack items (Battery, Recycler) are Utility, and most items now have one main type.
 - The shop no longer shows a price card when a locked or bought slot is selected.
 
