@@ -25,6 +25,6 @@ Java paths are under `src/main/java/net/riezebos/bruus/tbd/`.
 | class names | `game/gameobjects/player/PlayerClass.java` |
 | class base stats | `game/gameobjects/player/PlayerStats.java` |
 | enemy and boss base stats | `game/gameobjects/enemies/enums/EnemyEnums.java` (constructor: hitpoints, damage, ..., minimum stage) |
-| music tracks | `visualsandaudio/data/audio/enums/AudioEnums.java` |
+| music tracks | `visualsandaudio/data/audio/enums/MusicTrack.java` |
 | dev test switches | `DevTestSettings.java`: every `public static boolean` must be `false` in a release |
 | sound and music files | `src/main/resources/audio/**` |
