@@ -394,6 +394,9 @@ public class FinalBoss extends Enemy {
         } else if (bossPhase == BOSSPHASE_2) {
             attemptPhaseTransitionBark();
             bossPhase = BOSSPHASE_3;
+            MissileManager.getInstance().getMissiles().stream().filter(missile -> !missile.isFriendly()).forEach(
+                    missile -> missile.setTransparancyAlpha(true, missile.getTransparancyAlpha(), -0.05f)
+            );
             setPhaseThreeCooldowns();
             phase3Teleport();
             AudioManager.getInstance().playDefaultBackgroundMusicForALevel(thirdPhaseAudioEnum, true);

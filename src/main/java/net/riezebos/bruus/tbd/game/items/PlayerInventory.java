@@ -50,6 +50,8 @@ public class PlayerInventory {
             cashMoney = 999999999999f;
             addItem(ItemEnums.RegenerativeSteel);
             addItem(ItemEnums.RegenerativeSteel);
+            addItem(ItemEnums.PlatinumSponge);
+            addItem(ItemEnums.PlatinumSponge);
             addItem(ItemEnums.GuardianDrone);
             addItem(ItemEnums.GuardianDrone);
         } else {

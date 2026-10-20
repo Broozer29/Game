@@ -967,7 +967,6 @@ public class SpaceShip extends GameObject {
 
     public void setImmune(boolean immune) {
         isImmune = immune;
-        this.isImmune = false;
     }
 
     @Override

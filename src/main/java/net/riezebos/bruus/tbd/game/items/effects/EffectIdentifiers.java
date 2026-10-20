@@ -35,5 +35,6 @@ public enum EffectIdentifiers {
     StuivieArmorBonus,
     YellowBossOrbHeal,
     WithoutGasItsAssDamageBonus,
-    MartyrdomAttackSpeed, ElectroShedding;
+    MartyrdomAttackSpeed, ElectroShedding,
+    TemporaryImmunity;
 }
