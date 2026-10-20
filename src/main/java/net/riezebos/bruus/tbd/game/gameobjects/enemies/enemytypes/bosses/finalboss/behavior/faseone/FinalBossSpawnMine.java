@@ -25,9 +25,9 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 import java.util.List;
 import java.util.Random;
 
-public class FinalBossTeleportMine implements BossActionable {
+public class FinalBossSpawnMine implements BossActionable {
     private double lastAttackedTime = 0;
-    private double attackCooldown = 2.5;
+    private double attackCooldown = 3.5;
     private int priority = 2;
 
     private SpriteAnimation attackingAnimation;
@@ -117,7 +117,7 @@ public class FinalBossTeleportMine implements BossActionable {
         float y = 0;
         Point clearOfRingsOnly = null;
         for (int i = 0; i < maxLocationAttempts; i++) {
-            x = width * 0.1f + random.nextFloat() * width * 0.8f;
+            x = width * 0.1f + random.nextFloat() * (width * 0.4f); //no longer 0.8 but 0.4 so we should only spawn on the left side, sloppy hack
             y = minHeight + height * 0.1f + random.nextFloat() * height * 0.8f;
             if (Math.hypot(x - enemy.getCenterXCoordinate(), y - enemy.getCenterYCoordinate()) < minDistanceFromBoss) {
                 continue;

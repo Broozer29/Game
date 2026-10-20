@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossAct
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossCreateRotatingReflectingBlocks;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPeriodicMissileBarrage;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossPhaseOneLaserbeamAttack;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossTeleportMine;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.faseone.FinalBossSpawnMine;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossMissileBarrageAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossPhase3LaserbeamCloneAttack;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.finalboss.behavior.fasethree.FinalBossSpawnFourDirectionalDrones;
@@ -70,7 +70,7 @@ public class FinalBoss extends Enemy {
     private AudioEnums thirdPhaseAudioEnum = AudioEnums.FinalBossPhase3;
     private static FinalBossBarker bossBarker = new FinalBossBarker(); //static so attemptMockingBark can be called without a boss instance
     private FinalBossPeriodicMissileBarrage finalBossPeriodicMissileBarrage = new FinalBossPeriodicMissileBarrage();
-    private FinalBossTeleportMine phase1FinalBossTeleportMine = new FinalBossTeleportMine();
+    private FinalBossSpawnMine phase1FinalBossSpawnMine = new FinalBossSpawnMine();
 
     private FinalBossOrbitMissileAttack phase2OrbitMissileAttack;
     private FinalBossDropMineCharge phase2DropMineCharge;
@@ -104,7 +104,7 @@ public class FinalBoss extends Enemy {
 
         bossBehaviourList.add(finalBossCreateRotatingReflectingBlocks);
         bossBehaviourList.add(finalBossPhaseOneLaserbeamAttack);
-        bossBehaviourList.add(phase1FinalBossTeleportMine);
+        bossBehaviourList.add(phase1FinalBossSpawnMine);
 
         //phase 2 abilities
         phase2OrbitMissileAttack = new FinalBossOrbitMissileAttack();
@@ -370,7 +370,7 @@ public class FinalBoss extends Enemy {
         return 0;
     }
 
-    //Detonate the mines placed by FinalBossTeleportMine
+    //Detonate the mines placed by FinalBossSpawnMine
     private void detonatePhaseOneMines() {
         MissileManager.getInstance().getMissiles().stream()
                 .filter(missile -> missile instanceof FinalBossMine && missile.isVisible() && missile.getOwnerOrCreator() == this)
