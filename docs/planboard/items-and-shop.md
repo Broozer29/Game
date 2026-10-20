@@ -71,5 +71,8 @@ Items, boons, the shop, rerolls and prices.
 - Calm in Chaos needs a look
 
 ## Ideas
+- A set-collection item, like Exodia: collect all 5 pieces of a set in a run to get a mega item (Bruus, 2026-10-20)
+  - The quest exclamation mark from the ARMORY work (`images/Icons/QuestMark.png`) could show which pieces you still need; it is kept unused for this
+  - Plan item `game-item-collection-set` (2026-10-20)
 - Items for build A that weaken build B, so player choices matter more
 - Blue Flame relic: a new item

@@ -30,6 +30,11 @@ Sprites, effects, explosions, music and sounds.
 - A music list viewer that shows every track and where in the game it plays
   - The list itself is written up in `docs/architecture/subjects/audio/music.md`
   - Plan item `game-music-glossary` (2026-10-19)
+  - Nelis and Bruus will fill in each song's real title and artist, so every song gets a proper model: file, title, artist and where it plays (level pool, which boss, menu, shop, game over) (Nelis, 2026-10-20)
+  - Question for Bruus: should that model become the one place that knows every song, replacing `tracks.txt` and the song paths now in `AudioLoader` and `AudioEnums`, so the level pool, boss themes and menu music are picked from it? Or should it only add names beside the current audio code, linked by file name?
+    - Bruus insight:
+      - **Mening:** Tracks.txt vervangen is dikke plus, maar werkt dat wel? De reden dat tracks.txt nodig is, was omdat de .jar niet de mogelijkheid had om de inhoud van de audio folder te lezen dus de namen van de tracks had ik maar op deze manier vastgelegd zodat Java ze nog wel kon vinden. Als het mogelijk is om tracks.txt te vervangen met een code implementatie dan graag
+    - Answer (Claude, 2026-10-20): it works. A song list in code names every file itself, so the game never has to list the folder inside the jar
 - Show the song name at the start of a level
   - Plan item `game-song-name-toast` (2026-10-19)
 
