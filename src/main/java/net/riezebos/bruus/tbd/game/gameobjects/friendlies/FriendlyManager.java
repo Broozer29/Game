@@ -101,7 +101,7 @@ public class FriendlyManager {
 
     private void spawnPortals() {
         spawnFinishedLevelPortal();
-//        spawnFinalBossPortal();
+        spawnFinalBossPortal();
     }
 
     private void spawnFinishedLevelPortal() {
@@ -126,7 +126,7 @@ public class FriendlyManager {
         if (finalBossPortal.isSpawned()) {
             return;
         }
-        if (gameState.getGameState() == GameStatusEnums.Level_Finished) {
+        if (gameState.getGameState() == GameStatusEnums.Level_Finished && GameState.getInstance().getBossesDefeated() >= 1) {
             if (finalBossPortal == null) {
                 initNextLevelPortal();
             }

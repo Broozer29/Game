@@ -141,6 +141,7 @@ public class FinalBoss extends Enemy {
     @Override
     public void triggerOnDeathActions() {
         super.triggerOnDeathActions();
+        GameState.getInstance().setFinalBossDefeated(true);
     }
 
 

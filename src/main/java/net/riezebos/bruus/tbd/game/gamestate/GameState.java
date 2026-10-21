@@ -27,6 +27,7 @@ public class GameState {
     private long gameTicksExecuted;
 
     private boolean spawnFinalBoss = false;
+    private boolean finalBossDefeated = false;
 
     private float difficultyCoefficient;
     private int monsterLevel;
@@ -54,6 +55,7 @@ public class GameState {
         difficultyCoefficient = 1;
         lastPause = 0;
         spawnFinalBoss = false;
+        finalBossDefeated = false;
     }
 
     public void resetForNextLevel(){
@@ -255,6 +257,14 @@ public class GameState {
 
     public int getMiniBossesDefeatedThisLevel() {
         return miniBossesDefeatedThisLevel;
+    }
+
+    public boolean isFinalBossDefeated() {
+        return finalBossDefeated;
+    }
+
+    public void setFinalBossDefeated(boolean finalBossDefeated) {
+        this.finalBossDefeated = finalBossDefeated;
     }
 }
 

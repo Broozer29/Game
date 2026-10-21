@@ -93,6 +93,152 @@ public class AudioDatabase {
         put(AudioEnums.FinalBossFemaleTaunt6, 1);
         put(AudioEnums.FinalBossFemaleTaunt7, 1);
 
+        put(AudioEnums.AlarakBossDeath1, 1);
+        put(AudioEnums.AlarakBossDeath2, 1);
+        put(AudioEnums.AlarakBossDeath3, 1);
+        put(AudioEnums.AlarakBossDeath4, 1);
+        put(AudioEnums.AlarakBossDeath5, 1);
+        put(AudioEnums.AlarakBossDeath6, 1);
+        put(AudioEnums.AlarakBossDeath7, 1);
+        put(AudioEnums.AlarakBossDeath8, 1);
+        put(AudioEnums.AlarakBossDeath9, 1);
+        put(AudioEnums.AlarakBossDeath10, 1);
+        put(AudioEnums.AlarakBossDeath11, 1);
+        put(AudioEnums.AlarakBossDeath12, 1);
+        put(AudioEnums.AlarakBossDeath13, 1);
+        put(AudioEnums.AlarakBossDeath14, 1);
+        put(AudioEnums.AlarakBossDeath15, 1);
+
+        put(AudioEnums.AlarakBossSpawn1, 1);
+        put(AudioEnums.AlarakBossSpawn2, 1);
+        put(AudioEnums.AlarakBossSpawn3, 1);
+        put(AudioEnums.AlarakBossSpawn4, 1);
+        put(AudioEnums.AlarakBossSpawn5, 1);
+        put(AudioEnums.AlarakBossSpawn6, 1);
+        put(AudioEnums.AlarakBossSpawn7, 1);
+        put(AudioEnums.AlarakBossSpawn8, 1);
+        put(AudioEnums.AlarakBossSpawn9, 1);
+        put(AudioEnums.AlarakBossSpawn10, 1);
+
+        put(AudioEnums.AlarakClassSelect1, 1);
+        put(AudioEnums.AlarakClassSelect2, 1);
+        put(AudioEnums.AlarakClassSelect3, 1);
+        put(AudioEnums.AlarakClassSelect4, 1);
+        put(AudioEnums.AlarakClassSelect5, 1);
+        put(AudioEnums.AlarakClassSelect6, 1);
+        put(AudioEnums.AlarakClassSelect7, 1);
+        put(AudioEnums.AlarakClassSelectCaptain, 1);
+        put(AudioEnums.AlarakClassSelectMutalisk, 1);
+
+        put(AudioEnums.AlarakLevelFinished1, 1);
+        put(AudioEnums.AlarakLevelFinished2, 1);
+        put(AudioEnums.AlarakLevelFinished3, 1);
+        put(AudioEnums.AlarakLevelFinished4, 1);
+        put(AudioEnums.AlarakLevelFinished5, 1);
+        put(AudioEnums.AlarakLevelFinished6, 1);
+        put(AudioEnums.AlarakLevelFinished7, 1);
+        put(AudioEnums.AlarakLevelFinished8, 1);
+        put(AudioEnums.AlarakLevelFinished9, 1);
+        put(AudioEnums.AlarakLevelFinished10, 1);
+        put(AudioEnums.AlarakLevelFinished11, 1);
+        put(AudioEnums.AlarakLevelFinishedZerg, 1);
+
+        put(AudioEnums.AlarakLevelStart1, 1);
+        put(AudioEnums.AlarakLevelStart2, 1);
+        put(AudioEnums.AlarakLevelStart3, 1);
+        put(AudioEnums.AlarakLevelStart4, 1);
+        put(AudioEnums.AlarakLevelStart5, 1);
+        put(AudioEnums.AlarakLevelStart6, 1);
+        put(AudioEnums.AlarakLevelStart7, 1);
+        put(AudioEnums.AlarakLevelStart8, 1);
+        put(AudioEnums.AlarakLevelStart9, 1);
+        put(AudioEnums.AlarakLevelStart10, 1);
+        put(AudioEnums.AlarakLevelStart11, 1);
+        put(AudioEnums.AlarakLevelStart12, 1);
+        put(AudioEnums.AlarakLevelStart13, 1);
+        put(AudioEnums.AlarakLevelStart14, 1);
+        put(AudioEnums.AlarakLevelStartZerg, 1);
+
+        put(AudioEnums.AlarakPlayerDeath1, 1);
+        put(AudioEnums.AlarakPlayerDeath2, 1);
+        put(AudioEnums.AlarakPlayerDeath3, 1);
+        put(AudioEnums.AlarakPlayerDeath4, 1);
+        put(AudioEnums.AlarakPlayerDeath5, 1);
+        put(AudioEnums.AlarakPlayerDeath6, 1);
+        put(AudioEnums.AlarakPlayerDeath7, 1);
+        put(AudioEnums.AlarakPlayerDeath8, 1);
+        put(AudioEnums.AlarakPlayerDeath9, 1);
+        put(AudioEnums.AlarakPlayerDeath10, 1);
+        put(AudioEnums.AlarakPlayerDeath11, 1);
+        put(AudioEnums.AlarakPlayerDeath12, 1);
+        put(AudioEnums.AlarakPlayerDeath13, 1);
+        put(AudioEnums.AlarakPlayerDeath14, 1);
+        put(AudioEnums.AlarakPlayerDeath15, 1);
+        put(AudioEnums.AlarakPlayerDeath16, 1);
+        put(AudioEnums.AlarakPlayerDeath17, 1);
+        put(AudioEnums.AlarakPlayerDeath18, 1);
+        put(AudioEnums.AlarakPlayerDeath19, 1);
+        put(AudioEnums.AlarakPlayerDeath20, 1);
+        put(AudioEnums.AlarakPlayerDeath21, 1);
+        put(AudioEnums.AlarakPlayerDeath22, 1);
+        put(AudioEnums.AlarakPlayerDeath23, 1);
+        put(AudioEnums.AlarakPlayerDeath24, 1);
+        put(AudioEnums.AlarakPlayerDeath25, 1);
+
+        put(AudioEnums.AlarakRelicSelect1, 1);
+        put(AudioEnums.AlarakRelicSelect2, 1);
+        put(AudioEnums.AlarakRelicSelect3, 1);
+        put(AudioEnums.AlarakRelicSelect4, 1);
+        put(AudioEnums.AlarakRelicSelect5, 1);
+        put(AudioEnums.AlarakRelicSelect6, 1);
+        put(AudioEnums.AlarakRelicSelect7, 1);
+        put(AudioEnums.AlarakRelicSelect8, 1);
+
+        put(AudioEnums.AlarakEnterShop1, 1);
+        put(AudioEnums.AlarakEnterShop2, 1);
+        put(AudioEnums.AlarakEnterShop3, 1);
+        put(AudioEnums.AlarakEnterShop4, 1);
+        put(AudioEnums.AlarakEnterShop5, 1);
+        put(AudioEnums.AlarakEnterShop6, 1);
+
+        put(AudioEnums.AlarakIdleInShop1, 1);
+        put(AudioEnums.AlarakIdleInShop2, 1);
+        put(AudioEnums.AlarakIdleInShop3, 1);
+        put(AudioEnums.AlarakIdleInShop4, 1);
+        put(AudioEnums.AlarakIdleInShop5, 1);
+        put(AudioEnums.AlarakIdleInShop6, 1);
+
+        put(AudioEnums.AlarakItemPurchased1, 1);
+        put(AudioEnums.AlarakItemPurchased2, 1);
+        put(AudioEnums.AlarakItemPurchased3, 1);
+        put(AudioEnums.AlarakItemPurchased4, 1);
+        put(AudioEnums.AlarakItemPurchased5, 1);
+
+        put(AudioEnums.AlarakNotEnoughMinerals1, 1);
+        put(AudioEnums.AlarakNotEnoughMinerals2, 1);
+        put(AudioEnums.AlarakNotEnoughMinerals3, 1);
+        put(AudioEnums.AlarakNotEnoughMinerals4, 1);
+
+        put(AudioEnums.AlarakRandomMenu1, 1);
+        put(AudioEnums.AlarakRandomMenu2, 1);
+        put(AudioEnums.AlarakRandomMenu3, 1);
+        put(AudioEnums.AlarakRandomMenu4, 1);
+        put(AudioEnums.AlarakRandomMenu5, 1);
+        put(AudioEnums.AlarakRandomMenu6, 1);
+        put(AudioEnums.AlarakRandomMenu7, 1);
+        put(AudioEnums.AlarakRandomMenu8, 1);
+        put(AudioEnums.AlarakRandomMenu9, 1);
+        put(AudioEnums.AlarakRandomMenu10, 1);
+        put(AudioEnums.AlarakRandomMenu11, 1);
+        put(AudioEnums.AlarakRandomMenu12, 1);
+        put(AudioEnums.AlarakRandomMenu13, 1);
+        put(AudioEnums.AlarakRandomMenu14, 1);
+        put(AudioEnums.AlarakRandomMenuNeedsEdit1, 1);
+        put(AudioEnums.AlarakRandomMenuNeedsEdit2, 1);
+        put(AudioEnums.AlarakRandomMenuNeedsEdit3, 1);
+
+        put(AudioEnums.AlarakIdk, 1);
+
 
 
         put(AudioEnums.CarrierRdy0, 1);
