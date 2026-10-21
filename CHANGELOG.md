@@ -6,6 +6,7 @@ All notable changes on the `Nelis` branch.
 
 ### Added
 - Internal: planboard entries for the enemy glossary, the item glossary, the song-name toast and the music glossary with their Plan items, and a proposal (with Bruus's reply) to store item stack limits and exclusions as data on the item.
+- Internal: `.claude/scripts/patch-notes-pdf.py` turns a patch-notes Markdown file into a PDF styled like the game; `docs/patch-notes/Patch notes.pdf` is the PDF of the 2026-10-14 notes.
 ### Changed
 - Internal: the unused old `GameLoadLogger` (replaced by `LOG_GameLoadLogger` on the memory-reduction branch) is deleted; it was left behind by the squash merge. Nothing changes for players.
 
