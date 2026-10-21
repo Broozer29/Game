@@ -94,7 +94,7 @@ public class MenuInput {
     }
 
     // The actions since the last call, in order: keys first, then the main controller.
-    // Confirm, back, any button and the tab actions come at most once per call.
+    // Confirm, back, any button, the tab actions and the filter actions come at most once per call.
     public List<MenuAction> poll() {
         List<MenuAction> actions = new ArrayList<>(keyActions);
         keyActions.clear();
@@ -104,7 +104,8 @@ public class MenuInput {
         List<MenuAction> result = new ArrayList<>();
         for (MenuAction action : actions) {
             boolean oncePerPoll = action == MenuAction.CONFIRM || action == MenuAction.BACK || action == MenuAction.ANY_BUTTON
-                    || action == MenuAction.PREVIOUS_TAB || action == MenuAction.NEXT_TAB || action == MenuAction.CYCLE_TAB;
+                    || action == MenuAction.PREVIOUS_TAB || action == MenuAction.NEXT_TAB || action == MenuAction.CYCLE_TAB
+                    || action == MenuAction.OPEN_FILTERS || action == MenuAction.CLEAR_FILTERS;
             if (oncePerPoll && !seenOnce.add(action)) {
                 continue;
             }
@@ -203,6 +204,10 @@ public class MenuInput {
             queueKeyAction(MenuAction.BACK);
         } else if (firstPress && keyCode == KeyEvent.VK_TAB) {
             queueKeyAction(shiftDown ? MenuAction.PREVIOUS_TAB : MenuAction.CYCLE_TAB); // Tab cycles through the tabs, Shift+Tab stops at the first
+        } else if (firstPress && keyCode == KeyEvent.VK_F) {
+            queueKeyAction(MenuAction.OPEN_FILTERS);
+        } else if (firstPress && keyCode == KeyEvent.VK_C) {
+            queueKeyAction(MenuAction.CLEAR_FILTERS);
         }
         if (firstPress) {
             queueKeyAction(MenuAction.ANY_BUTTON);

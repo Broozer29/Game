@@ -21,6 +21,7 @@ import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
 import net.riezebos.bruus.tbd.guiboards.util.ClassDescription;
 import net.riezebos.bruus.tbd.guiboards.util.WeaponDescription;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DescriptionTextQuality;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -262,6 +263,8 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
 
 
     private void drawClassDescriptionText(Graphics2D g, GUIComponent backgroundCard) {
+        //Crisp text: the same antialiasing as the ARMORY page, set for the description text only
+        DescriptionTextQuality quality = DescriptionTextQuality.apply(g);
         int boxWidth = backgroundCard.getWidth();
         int boxHeight = backgroundCard.getHeight();
 
@@ -339,6 +342,7 @@ public class ClassSelectionBoard extends JPanel implements TimerHolder {
                 descriptionY += metrics.getHeight();
             }
         }
+        quality.restore(g);
     }
 
     private int getWrappedLineCount(String text, int maxTextWidth, FontMetrics metrics) {

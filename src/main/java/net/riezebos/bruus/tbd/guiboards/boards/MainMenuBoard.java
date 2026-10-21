@@ -20,7 +20,9 @@ import net.riezebos.bruus.tbd.guiboards.boardcreators.MenuBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUITextCollection;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuCursor;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.PlaylistWindow;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.SettingsWindow;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ShopkeeperWindow;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -48,6 +50,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private GUIComponent selectMusicOptionBackgroundCard;
     private GUITextCollection openShopButton;
     private GUITextCollection continueSaveFile;
+    private GUITextCollection shopkeeperButton;
+    private GUITextCollection playlistButton;
     private GUITextCollection settingsButton;
     private GUITextCollection selectMacOSMediaPlayerButton;
     private GUITextCollection selectDefaultMusicButton;
@@ -105,6 +109,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     public void recreateWindow() {
         if (initializedMenuObjects) {
             SettingsWindow.getInstance().closeSilently();
+            ShopkeeperWindow.getInstance().closeSilently();
+            PlaylistWindow.getInstance().closeSilently(); // stops a preview and resumes the menu music where it was
             createCardAndButtons();
             animationManager.resetManager();
 
@@ -141,7 +147,7 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     private void createCardAndButtons() {
         boolean showContinue = SaveManager.getInstance().doesSaveFileExist();
         boolean showShop = DevTestSettings.enableDirectShopAccess;
-        int buttonCount = 3 + (showContinue ? 1 : 0) + (showShop ? 1 : 0); // SELECT CLASS, SETTINGS and CLOSE GAME are always shown
+        int buttonCount = 5 + (showContinue ? 1 : 0) + (showShop ? 1 : 0); // SELECT CLASS, ARMORY, PLAYLIST, SETTINGS and CLOSE GAME are always shown
 
         startGameBackgroundCard = MenuBoardCreator.startGameBackgroundCard(buttonCount);
         selectClassBoard = MenuBoardCreator.createStartGameButton(startGameBackgroundCard);
@@ -154,7 +160,9 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         if (showShop) {
             lastButton = openShopButton;
         }
-        settingsButton = MenuBoardCreator.settingsButton(lastButton);
+        shopkeeperButton = MenuBoardCreator.shopkeeperButton(lastButton);
+        playlistButton = MenuBoardCreator.playlistButton(shopkeeperButton);
+        settingsButton = MenuBoardCreator.settingsButton(playlistButton);
         closeGameButton = MenuBoardCreator.testingButton(settingsButton);
     }
 
@@ -181,6 +189,8 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         if (DevTestSettings.enableDirectShopAccess) {
             addAllButFirstComponent(openShopButton);
         }
+        addAllButFirstComponent(shopkeeperButton);
+        addAllButFirstComponent(playlistButton);
         addAllButFirstComponent(settingsButton);
         addAllButFirstComponent(closeGameButton);
     }
@@ -195,6 +205,10 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         if(DevTestSettings.enableDirectShopAccess) {
             addToGrid(firstColumn, openShopButton.getComponents().get(0), 0, 0);
         }
+
+        addToGrid(firstColumn, shopkeeperButton.getComponents().get(0), 0, 0);
+
+        addToGrid(firstColumn, playlistButton.getComponents().get(0), 0, 0);
 
         addToGrid(firstColumn, settingsButton.getComponents().get(0), 0, 0);
 
@@ -321,6 +335,26 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
         });
     }
 
+    // Shows the SHOPKEEPER page over the main menu; when it closes, SHOPKEEPER is selected again
+    public void openShopkeeper() {
+        ShopkeeperWindow.getInstance().open(() -> {
+            selectedRow = 0;
+            selectedColumn = firstColumn.indexOf(shopkeeperButton.getComponents().get(0));
+            updateCursor();
+            MenuInput.getInstance().startScreen();
+        });
+    }
+
+    // Shows the PLAYLIST page over the main menu; when it closes, PLAYLIST is selected again
+    public void openPlaylist() {
+        PlaylistWindow.getInstance().open(() -> {
+            selectedRow = 0;
+            selectedColumn = firstColumn.indexOf(playlistButton.getComponents().get(0));
+            updateCursor();
+            MenuInput.getInstance().startScreen();
+        });
+    }
+
     public void closeGame() {
         System.exit(1);
     }
@@ -329,6 +363,14 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
     public void executeMenuInput() {
         if (SettingsWindow.getInstance().isOpen()) {
             SettingsWindow.getInstance().handleInput(MenuInput.getInstance().poll()); // The page takes the input, the menu does not move
+            return;
+        }
+        if (ShopkeeperWindow.getInstance().isOpen()) {
+            ShopkeeperWindow.getInstance().handleInput(MenuInput.getInstance().poll()); // The page takes the input, the menu does not move
+            return;
+        }
+        if (PlaylistWindow.getInstance().isOpen()) {
+            PlaylistWindow.getInstance().handleInput(MenuInput.getInstance().poll()); // The page takes the input, the menu does not move
             return;
         }
         boolean needsUpdate = false;
@@ -437,6 +479,20 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
             for (GUIComponent component : SettingsWindow.getInstance().getComponents()) {
                 drawGUIComponent(g, component);
             }
+        }
+
+        if (ShopkeeperWindow.getInstance().isOpen()) {
+            for (GUIComponent component : ShopkeeperWindow.getInstance().getComponents()) {
+                drawGUIComponent(g, component);
+            }
+            ShopkeeperWindow.getInstance().draw(g);
+        }
+
+        if (PlaylistWindow.getInstance().isOpen()) {
+            for (GUIComponent component : PlaylistWindow.getInstance().getComponents()) {
+                drawGUIComponent(g, component);
+            }
+            PlaylistWindow.getInstance().draw(g);
         }
     }
 

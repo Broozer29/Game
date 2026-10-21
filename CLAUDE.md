@@ -62,6 +62,9 @@ Searching the whole codebase is expensive. Start from these files for a subject 
   session: save anything still needed from its worktree (recordings and logs go to `target/perf/`),
   remove the worktree, delete the local branch (`git branch -D`), and tell Nelis to delete the
   remote branch.
+- Local changes to `playerprofile.json` are save data from play-testing and are never kept or
+  committed. When they block a merge, pull or worktree removal, overwrite the file with its
+  committed content (`git show HEAD:playerprofile.json`) without asking, then carry on.
 - Every change we commit gets a line in `CHANGELOG.md` under today's date (Added / Changed / Fixed),
   in the same commit.
 - Project bindings live in `.claude/bindings/`.

@@ -38,8 +38,10 @@ public class PlayerStats {
     //firefighter
     public static float fireFighterBaseDamage = 10f;
     public static float fireFighterAttackSpeed = 0.22f;
-    public static float igniteDamageMultiplier = 0.013f;
-    public static float igniteDuration = 2.35f;
+    public static final float baseIgniteDamageMultiplier = 0.013f; //What the ignite values start at, also shown by SHOPKEEPER
+    public static final float baseIgniteDuration = 2.35f;
+    public static float igniteDamageMultiplier = baseIgniteDamageMultiplier;
+    public static float igniteDuration = baseIgniteDuration;
     private int maxIgniteStacks;
     public static int fireFighterHitpoints = 85;
 
@@ -228,7 +230,7 @@ public class PlayerStats {
         this.attackType = PlayerPrimaryAttackTypes.Flamethrower;
         setPlayerMissileImage(ImageEnums.FireFighterFlameThrowerLooping);
         setPlayerMissileImpactImage(null);
-        igniteDuration = 2.35f;
+        igniteDuration = baseIgniteDuration;
         maxIgniteStacks = 5;
         this.maxHitPoints = fireFighterHitpoints;
         this.maxShieldHitPoints = fireFighterHitpoints;

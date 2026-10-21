@@ -122,10 +122,32 @@ public class MenuBoardCreator {
         return textCollection;
     }
 
-    public static GUITextCollection settingsButton(GUITextCollection previousButton){
+    public static GUITextCollection shopkeeperButton(GUITextCollection previousButton){
         GUIComponent component = previousButton.getComponents().get(0);
         int xCoordinate = component.getXCoordinate();
         int yCoordinate = component.getYCoordinate() + 75; // 50 plus a gap of 25 before this group
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "ARMORY");
+        textCollection.setScale(resolutionFactor);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Shopkeeper);
+        return textCollection;
+    }
+
+    public static GUITextCollection playlistButton(GUITextCollection previousButton){
+        GUIComponent component = previousButton.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 50;
+
+        GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "PLAYLIST");
+        textCollection.setScale(resolutionFactor);
+        textCollection.setMenuFunctionality(MenuFunctionEnums.Open_Playlist);
+        return textCollection;
+    }
+
+    public static GUITextCollection settingsButton(GUITextCollection previousButton){
+        GUIComponent component = previousButton.getComponents().get(0);
+        int xCoordinate = component.getXCoordinate();
+        int yCoordinate = component.getYCoordinate() + 50;
 
         GUITextCollection textCollection = new GUITextCollection(xCoordinate,yCoordinate, "SETTINGS");
         textCollection.setScale(resolutionFactor);

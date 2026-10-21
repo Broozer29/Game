@@ -95,6 +95,8 @@ public class ControllerInputReader {
             // Menus keep fixed buttons, whatever the action bindings are: the bumpers switch tabs
             menuState.put(MenuAction.PREVIOUS_TAB, controller.isButtonPressed(ControllerButton.LEFTBUMPER));
             menuState.put(MenuAction.NEXT_TAB, controller.isButtonPressed(ControllerButton.RIGHTBUMPER));
+            menuState.put(MenuAction.OPEN_FILTERS, controller.isButtonPressed(ControllerButton.X)); // the SHOPKEEPER page opens its filter pane and clears its filters with these
+            menuState.put(MenuAction.CLEAR_FILTERS, controller.isButtonPressed(ControllerButton.Y));
 
             queueButtonsThatWentDown(controller);
 
@@ -195,7 +197,7 @@ public class ControllerInputReader {
         return inputState.getOrDefault(input, false);
     }
 
-    // What the menu sees right now: LEFT..DOWN from the stick or d-pad, CONFIRM = A, BACK = B, ANY_BUTTON = any other button, PREVIOUS_TAB = LB, NEXT_TAB = RB
+    // What the menu sees right now: LEFT..DOWN from the stick or d-pad, CONFIRM = A, BACK = B, ANY_BUTTON = any other button, PREVIOUS_TAB = LB, NEXT_TAB = RB, OPEN_FILTERS = X, CLEAR_FILTERS = Y
     public boolean isMenuInputActive(MenuAction action) {
         return menuState.getOrDefault(action, false);
     }

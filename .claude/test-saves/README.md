@@ -36,6 +36,7 @@ every 2nd stage from stage 6).
 
 The game overwrites `savefile.json` while you play (shop purchases, level end), so the installed
 profile is consumed. Re-run the script to start again. Captain, Firefighter and Carrier are already unlocked in `playerprofile.json`.
+Test saves do not change the list of seen items in `playerprofile.json`, so ARMORY keeps showing the items you have not bought or picked as locked.
 
 ## Use in a bot run
 

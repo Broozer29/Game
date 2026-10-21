@@ -21,6 +21,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
 
+
 import static net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator.shopItemIconDimensions;
 
 public class ShopItem extends GUIComponent {
@@ -59,7 +60,9 @@ public class ShopItem extends GUIComponent {
 
     public void purchaseItemInShop() {
         if (shopItemInformation.getItemRarity().equals(ItemRarityEnums.Relic) && GameState.getInstance().getGameState().equals(GameStatusEnums.SelectingRelic)) {
-            PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
+            ItemEnums pickedRelic = shopItemInformation.getItem();
+            PlayerInventory.getInstance().addItem(pickedRelic);
+            PlayerInventory.getInstance().discoverItem(pickedRelic); //Recorded silently; ARMORY unlocks the item
             SaveManager.getInstance().exportCurrentSave();
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
             BoardManager.getInstance().getGameBoard().signalThatRelicHasBeenChosen(); //sloppy implementation, this way, Relic shopitems are not compatible with shopboard as the active screen
@@ -74,9 +77,11 @@ public class ShopItem extends GUIComponent {
                 contents.setBonusKaartUsed(true);
             }
 
+            ItemEnums boughtItem = shopItemInformation.getItem(); //applySlot below replaces the information with the locked one
             for(int i = 0; i < amountOfTimes; i++){
-                PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
+                PlayerInventory.getInstance().addItem(boughtItem);
             }
+            PlayerInventory.getInstance().discoverItem(boughtItem); //Recorded silently; ARMORY unlocks the item
 
             PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
             slot.setStatus(ShopSlotStatusEnums.Bought);

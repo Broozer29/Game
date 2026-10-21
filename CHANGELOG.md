@@ -9,21 +9,42 @@ All notable changes on the `Nelis` branch.
 - Internal: `.claude/scripts/patch-notes-pdf.py` turns a patch-notes Markdown file into a PDF styled like the game; `docs/patch-notes/Patch notes.pdf` is the PDF of the 2026-10-14 notes.
 ### Changed
 - Internal: the unused old `GameLoadLogger` (replaced by `LOG_GameLoadLogger` on the memory-reduction branch) is deleted; it was left behind by the squash merge. Nothing changes for players.
+- Internal: Claude setup: CLAUDE.md says local changes to `playerprofile.json` are discarded when they block a merge.
 
 ## 2026-10-20
 
+### Added
+- A new PLAYLIST row on the main menu, between ARMORY and SETTINGS, opens a page that lists every song of the game by where it plays: level songs, boss songs, the final boss phases and the menu, shop and game over songs. Switch tabs with LB and RB (Tab on the keyboard), press A (Enter) to hear a song from the start with the progress bar and time, and B (Escape) to close. The menu music continues where it was when you close the page.
+
 ### Changed
+- Internal: Claude setup: the patch-notes guide to where names live points at `MusicTrack` for music.
+- Internal: every song is now a `MusicTrack` value (file, title, artist, where it plays, its boss) and `tracks.txt` and the music values in `AudioEnums` are gone; the game plays the same songs.
+- Internal: planboard notes: Bruus's set-collection item idea, and his answer that a song list in code may replace `tracks.txt`.
+- The ARMORY button in the shop's inventory is removed; ARMORY opens from the main menu.
+- The ITEM DISCOVERED popup and the exclamation mark on shop and relic cards are removed again; ARMORY stays out of the way during play.
+- ARMORY item types reviewed: Contract, Help Requested and Bonus Kaart are Utility instead of Economy, Stuivie is Defensive, special attack items (Battery, Recycler) are Utility, and most items now have one main type.
+- The shop no longer shows a price card when a locked or bought slot is selected.
 - Internal: every boss and mini boss spawn class sets its own scale and directions again (the `EnemyEnums` defaults, overridden per class); the shared spawn list `BossSummons` and `EnemySpawnSettings` are removed. The level preload builds only the level's boss or mini bosses: their summons build their resized pictures when they first spawn, which takes a few milliseconds now that rotated sprites are drawn rotated. Nothing changes for players.
 - Internal: classes and methods that only log, measure or verify are prefixed with `LOG_` (`LOG_ImageNames`, `LOG_GameLoadLogger`, the cache statistics, the rotation checks and the level and startup log lines), so analysis code reads apart from gameplay code. Nothing changes for players.
 
 ## 2026-10-19
 
+### Added
+- A new ARMORY row on the main menu, above SETTINGS, opens a page that lists the items in the game with their icon. Move over an item to see its name in its rarity colour, rarity, which classes can get it, what kind of item it is, its full description and its price. The descriptions show the starting values, so they never change with your run. B or Escape closes the page.
+- The shop's inventory now has an ARMORY button next to INVENTORY. It opens the ARMORY page, and BACK returns you to the inventory.
+- ARMORY shows an item only once you have bought it in the shop or picked it as a relic. Items you have not got yet show as locked: a lock icon, "???" and their rarity, and they still follow the filters. The items you have seen are saved in `playerprofile.json`. The dev setting `showFullArmory` shows everything.
+- The first time you buy or pick an item, an ITEM DISCOVERED popup shows its icon and name. Shop and relic cards of items that are not in the ARMORY yet carry a small black-outlined exclamation point in the top right corner.
+- ARMORY has a filter pane: press X (controller) or F (keyboard) to filter the items by class, rarity and type. The bar above the grid lists the active filters and how many items are left, and Y or C clears all filters.
+- The ARMORY filters are remembered: the class, rarity and type filters you switch on are still on the next time you open the page, even after closing or crashing the game.
+- Internal: every item now has a class group (which classes can get it) and at least one item type (Offensive, Defensive, Economy or Utility), so a new item cannot be added without them. ARMORY reads them; nothing else does yet.
+- Internal: Claude setup: the patch-notes guide to where names live lists the class group and item types on an `ItemEnums` line.
+- Internal: the level-end cache log lists the sprites with the most build time in that level, with their number of builds and distinct sizes.
+
 ### Changed
+- Item descriptions in the shop, the relic choice and the class descriptions are drawn smoother and sharper.
+- In the shop, the price of the selected item is no longer a line inside the description, where it overlapped the text. It now has its own small card below the description card: the minerals icon, then the cost, in white when you can afford it and in red when you cannot.
 - The image cache is limited to 1,024 MB instead of 2,560 MB, so it always fits the 3 GB memory limit. A Captain run needs about a quarter of that; a Firefighter run fills it.
 - At the end of every level the graphics card copies of the game's pictures are freed and made again when drawn, so the graphics driver's memory stops growing during a long run (about 0.8 GB less late in a run).
-
-### Added
-- Internal: the level-end cache log lists the sprites with the most build time in that level, with their number of builds and distinct sizes.
 
 ## 2026-10-18
 

@@ -43,6 +43,8 @@ public enum MenuFunctionEnums {
 	Confirm_Exit_Run,
 	Cancel_Exit_Run,
 	Open_Settings,
+	Open_Shopkeeper,
+	Open_Playlist,
 	Save_Settings,
 	Save_Settings_Changes,
 	Discard_Settings_Changes,

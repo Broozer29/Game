@@ -29,7 +29,7 @@ import net.riezebos.bruus.tbd.game.util.ArmorCalculator;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -53,9 +53,9 @@ public class FinalBoss extends Enemy {
     public static int BOSSPHASE_3 = 3;
 
 
-    private AudioEnums firstPhaseAudioEnum = AudioEnums.FinalBossPhase1;
-    private AudioEnums secondPhaseAudioEnum = AudioEnums.FinalBossPhase2;
-    private AudioEnums thirdPhaseAudioEnum = AudioEnums.FinalBossPhase3;
+    private MusicTrack firstPhaseAudioEnum = MusicTrack.getFinalBossPhase(1);
+    private MusicTrack secondPhaseAudioEnum = MusicTrack.getFinalBossPhase(2);
+    private MusicTrack thirdPhaseAudioEnum = MusicTrack.getFinalBossPhase(3);
     private FinalBossBarker bossBarker = new FinalBossBarker();
     private FinalBossPeriodicMissileBarrage finalBossPeriodicMissileBarrage = new FinalBossPeriodicMissileBarrage();
 

@@ -53,6 +53,11 @@ public class ItemDescriptionRetriever {
 
 
     public static String getDescriptionOfItem(ItemEnums itemEnums) {
+        return getDescriptionOfItem(itemEnums, false);
+    }
+
+    //With baseValues true the text does not depend on the run in progress: Placeholder counts no drone upgrades and Gasoline uses the ignite values a run starts with
+    public static String getDescriptionOfItem(ItemEnums itemEnums, boolean baseValues) {
         switch (itemEnums) {
             //--------------------------------------generic items--------------------------------------
             //7
@@ -76,7 +81,9 @@ public class ItemDescriptionRetriever {
             } //relic
             case Placeholder -> {
                 SpaceShip spaceShip = PlayerManager.getInstance().getSpaceship();
-                double value = FriendlyStation.getStationDamage(spaceShip) / FriendlyStation.getStationAttackInterval(spaceShip);
+                double value = baseValues
+                        ? FriendlyStation.getStationDamage(null) / FriendlyStation.getStationAttackInterval(null)
+                        : FriendlyStation.getStationDamage(spaceShip) / FriendlyStation.getStationAttackInterval(spaceShip);
                 return "Killing an enemy spawns a temporary stationary drone dealing " + String.format("%.1f", value) + " damage per second. Drone upgrades are twice as effective on Placeholder drones. Maximum of " + Placeholder.maxStations + " drones can be spawned at once.";
             } //relic
             case WisdomBall -> {
@@ -110,9 +117,11 @@ public class ItemDescriptionRetriever {
 
             //4
             case CannisterOfGasoline -> {
+                float igniteDamageMultiplier = baseValues ? PlayerStats.baseIgniteDamageMultiplier : PlayerStats.igniteDamageMultiplier;
+                float igniteDuration = baseValues ? PlayerStats.baseIgniteDuration : PlayerStats.igniteDuration;
                 return "Enemies explode on death, creating an explosion that applies Ignite to enemies dealing " +
-                        Math.round(Math.round(PlayerStats.igniteDamageMultiplier * 100) * (PlayerStats.igniteDuration / DamageOverTime.damageInterval)) + "% (+" + Math.round(CannisterOfGasoline.igniteDamageBonus * 100) + "%) damage over " +
-                        PlayerStats.igniteDuration + " seconds.";
+                        Math.round(Math.round(igniteDamageMultiplier * 100) * (igniteDuration / DamageOverTime.damageInterval)) + "% (+" + Math.round(CannisterOfGasoline.igniteDamageBonus * 100) + "%) damage over " +
+                        igniteDuration + " seconds.";
             } //rare
             case DistributedHeat -> {
                 return "Your flamethrower now fires in ALL directions but at reduced intensity. Flamethrower deals " + Math.round(Math.abs(1 - DistributedHeat.damageRatio) * 100) + "% reduced damage.";

@@ -61,10 +61,12 @@ import net.riezebos.bruus.tbd.guiboards.guicomponents.BossHealthBar;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.GUIComponent;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.MenuWindow;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.SettingsWindow;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ShopItem;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.DescriptionTextQuality;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.RotationGeometry;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -350,7 +352,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private void playDeathMusic() {
         audioManager.stopMusicAudio();
-        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.VendlaSonrisa, true);
+        audioManager.playDefaultBackgroundMusicForALevel(MusicTrack.GAME_OVER, true);
     }
 
     // Draw the game over screen
@@ -1525,6 +1527,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     private void drawDescriptionInfo(Graphics2D g2d, GUIComponent shopItem, GUIComponent backgroundCard) {
+        //Crisp text: the same antialiasing as the ARMORY page, set for the description text only
+        DescriptionTextQuality quality = DescriptionTextQuality.apply(g2d);
         int boxWidth = backgroundCard.getWidth();
         int boxHeight = backgroundCard.getHeight();
         String textFont = DataClass.getInstance().getTextFont();
@@ -1550,6 +1554,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             FontMetrics titleMetrics = g2d.getFontMetrics();
             descriptionY += titleMetrics.getHeight() + Math.round(10 * Math.min(DataClass.getInstance().getResolutionFactor(), DataClass.maxResolutionFactor));  // Spacing after the title
         }
+        quality.restore(g2d);
     }
 
     //Helper method to centralize the actual drawing on the screen

@@ -440,6 +440,18 @@ public class ShopBoardCreator {
         return backgroundCard;
     }
 
+    //A small card right below the description card, for the price of the selected shop item
+    public DisplayOnly createCostBackgroundCard(GUIComponent descriptionCard) {
+        int cardHeight = Math.round(boardHeight * (60 / 875f));
+        SpriteConfiguration spriteConfiguration = createSpriteConfiguration(
+                descriptionCard.getXCoordinate(),
+                descriptionCard.getYCoordinate() + descriptionCard.getHeight(),
+                1, ImageEnums.Square_Card);
+        DisplayOnly backgroundCard = new DisplayOnly(spriteConfiguration);
+        backgroundCard.setImageDimensions(descriptionCard.getWidth(), cardHeight);
+        return backgroundCard;
+    }
+
     public DisplayOnly createInventoryBackgroundCard() {
         float widthRatio = 850 / 1440f;
         float heightRatio = 700 / 875f;

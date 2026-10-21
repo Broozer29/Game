@@ -1,6 +1,5 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums;
 
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
 
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Random;
 
 public enum AudioEnums {
-    CustomMusicFile,
     GenericError,
     Player_Laserbeam,
     SpecialAttackFinishedCharging,
@@ -24,18 +22,11 @@ public enum AudioEnums {
     Alien_Bomb_Impact,
     Large_Ship_Destroyed,
     Default_EMP,
-    Furi_Wisdowm_Of_Rage,
-    RMChase,
     Destroyed_Explosion,
     GenericSelect,
     Flamethrower,
     Rocket_Launcher,
     Firewall,
-    mainmenu,
-    Blood_On_The_Dancefloor,
-    Lemmino_Firecracker,
-    VendlaSonrisa,
-    nomad,
     NotEnoughMinerals,
     BroodlingAttached, //unused but the idea behind this audio effect is still interesting/cool
     AchievementUnlocked,
@@ -51,7 +42,6 @@ public enum AudioEnums {
     ScourgeCollision,
     ScourgeDeath,
     ScourgeNoticed,
-    WaveshaperMonster,
     ClassCarrierSpeedingUp,
     ClassCarrierSlowingDown,
     CaptainMisc0,
@@ -103,14 +93,7 @@ public enum AudioEnums {
     CoinCollected,
     ScarabExplosion,
     GodRunDetected,
-    MausoleumMash,
-    Arisen,
-    Enraged,
-    DistressCall,
-    Filth,
-    FinalBossPhase1,
-    FinalBossPhase2,
-    FinalBossPhase3;
+    DistressCall;
 
     public static AudioEnums getSelectClassAudioByClass(PlayerClass playerClass) {
         List<AudioEnums> availableSounds = new ArrayList<>();
@@ -143,38 +126,5 @@ public enum AudioEnums {
 
         int randomIndex = random.nextInt(availableSounds.size());
         return availableSounds.get(randomIndex);
-    }
-
-    public static AudioEnums getBossTheme(EnemyEnums enemyEnums) {
-        switch (enemyEnums) {
-            case SpaceStationBoss:
-                return AudioEnums.Furi_Wisdowm_Of_Rage;
-            case RedBoss:
-                return AudioEnums.RMChase;
-            case CarrierBoss:
-                return AudioEnums.nomad;
-            case YellowBoss:
-                return AudioEnums.Filth;
-            case StrikerBoss:
-                return AudioEnums.Arisen;
-            case BlueBoss:
-                return AudioEnums.MausoleumMash;
-            case TwinBoss:
-                return AudioEnums.Enraged;
-            case FinalBoss:
-                return AudioEnums.FinalBossPhase1;
-            default:
-                return getRandomBossSong();
-        }
-    }
-
-    public static AudioEnums getRandomBossSong() {
-        List<AudioEnums> bossSongList = new ArrayList<>();
-        bossSongList.add(AudioEnums.Furi_Wisdowm_Of_Rage);
-        bossSongList.add(AudioEnums.Blood_On_The_Dancefloor);
-        bossSongList.add(AudioEnums.nomad);
-        bossSongList.add(AudioEnums.WaveshaperMonster);
-
-        return bossSongList.get(new Random().nextInt(bossSongList.size()));
     }
 }

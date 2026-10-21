@@ -27,7 +27,7 @@ import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 
 import java.util.ArrayList;
@@ -326,7 +326,7 @@ public class LevelManager {
                 audioManager.playDefaultBackgroundMusicForALevel();
             }
             case Boss -> {
-                audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.getBossTheme(selectedBoss), true);
+                audioManager.playDefaultBackgroundMusicForALevel(MusicTrack.getBossTheme(selectedBoss), true);
                 //to implement
             }
             case Special -> {

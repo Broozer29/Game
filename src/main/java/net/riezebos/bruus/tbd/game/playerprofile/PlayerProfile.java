@@ -2,6 +2,9 @@ package net.riezebos.bruus.tbd.game.playerprofile;
 
 import net.riezebos.bruus.tbd.DevTestSettings;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class PlayerProfile {
     private int enemyKilledCounter;
     private int highestStageCompleted;
@@ -16,6 +19,7 @@ public class PlayerProfile {
     private int BountyHunterLevel = 0;
     private int treasureHunterLevel = 0;
     private int ThickHideLevel = 0;
+    private Set<String> discoveredItems = new HashSet<>(); //ItemEnums names of the items bought or picked so far; names that are no longer an ItemEnums value never match
 
 
     public PlayerProfile() {
@@ -105,6 +109,14 @@ public class PlayerProfile {
 
     public void setTreasureHunterLevel(int treasureHunterLevel) {
         this.treasureHunterLevel = treasureHunterLevel;
+    }
+
+    public Set<String> getDiscoveredItems() {
+        return discoveredItems;
+    }
+
+    public void setDiscoveredItems(Set<String> discoveredItems) {
+        this.discoveredItems = discoveredItems == null ? new HashSet<>() : new HashSet<>(discoveredItems);
     }
 
     public boolean isCarrierUnlocked() {

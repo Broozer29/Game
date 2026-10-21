@@ -59,9 +59,9 @@ Items, boons, the shop, rerolls and prices.
   - Plan theme `game-shopkeeper` (2026-10-19), units `game-shopkeeper-screen`, `game-shopkeeper-from-shop`, `game-shopkeeper-filters`
 - Store each item's stack limit and "cannot be combined with" rules as data on the item, instead of as code inside its availability check (Nelis, 2026-10-19)
   - Today these rules exist only as code in each item's `isAvailable()`, which reads the current run's inventory. Example: AnionInverter.java:44 says "not available if you already own Anion Inverter or Electric Destabilizer"
-  - Why: the new SHOPKEEPER screen lists every item outside a run, so it cannot ask that code. Its first version leaves stack limits and exclusions out for this reason
-  - Proposal: give each `ItemEnums` entry a stack limit and a list of items it excludes, and let the availability checks read those values. The shop and the SHOPKEEPER then use one source, and a new item sets its rules in one place
-  - Same pattern for classes (Nelis, 2026-10-19): SHOPKEEPER adds a class group to every `ItemEnums` line (which classes may get the item), next to the class check in each `isAvailable()`. Letting `isAvailable()` read that group would remove the second copy
+  - Why: the new ARMORY screen lists every item outside a run, so it cannot ask that code. Its first version leaves stack limits and exclusions out for this reason
+  - Proposal: give each `ItemEnums` entry a stack limit and a list of items it excludes, and let the availability checks read those values. The shop and the ARMORY then use one source, and a new item sets its rules in one place
+  - Same pattern for classes (Nelis, 2026-10-19): ARMORY adds a class group to every `ItemEnums` line (which classes may get the item), next to the class check in each `isAvailable()`. Letting `isAvailable()` read that group would remove the second copy
   - It would also fix the one-way exclusions found in the item audit (Anion Inverter and Electric Destabilizer, Inverse Retrieval and Arbiter Damage), because one list can be checked both ways
   - Question for Bruus: do you agree with moving these rules into the item data? Is there a rule that cannot be written as "at most N copies" or "not together with item X"?
     - Bruus insight:
@@ -71,5 +71,8 @@ Items, boons, the shop, rerolls and prices.
 - Calm in Chaos needs a look
 
 ## Ideas
+- A set-collection item, like Exodia: collect all 5 pieces of a set in a run to get a mega item (Bruus, 2026-10-20)
+  - The quest exclamation mark from the ARMORY work (`images/Icons/QuestMark.png`) could show which pieces you still need; it is kept unused for this
+  - Plan item `game-item-collection-set` (2026-10-20)
 - Items for build A that weaken build B, so player choices matter more
 - Blue Flame relic: a new item

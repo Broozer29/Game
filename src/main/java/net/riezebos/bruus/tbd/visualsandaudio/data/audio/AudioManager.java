@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.MacOSMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.SpotifyMediaPlayer;
 
@@ -19,7 +20,9 @@ public class AudioManager {
     private static AudioManager instance = new AudioManager();
     private CustomAudioClip backGroundMusic = null;
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
-    private AudioEnums currentSong;
+    private MusicTrack currentSong;
+    private CustomAudioClip previewClip = null; //The song the PLAYLIST page plays; always a fresh owned clip, never a pooled one
+    private boolean menuMusicPausedByPreview = false; //Set when startPreview paused backGroundMusic, so stopPreviewAndResume resumes it
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
     private MusicMediaPlayer musicMediaPlayer = DevTestSettings.useItunes ? MusicMediaPlayer.iTunesMacOS : MusicMediaPlayer.LocalFiles;
     private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
@@ -45,10 +48,9 @@ public class AudioManager {
         lastPlayTimeMap.clear();
     }
 
-    //Stops the current background music, disposes it (a no-op for database clips) and clears the field
+    //Stops the current background music, disposes it (a no-op for pooled clips) and clears the field
     private void releaseBackgroundMusic() {
         if (backGroundMusic != null) {
-            backGroundMusic.setMusic(false); //Database clips are reused as effects
             backGroundMusic.setLoop(false);
             backGroundMusic.setPlaybackPosition(0);
             backGroundMusic.stopClip();
@@ -59,6 +61,70 @@ public class AudioManager {
 
     public static AudioManager getInstance() {
         return instance;
+    }
+
+    //Plays the whole song once from the start for the PLAYLIST page. A preview that is already playing is stopped and disposed first.
+    //The menu music is paused in place, only when it exists and is playing, and is never released
+    public boolean startPreview(MusicTrack track) {
+        disposePreview();
+        CustomAudioClip clip = new CustomAudioClip(track, true);
+        if (clip.hasFailedToLoad()) {
+            clip.dispose();
+            return false; //the menu music is left alone
+        }
+        if (!menuMusicPausedByPreview && backGroundMusic != null && backGroundMusic.isMediaPlayerPlaying()) {
+            backGroundMusic.pauseClip();
+            menuMusicPausedByPreview = true;
+        }
+        clip.setLoop(false);
+        if (DevTestSettings.devTestMuteMode) {
+            clip.muteAudioClip();
+        }
+        clip.startClip();
+        previewClip = clip;
+        return true;
+    }
+
+    //Disposes a running preview and clears the paused-by-preview flag without resuming; for callers that restart the menu music themselves
+    public void discardPreview() {
+        disposePreview();
+        menuMusicPausedByPreview = false;
+    }
+
+    //Stops and disposes the preview, then resumes the menu music where it was paused, only when startPreview paused it
+    public void stopPreviewAndResume() {
+        disposePreview();
+        if (menuMusicPausedByPreview) {
+            menuMusicPausedByPreview = false;
+            if (backGroundMusic != null) {
+                backGroundMusic.resumeClip();
+            }
+        }
+    }
+
+    //True once when the preview reached its end by itself; the clip is disposed then, and the menu music stays paused
+    public boolean pollPreviewEnded() {
+        if (previewClip != null && previewClip.isMediaPlayerFinished()) {
+            disposePreview();
+            return true;
+        }
+        return false;
+    }
+
+    public double getPreviewSeconds() {
+        return previewClip == null ? 0 : previewClip.getCurrentSecondsInPlayback();
+    }
+
+    public double getPreviewTotalSeconds() {
+        return previewClip == null ? 0 : previewClip.getTotalSecondsInPlayback();
+    }
+
+    private void disposePreview() {
+        if (previewClip != null) {
+            previewClip.stopClip();
+            previewClip.dispose();
+            previewClip = null;
+        }
     }
 
     public void addAudio(AudioEnums audioType) {
@@ -105,19 +171,18 @@ public class AudioManager {
     }
 
     // Plays the background music directly, overwriting existing music
-    public void playDefaultBackgroundMusicForALevel(AudioEnums audioType, boolean loop) {
+    public void playDefaultBackgroundMusicForALevel(MusicTrack track, boolean loop) {
         releaseBackgroundMusic();
 
-        backGroundMusic = audioDatabase.getAudioClip(audioType);
+        backGroundMusic = audioDatabase.getMusicClip(track);
         if (backGroundMusic != null) {
             if (DevTestSettings.devTestMuteMode) {
                 System.out.println("Played audio through AudioManager but MuteMode was ON");
                 backGroundMusic.muteAudioClip();
             }
             backGroundMusic.setLoop(loop);
-            backGroundMusic.setMusic(true);
             backGroundMusic.startClip();
-            this.currentSong = backGroundMusic.getAudioType();
+            this.currentSong = track;
         }
     }
 
@@ -146,11 +211,11 @@ public class AudioManager {
         }
     }
 
-    public AudioEnums getCurrentSong() {
+    public MusicTrack getCurrentSong() {
         return currentSong;
     }
 
-    public void setCurrentSong(AudioEnums currentSong) {
+    public void setCurrentSong(MusicTrack currentSong) {
         this.currentSong = currentSong;
     }
 
@@ -164,7 +229,6 @@ public class AudioManager {
 
     public void tryToDisposeBackgroundMusic() {
         if (backGroundMusic != null) {
-            backGroundMusic.setMusic(false);
             backGroundMusic.dispose();
             backGroundMusic = null;
         }
@@ -323,9 +387,10 @@ public class AudioManager {
         if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             releaseBackgroundMusic();
 
-            CustomAudioClip clip = new CustomAudioClip(AudioEnums.CustomMusicFile); //create a new customaudioclip as the database does NOT preload these, loop defaults to false
-            clip.setMusic(true);
+            MusicTrack track = MusicTrack.getRandomLevelTrack();
+            CustomAudioClip clip = new CustomAudioClip(track, true); //create a new customaudioclip as the database does NOT preload these, loop defaults to false
             backGroundMusic = clip; //set before starting, so a clip that failed to load is still tracked by the level-end safety net
+            currentSong = track;
             musicStartGameSeconds = GameState.getInstance().getGameSeconds();
             clip.startClip(); //fire & forget
 
@@ -421,6 +486,6 @@ public class AudioManager {
 
     public boolean bossIsBarking(FinalBoss finalBoss) {
         return audioDatabase.getAllActiveClips().stream()
-                .anyMatch(clip -> finalBoss.getBossBarker().getAllBarkEnums().contains(clip.getAudioType()));
+                .anyMatch(clip -> clip.getAudioType() != null && finalBoss.getBossBarker().getAllBarkEnums().contains(clip.getAudioType()));
     }
 }

@@ -295,12 +295,13 @@ public enum ImageEnums {
     Red_Filling,
     Gold_Filling,
     Blue_Filling,
-    Highlight, Long_Card, Wide_Card, Square_Card,
+    Highlight, Long_Card, Wide_Card, Square_Card, Card_X5, Card_X1,
     InformationCard,
     YellowWings1, YellowWings2, YellowWings3, YellowWings4, YellowWings5, BlueWings1, BlueWings2, BlueWings3, BlueWings4, BlueWings5,
     PurpleWings1, PurpleWings2, PurpleWings3, PurpleWings4, PurpleWings5, RedWings1, RedWings2, RedWings3, RedWings4, RedWings5,
     // Icons
     LockedIcon,
+    QuestMarkIcon, //Kept for a later feature; nothing draws it now
     TopazGem7,
     EmeraldGem5,
     Starcraft2_Protoss_Shield_Disintegrate,

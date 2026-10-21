@@ -3,6 +3,8 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicPlace;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,23 +22,11 @@ public class AudioDatabase {
 
     private Map<AudioEnums, List<CustomAudioClip>> audioClipsMap = new HashMap<>();
 
+    //One pooled clip per song that is not a LEVEL song; level songs get a fresh clip for each play
+    private Map<MusicTrack, List<CustomAudioClip>> musicClipsMap = new HashMap<>();
+
     private Map<AudioEnums, Integer> clipSizeConfig = new HashMap<>() {{
-        put(AudioEnums.Furi_Wisdowm_Of_Rage, 1);
-        put(AudioEnums.RMChase, 1);
-        put(AudioEnums.nomad, 1);
-        put(AudioEnums.Blood_On_The_Dancefloor, 1);
-        put(AudioEnums.WaveshaperMonster, 1);
-        put(AudioEnums.MausoleumMash, 1);
-        put(AudioEnums.Arisen, 1);
-        put(AudioEnums.Enraged, 1);
-        put(AudioEnums.FinalBossPhase1, 1);
-        put(AudioEnums.FinalBossPhase2, 1);
-        put(AudioEnums.FinalBossPhase3, 1);
-        put(AudioEnums.Lemmino_Firecracker, 1);
-        put(AudioEnums.Filth, 1);
         put(AudioEnums.GodRunDetected, 1);
-        put(AudioEnums.VendlaSonrisa, 1);
-        put(AudioEnums.mainmenu, 1);
         put(AudioEnums.GenericError, 3);
         put(AudioEnums.ScarabExplosion, 2);
         put(AudioEnums.CoinCollected, 2);
@@ -142,15 +132,8 @@ public class AudioDatabase {
     }
 
     public void resetAudio() {
-        for (List<CustomAudioClip> clipList : audioClipsMap.values()) {
-            for (CustomAudioClip clip : clipList) {
-                if (clip.hasStartedSinceReset()) {
-                    clip.clearStartedSinceReset();
-                    clip.setPlaybackPosition(0);
-                    clip.stopClip();
-                }
-            }
-        }
+        resetClips(audioClipsMap.values());
+        resetClips(musicClipsMap.values());
         allActiveClips.clear();
         performanceLogger.reset();
     }
@@ -165,6 +148,18 @@ public class AudioDatabase {
 
     public void updateGameTick() {
         PerformanceLoggerManager.timeAndLog(performanceLogger, "Reset Clips", this::resetClips);
+    }
+
+    private void resetClips(Iterable<List<CustomAudioClip>> clipLists) {
+        for (List<CustomAudioClip> clipList : clipLists) {
+            for (CustomAudioClip clip : clipList) {
+                if (clip.hasStartedSinceReset()) {
+                    clip.clearStartedSinceReset();
+                    clip.setPlaybackPosition(0);
+                    clip.stopClip();
+                }
+            }
+        }
     }
 
     private void resetClips() {
@@ -191,6 +186,14 @@ public class AudioDatabase {
 
             audioClipsMap.put(audioType, clipList);
         }
+
+        for (MusicTrack track : MusicTrack.values()) {
+            if (track.getPlace() != MusicPlace.LEVEL) {
+                List<CustomAudioClip> clipList = new ArrayList<>();
+                clipList.add(new CustomAudioClip(track, false));
+                musicClipsMap.put(track, clipList);
+            }
+        }
     }
 
     //Return a Clip which is not running
@@ -210,6 +213,20 @@ public class AudioDatabase {
 
     public CustomAudioClip getAudioClip(AudioEnums audioType) {
         return getAvailableClip(audioType);
+    }
+
+    //Return the pooled clip of a non-LEVEL song when it is not running, otherwise null
+    public CustomAudioClip getMusicClip(MusicTrack track) {
+        List<CustomAudioClip> clipList = musicClipsMap.get(track);
+        if (clipList != null) {
+            for (CustomAudioClip clip : clipList) {
+                if (!clip.isRunning()) {
+                    allActiveClips.add(clip);
+                    return clip;
+                }
+            }
+        }
+        return null;
     }
 
 

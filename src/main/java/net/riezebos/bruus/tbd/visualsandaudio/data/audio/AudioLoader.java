@@ -3,22 +3,13 @@ package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicTrack;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
 
 public class AudioLoader {
 
     private static AudioLoader instance = new AudioLoader();
-    private final LinkedList<String> recentTracks = new LinkedList<>();
-    private static final int MAX_HISTORY_SIZE = 10;
-    private static final int MAX_RETRIES = 10;
 
     private AudioLoader () {
 
@@ -30,15 +21,24 @@ public class AudioLoader {
 
     // Load the audio file into memory using MediaPlayer for small audio files
     public MediaPlayer getSoundfile(AudioEnums audioFile) {
+        return createMediaPlayer(convertAudioToFileString(audioFile), String.valueOf(audioFile));
+    }
+
+    // Builds a player for a song from its own path
+    public MediaPlayer getMusicfile(MusicTrack track) {
+        return createMediaPlayer(track.getPath(), String.valueOf(track));
+    }
+
+    private MediaPlayer createMediaPlayer(String resourcePath, String name) {
         try {
-            URL url = getClass().getResource(convertAudioToFileString(audioFile));
+            URL url = getClass().getResource(resourcePath);
             if (url != null) {
                 Media media = new Media(url.toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
                 mediaPlayer.setAutoPlay(false); // Prevent auto-playing the sound
                 return mediaPlayer;
             }
-            System.out.println("Failed to load audio file: " + audioFile);
+            System.out.println("Failed to load audio file: " + name);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,91 +46,7 @@ public class AudioLoader {
     }
 
 
-    /**
-     * Helper method to get a random custom music file.
-     * Falls back to JAR resources if external folder is empty/missing.
-     * Prevents repeating recently played tracks by maintaining a history of the last 10 tracks.
-     * @return The path/URL to a random custom music file or fallback boss song
-     */
-    private String getRandomCustomMusicFile() {
-        List<Object> availableTracks = new ArrayList<>(); // Can hold File or String (resource path)
-        boolean isExternalFolder = false;
-
-        // If no external tracks found, load from JAR resources
-        if (availableTracks.isEmpty()) {
-            try {
-                InputStream tracksListStream = getClass().getResourceAsStream("/audio/music/custom/tracks.txt");
-                if (tracksListStream != null) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(tracksListStream))) {
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            line = line.trim();
-                            if (!line.isEmpty() && (line.toLowerCase().endsWith(".mp3") || line.toLowerCase().endsWith(".wav"))) {
-                                availableTracks.add("/audio/music/custom/" + line);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                System.err.println("Error accessing JAR custom music tracks: " + e.getMessage());
-            }
-        }
-
-        // Select a random track with history tracking
-        if (!availableTracks.isEmpty()) {
-            Random random = new Random();
-            Object selectedTrack = null;
-            String trackIdentifier = null;
-            int attempts = 0;
-
-            // Try to find a track not in recent history
-            while (attempts < MAX_RETRIES) {
-                selectedTrack = availableTracks.get(random.nextInt(availableTracks.size()));
-                trackIdentifier = selectedTrack instanceof java.io.File
-                    ? ((java.io.File) selectedTrack).getName()
-                    : (String) selectedTrack;
-
-                if (!recentTracks.contains(trackIdentifier)) {
-                    break;
-                }
-                attempts++;
-            }
-
-            // If we couldn't find a non-recent track after MAX_RETRIES, clear history
-            if (attempts >= MAX_RETRIES) {
-                recentTracks.clear();
-                selectedTrack = availableTracks.get(random.nextInt(availableTracks.size()));
-                trackIdentifier = selectedTrack instanceof java.io.File
-                    ? ((java.io.File) selectedTrack).getName()
-                    : (String) selectedTrack;
-            }
-
-            // Add to history
-            recentTracks.add(trackIdentifier);
-
-            // Maintain max history size (FIFO - remove oldest if exceeds limit)
-            if (recentTracks.size() > MAX_HISTORY_SIZE) {
-                recentTracks.removeFirst();
-            }
-
-            // Return appropriate path/URL
-            if (isExternalFolder && selectedTrack instanceof java.io.File) {
-                return ((java.io.File) selectedTrack).toURI().toString();
-            } else {
-                return (String) selectedTrack;
-            }
-        }
-
-        // Fallback to random boss song if no custom tracks available
-        return convertAudioToFileString(AudioEnums.getRandomBossSong());
-    }
-
     public String convertAudioToFileString (AudioEnums audioFile) {
-        if(audioFile == AudioEnums.CustomMusicFile){
-            return getRandomCustomMusicFile();
-        }
-
-
         switch (audioFile) {
             case CaptainMisc0: return "/audio/selectclass/captain/misc0.wav";
             case CaptainMisc1: return "/audio/selectclass/captain/misc1.wav";
@@ -217,8 +133,6 @@ public class AudioLoader {
                 return "/audio/Destroyed Explosion.wav";
             case Alien_Spaceship_Destroyed:
                 return "/audio/Alien Spaceship Destroyed.wav";
-            case Furi_Wisdowm_Of_Rage:
-                return "/audio/music/Waveshaper wisdom of rage.mp3";
             case Alien_Bomb_Impact:
                 return "/audio/Alien Bomb Impact.wav";
             case Large_Ship_Destroyed:
@@ -236,26 +150,6 @@ public class AudioLoader {
                 return "/audio/Flamethrower.wav";
             case Firewall:
                 return "/audio/Firewall.wav";
-            case mainmenu:
-                return "/audio/music/mainmenu.mp3";
-            case Filth:
-                return "/audio/music/Filth.mp3";
-            case Blood_On_The_Dancefloor:
-                return "/audio/music/Blood_On_The_Dancefloor.mp3";
-            case FinalBossPhase1:
-                return "/audio/music/phase1.mp3";
-            case FinalBossPhase2:
-                return "/audio/music/phase2.mp3";
-            case FinalBossPhase3:
-                return "/audio/music/phase3.mp3";
-            case MausoleumMash:
-                return "/audio/music/Mausoleum mash.mp3";
-            case Arisen:
-                return "/audio/music/Arisen.mp3";
-            case Enraged:
-                return "/audio/music/enraged.mp3";
-            case Lemmino_Firecracker:
-                return "/audio/music/lemmino Firecracker.mp3";
             case NotEnoughMinerals:
                 return "/audio/Not Enough Minerals.wav";
             case ChargingLaserbeam:
@@ -268,10 +162,6 @@ public class AudioLoader {
                 return "/audio/ElectroShredFinishedCharging.wav";
             case ScarabExplosion:
                 return "/audio/scarabexplosion.wav";
-            case VendlaSonrisa:return "/audio/music/Vendla - Sonrisa (Royalty Free Music).mp3";
-            case nomad:return "/audio/music/nomad.mp3";
-            case WaveshaperMonster: return "/audio/music/Waveshaper - Monster.mp3";
-            case RMChase: return "/audio/music/RM Chase.mp3";
         }
         return null;
     }

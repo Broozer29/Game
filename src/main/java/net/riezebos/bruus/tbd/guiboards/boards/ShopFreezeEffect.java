@@ -18,6 +18,8 @@ public class ShopFreezeEffect {
 
     private static final int THAW_HOLD_MS = 100;
     private static final int THAW_TOTAL_MS = ShopFreezer.THAW_TOTAL_MS;
+    private static final Color FROST_COLOR = new Color(127, 220, 255);
+    private static final Color FROST_CORNER_COLOR = new Color(230, 248, 255);
 
     private static ShopFreezeEffect instance = new ShopFreezeEffect();
 
@@ -61,7 +63,7 @@ public class ShopFreezeEffect {
             return alpha;
         }
         if (service.isFrozen()) {
-            drawFrostGlow(g, component.getXCoordinate(), component.getYCoordinate(), component.getWidth(), component.getHeight(), 6);
+            drawFrostGlow(g, component.getXCoordinate(), component.getYCoordinate(), component.getWidth(), component.getHeight(), 6, FROST_COLOR);
             return alpha;
         }
         return alpha * 0.65f;
@@ -74,16 +76,34 @@ public class ShopFreezeEffect {
         int yCoordinate = item.getYCoordinate();
         if (service.isFrozen() && item.getSlot().getStatus() == ShopSlotStatusEnums.Available) {
             int framePadding = Math.round(3 * DataClass.getInstance().getResolutionFactor());
-            drawFrostGlow(g2d, xCoordinate - framePadding, yCoordinate - framePadding,
-                    item.getWidth() + framePadding * 2, item.getHeight() + framePadding * 2, 5);
-            drawFrostCorners(g2d, xCoordinate, yCoordinate, item.getWidth(), item.getHeight(), 1f, 0);
+            drawFrozenFrame(g2d, xCoordinate, yCoordinate, item.getWidth(), item.getHeight(), framePadding);
         } else if (service.getUnfreezeAnimationStartMillis() != 0 && item.getSlot().isFrozen()) {
             drawThaw(g2d, item, Math.round(3 * DataClass.getInstance().getResolutionFactor()));
         }
     }
 
+    // The frost of a frozen item around the given rectangle: the glow and rim `framePadding` px outside it, and the corner lines. Also used by the ARMORY page for its selected icon
+    public void drawFrozenFrame(Graphics2D g, int x, int y, int width, int height, int framePadding) {
+        drawFrozenFrame(g, x, y, width, height, framePadding, FROST_COLOR, FROST_CORNER_COLOR);
+    }
+
+    // The same frame in another colour (the ARMORY page uses the rarity colour of the selected item); the corner lines get a light tint of it
+    public void drawFrozenFrame(Graphics2D g, int x, int y, int width, int height, int framePadding, Color color) {
+        Color corner = new Color(lighten(color.getRed()), lighten(color.getGreen()), lighten(color.getBlue()));
+        drawFrozenFrame(g, x, y, width, height, framePadding, color, corner);
+    }
+
+    private int lighten(int channel) {
+        return Math.round(channel + (255 - channel) * 0.8f);
+    }
+
+    private void drawFrozenFrame(Graphics2D g, int x, int y, int width, int height, int framePadding, Color color, Color cornerColor) {
+        drawFrostGlow(g, x - framePadding, y - framePadding, width + framePadding * 2, height + framePadding * 2, 5, color);
+        drawFrostCorners(g, x, y, width, height, 1f, 0, color, cornerColor);
+    }
+
     // An ice-blue border with a soft glow outside and inside it, around the given rectangle
-    private void drawFrostGlow(Graphics2D g, int x, int y, int width, int height, int glowSize) {
+    private void drawFrostGlow(Graphics2D g, int x, int y, int width, int height, int glowSize, Color color) {
         Stroke originalStroke = g.getStroke();
         Color originalColor = g.getColor();
         Shape originalClip = g.getClip();
@@ -93,7 +113,7 @@ public class ShopFreezeEffect {
         //Outer glow: wide, faint strokes that get narrower and stronger towards the border
         for (int i = glowSize; i >= 1; i--) {
             g.setStroke(new BasicStroke(i * 2));
-            g.setColor(new Color(127, 220, 255, 90 / glowSize));
+            g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 90 / glowSize));
             g.drawRoundRect(x - 1, y - 1, width + 2, height + 2, 8, 8);
         }
 
@@ -101,14 +121,14 @@ public class ShopFreezeEffect {
         g.clipRect(x, y, width, height);
         for (int i = glowSize / 2; i >= 1; i--) {
             g.setStroke(new BasicStroke(i * 2));
-            g.setColor(new Color(127, 220, 255, 70 / glowSize));
+            g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 70 / glowSize));
             g.drawRoundRect(x, y, width, height, 8, 8);
         }
         g.setClip(originalClip);
 
         //The border
         g.setStroke(new BasicStroke(2));
-        g.setColor(new Color(127, 220, 255));
+        g.setColor(color);
         g.drawRoundRect(x, y, width, height, 8, 8);
 
         g.setStroke(originalStroke);
@@ -117,7 +137,7 @@ public class ShopFreezeEffect {
     }
 
     // Thin corner lines on the icon box, outside the frost rim: an L per corner, moved `travel` px outward diagonally
-    private void drawFrostCorners(Graphics2D g, int x, int y, int width, int height, float alpha, int travel) {
+    private void drawFrostCorners(Graphics2D g, int x, int y, int width, int height, float alpha, int travel, Color color, Color cornerColor) {
         float factor = DataClass.getInstance().getResolutionFactor();
         float scale = width / 64f;
         int length = Math.round(width * 0.26f);
@@ -137,12 +157,12 @@ public class ShopFreezeEffect {
                 int horizontalY = dy < 0 ? cornerY : cornerY - thickness;
                 int verticalX = dx < 0 ? cornerX : cornerX - thickness;
                 int verticalY = dy < 0 ? cornerY : cornerY - length;
-                g.setColor(new Color(127, 220, 255, 45));
+                g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 45));
                 for (int i = glow; i >= 1; i--) {
                     g.fillRect(horizontalX - i, horizontalY - i, length + i * 2, thickness + i * 2);
                     g.fillRect(verticalX - i, verticalY - i, thickness + i * 2, length + i * 2);
                 }
-                g.setColor(new Color(230, 248, 255));
+                g.setColor(cornerColor);
                 g.fillRect(horizontalX, horizontalY, length, thickness);
                 g.fillRect(verticalX, verticalY, thickness, length);
             }
@@ -166,9 +186,9 @@ public class ShopFreezeEffect {
         Composite originalComposite = g.getComposite();
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         drawFrostGlow(g, xCoordinate - framePadding, yCoordinate - framePadding,
-                object.getWidth() + framePadding * 2, object.getHeight() + framePadding * 2, 5);
+                object.getWidth() + framePadding * 2, object.getHeight() + framePadding * 2, 5, FROST_COLOR);
         g.setComposite(originalComposite);
         int travel = Math.round(9 * DataClass.getInstance().getResolutionFactor() * eased);
-        drawFrostCorners(g, xCoordinate, yCoordinate, object.getWidth(), object.getHeight(), alpha, travel);
+        drawFrostCorners(g, xCoordinate, yCoordinate, object.getWidth(), object.getHeight(), alpha, travel, FROST_COLOR, FROST_CORNER_COLOR);
     }
 }

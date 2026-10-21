@@ -88,6 +88,8 @@ public class ImageDatabase {
     private BufferedImage longCard;
     private BufferedImage wideCard;
     private BufferedImage squareCard;
+    private BufferedImage cardX5;
+    private BufferedImage cardX1;
     private BufferedImage sc2GradeBronze;
     private BufferedImage sc2GradeSilver;
     private BufferedImage sc2GradeGold;
@@ -458,6 +460,7 @@ public class ImageDatabase {
     private BufferedImage purpleWings5;
     private BufferedImage informationCard;
     private BufferedImage lockedIcon;
+    private BufferedImage questMarkIcon;
     private BufferedImage sc2ConcentratedLaser;
     private BufferedImage sc2RepairBeam;
     private BufferedImage protossCarrierNoEngine;
@@ -720,6 +723,8 @@ public class ImageDatabase {
         this.longCard = imgLoader.getImage(ImageEnums.Long_Card);
         this.wideCard = imgLoader.getImage(ImageEnums.Wide_Card);
         this.squareCard = imgLoader.getImage(ImageEnums.Square_Card);
+        this.cardX5 = imgLoader.getImage(ImageEnums.Card_X5);
+        this.cardX1 = imgLoader.getImage(ImageEnums.Card_X1);
 
         this.purpleWings1 = imgLoader.getImage(ImageEnums.PurpleWings1);
         this.purpleWings2 = imgLoader.getImage(ImageEnums.PurpleWings2);
@@ -901,6 +906,7 @@ public class ImageDatabase {
         this.redPlanet8 = imgLoader.getImage(ImageEnums.RedPlanet8);
 
         this.lockedIcon = imgLoader.getImage(ImageEnums.LockedIcon);
+        this.questMarkIcon = imgLoader.getImage(ImageEnums.QuestMarkIcon);
         this.laserBullet = imgLoader.getImage(ImageEnums.LaserBullet);
         this.guirefresh = imgLoader.getImage(ImageEnums.GUIRefresh);
         this.guifreeze = imgLoader.getImage(ImageEnums.GUIFreeze);
@@ -1409,6 +1415,8 @@ public class ImageDatabase {
                 return emeraldGem5;
             case LockedIcon:
                 return lockedIcon;
+            case QuestMarkIcon:
+                return questMarkIcon;
             case InformationCard:
                 return informationCard;
             case Moon2:
@@ -1751,6 +1759,10 @@ public class ImageDatabase {
                 return longCard;
             case Square_Card:
                 return squareCard;
+            case Card_X5:
+                return cardX5;
+            case Card_X1:
+                return cardX1;
             case Wide_Card:
                 return wideCard;
             case Letter_Percentage:
