@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-21
+
+### Changed
+- Internal: the unused old `GameLoadLogger` (replaced by `LOG_GameLoadLogger` on the memory-reduction branch) is deleted; it was left behind by the squash merge. Nothing changes for players.
+
 ## 2026-10-20
 
 ### Changed
