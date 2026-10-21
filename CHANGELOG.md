@@ -4,6 +4,8 @@ All notable changes on the `Nelis` branch.
 
 ## 2026-10-21
 
+### Added
+- Internal: planboard entries for the enemy glossary, the item glossary, the song-name toast and the music glossary with their Plan items, and a proposal (with Bruus's reply) to store item stack limits and exclusions as data on the item.
 ### Changed
 - Internal: the unused old `GameLoadLogger` (replaced by `LOG_GameLoadLogger` on the memory-reduction branch) is deleted; it was left behind by the squash merge. Nothing changes for players.
 

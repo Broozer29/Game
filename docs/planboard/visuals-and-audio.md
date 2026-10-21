@@ -29,6 +29,9 @@ Sprites, effects, explosions, music and sounds.
   - Fixes the "local files" bug above. JavaFX plays WAV, MP3 and AAC (m4a), not OGG
 - A music list viewer that shows every track and where in the game it plays
   - The list itself is written up in `docs/architecture/subjects/audio/music.md`
+  - Plan item `game-music-glossary` (2026-10-19)
+- Show the song name at the start of a level
+  - Plan item `game-song-name-toast` (2026-10-19)
 
 ## Ideas
 - Shrink the PNGs without changing how they look, to cut the download size further
