@@ -47,7 +47,8 @@ public class ImageRotator {
         ArrayList<BufferedImage> newFrames = frames.parallelStream()
                 .map(frame -> rotateOrFlipWithoutCaching(frame, angle, crop))
                 .collect(Collectors.toCollection(ArrayList::new));
-        cache.recordBuild(keyString, System.nanoTime() - buildStart);
+        cache.LOG_recordBuild(keyString, System.nanoTime() - buildStart);
+        LOG_ImageNames.inheritAll(newFrames, frames);
         cache.putFrames(keyString, newFrames);
         return newFrames;
     }
@@ -72,7 +73,8 @@ public class ImageRotator {
 
 
         ImageCropper.getInstance().cropFramesToUniformContent(adjustedFrames);
-        cache.recordBuild(keyString, System.nanoTime() - buildStart);
+        cache.LOG_recordBuild(keyString, System.nanoTime() - buildStart);
+        LOG_ImageNames.inheritAll(adjustedFrames, frames);
         cache.putFrames(keyString, adjustedFrames);
         // Return the list of adjusted frames
         return adjustedFrames;
@@ -94,7 +96,8 @@ public class ImageRotator {
 
         long buildStart = System.nanoTime();
         BufferedImage rotatedImage = rotateWithoutCaching(image, roundedDegrees, crop);
-        cache.recordBuild(keyString, System.nanoTime() - buildStart);
+        cache.LOG_recordBuild(keyString, System.nanoTime() - buildStart);
+        LOG_ImageNames.inherit(rotatedImage, image);
         cache.putImage(keyString, rotatedImage);
         return rotatedImage;
     }
@@ -198,7 +201,7 @@ public class ImageRotator {
             return image;
         }
         try {
-            return image.getSubimage(minX, minY, subImageWidth, subImageHeight);
+            return ImageCropper.getInstance().copyToOwnImage(image.getSubimage(minX, minY, subImageWidth, subImageHeight));
         } catch (RasterFormatException exception) {
             System.out.println(exception);
             return image;
@@ -245,7 +248,8 @@ public class ImageRotator {
         // Mirror the angle for rotation, then apply the vertical flip after rotation. Only the flipped result is cached.
         long buildStart = System.nanoTime();
         BufferedImage flippedImage = flipVertically(rotateWithoutCaching(image, 360 - wholeDegree, crop));
-        cache.recordBuild(keyString, System.nanoTime() - buildStart);
+        cache.LOG_recordBuild(keyString, System.nanoTime() - buildStart);
+        LOG_ImageNames.inherit(flippedImage, image);
         cache.putImage(keyString, flippedImage);
         return flippedImage;
     }

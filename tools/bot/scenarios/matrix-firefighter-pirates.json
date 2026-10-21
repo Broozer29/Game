@@ -1,0 +1,24 @@
+{
+  "description": "Rotated-copy measurement, Firefighter against the Pirates: 14 levels (all 7 bosses, no mini bosses) from the test save firefighter-easy with an immune ship, infinite money and the image cache log on. The bot buys every shop item at each visit. It measures how much memory each sprite kind's rotated copies hold (the \"Level end top\" lines). Fails only on a crash.",
+  "class": "FireFighter",
+  "minutes": 50,
+  "levels": 14,
+  "shop": "buy-all",
+  "save": "firefighter-easy",
+  "devSwitches": [
+    "playerIsImmune",
+    "exportCachePerformance",
+    "infiniteMoney"
+  ],
+  "screenshots": {
+    "intervalSeconds": 120,
+    "width": 960,
+    "events": [
+      "boss",
+      "dead"
+    ]
+  },
+  "expect": {
+    "noCrash": true
+  }
+}

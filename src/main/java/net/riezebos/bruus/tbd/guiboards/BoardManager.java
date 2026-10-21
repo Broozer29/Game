@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezer;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.level.LevelPreloader;
+import net.riezebos.bruus.tbd.game.util.performancelogger.LOG_GameLoadLogger;
 import net.riezebos.bruus.tbd.guiboards.boards.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
@@ -169,6 +170,9 @@ public class BoardManager extends JFrame {
 
     public void switchScreen(ScreenType screenType) {
         logDiagnostic("switchScreen() called for: " + screenType);
+        if (LOG_GameLoadLogger.getInstance().isEnabled()) {
+            LOG_GameLoadLogger.getInstance().LOG_resetGap();
+        }
         // Stop timer on current screen
         if (currentBoard != null) {
             if (currentBoard instanceof TimerHolder) {

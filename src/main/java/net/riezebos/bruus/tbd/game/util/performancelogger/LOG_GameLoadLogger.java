@@ -21,17 +21,17 @@ import java.util.Locale;
 
 // Dev tool: writes one CSV line per second with tick, draw and gap times and how much is on screen,
 // to match a stutter to its cause. Only active when started with -Dgame.loadStatsDir=<folder>
-public class GameLoadLogger {
+public class LOG_GameLoadLogger {
 
     private static final long INTERVAL_NANOS = 1_000_000_000L;
     private static final DateTimeFormatter FILE_TIMESTAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private static final DateTimeFormatter LINE_TIMESTAMP = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    private static GameLoadLogger instance = new GameLoadLogger();
+    private static LOG_GameLoadLogger instance = new LOG_GameLoadLogger();
 
     private BufferedWriter writer = null;
     private long intervalStart = 0;
-    private long lastTickStart = 0;
+    private volatile long lastTickStart = 0;
     private int ticks = 0;
     private double tickTotalMs = 0;
     private double tickMaxMs = 0;
@@ -40,7 +40,7 @@ public class GameLoadLogger {
     private double drawTotalMs = 0;
     private double drawMaxMs = 0;
 
-    private GameLoadLogger() {
+    private LOG_GameLoadLogger() {
         String statsDir = System.getProperty("game.loadStatsDir");
         if (statsDir == null || statsDir.isBlank()) {
             return;
@@ -62,12 +62,17 @@ public class GameLoadLogger {
         }
     }
 
-    public static GameLoadLogger getInstance() {
+    public static LOG_GameLoadLogger getInstance() {
         return instance;
     }
 
     public boolean isEnabled() {
         return writer != null;
+    }
+
+    // Time spent outside the game board (shop, menus) is not a gap between ticks
+    public void LOG_resetGap() {
+        lastTickStart = 0;
     }
 
     // Called at the start of every game tick; returns the start time to pass to endTick

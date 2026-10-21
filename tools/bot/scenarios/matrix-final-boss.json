@@ -1,0 +1,26 @@
+{
+  "description": "Rotated-copy measurement of the Final boss: 2 boss levels, both the Final boss (onlyBossLevels and testFinalBossMode), from the test save captain-hard with an immune ship, infinite money and the image cache log on. The bot buys every shop item at each visit. It measures how much memory each sprite kind's rotated copies hold (the \"Level end top\" lines). Fails only on a crash.",
+  "class": "Captain",
+  "minutes": 20,
+  "levels": 2,
+  "shop": "buy-all",
+  "save": "captain-hard",
+  "devSwitches": [
+    "playerIsImmune",
+    "exportCachePerformance",
+    "infiniteMoney",
+    "onlyBossLevels",
+    "testFinalBossMode"
+  ],
+  "screenshots": {
+    "intervalSeconds": 120,
+    "width": 960,
+    "events": [
+      "boss",
+      "dead"
+    ]
+  },
+  "expect": {
+    "noCrash": true
+  }
+}

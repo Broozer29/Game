@@ -28,7 +28,7 @@ public class DefenderMiniBoss extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.destructionAnimation.setAnimationScale(this.scale / 1.5f);
+        initBossDeathExplosions(destroyedExplosionfiguration);
         this.attackSpeed = 0.15f;
         this.damage = 10;
         this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.4f);

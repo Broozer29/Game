@@ -4,6 +4,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.laserbeams.Laserbeam;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.RotationGeometry;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 
 import java.awt.*;
@@ -116,27 +117,74 @@ public class CollisionDetector {
         return gameObject1.getOwnerOrCreator() != null && gameObject1.getOwnerOrCreator().equals(gameObject2);
     }
 
-    private Point checkPixelCollision(BufferedImage img1, int x1, int y1, BufferedImage img2, int x2, int y2) {
+    // A geometry means the image is the unrotated picture, drawn rotated: its size and solid pixels come from the geometry
+    private Point checkPixelCollision(BufferedImage img1, RotationGeometry.Geometry geo1, int x1, int y1, BufferedImage img2, RotationGeometry.Geometry geo2, int x2, int y2) {
         if (img1 == null || img2 == null) {
             return null; // One of the images is missing; assume no collision
         }
 
-        AlphaMask mask1 = AlphaMask.of(img1);
-        AlphaMask mask2 = AlphaMask.of(img2);
+        AlphaMask mask1 = geo1 == null ? AlphaMask.of(img1) : null;
+        AlphaMask mask2 = geo2 == null ? AlphaMask.of(img2) : null;
+        RotatedMask rotated1 = geo1 != null ? new RotatedMask(img1, geo1) : null;
+        RotatedMask rotated2 = geo2 != null ? new RotatedMask(img2, geo2) : null;
+
+        int w1 = geo1 != null ? geo1.width : img1.getWidth();
+        int h1 = geo1 != null ? geo1.height : img1.getHeight();
+        int w2 = geo2 != null ? geo2.width : img2.getWidth();
+        int h2 = geo2 != null ? geo2.height : img2.getHeight();
 
         int xStart = Math.max(x1, x2);
         int yStart = Math.max(y1, y2);
-        int xEnd = Math.min(x1 + img1.getWidth(), x2 + img2.getWidth());
-        int yEnd = Math.min(y1 + img1.getHeight(), y2 + img2.getHeight());
+        int xEnd = Math.min(x1 + w1, x2 + w2);
+        int yEnd = Math.min(y1 + h1, y2 + h2);
 
         for (int y = yStart; y < yEnd; y++) {
             for (int x = xStart; x < xEnd; x++) {
-                if (mask1.isOpaque(x - x1, y - y1) && mask2.isOpaque(x - x2, y - y2)) {
+                boolean solid1 = rotated1 != null ? rotated1.isSolid(x - x1, y - y1) : mask1.isOpaque(x - x1, y - y1);
+                boolean solid2 = rotated2 != null ? rotated2.isSolid(x - x2, y - y2) : mask2.isOpaque(x - x2, y - y2);
+                if (solid1 && solid2) {
                     return new Point(x, y);
                 }
             }
         }
         return null;
+    }
+
+    // RotationGeometry.isSolid with the unrotated picture's cached alpha mask instead of getRGB, and the inverse rotation read once:
+    // the same answer per pixel, without a pixel read and an allocation for every pixel tested
+    private static final class RotatedMask {
+        private final AlphaMask mask;
+        private final RotationGeometry.Geometry geometry;
+        private final int baseWidth;
+        private final int baseHeight;
+        private final double m00, m01, m02, m10, m11, m12;
+
+        private RotatedMask(BufferedImage base, RotationGeometry.Geometry geometry) {
+            this.mask = AlphaMask.of(base);
+            this.geometry = geometry;
+            this.baseWidth = base.getWidth();
+            this.baseHeight = base.getHeight();
+            this.m00 = geometry.inverse.getScaleX();
+            this.m01 = geometry.inverse.getShearX();
+            this.m02 = geometry.inverse.getTranslateX();
+            this.m10 = geometry.inverse.getShearY();
+            this.m11 = geometry.inverse.getScaleY();
+            this.m12 = geometry.inverse.getTranslateY();
+        }
+
+        private boolean isSolid(int copyX, int copyY) {
+            if (copyX < 0 || copyY < 0 || copyX >= geometry.width || copyY >= geometry.height) {
+                return false;
+            }
+            double x = copyX + 0.5;
+            double y = copyY + 0.5;
+            int sourceX = (int) Math.floor(m00 * x + m01 * y + m02);
+            int sourceY = (int) Math.floor(m10 * x + m11 * y + m12);
+            if (sourceX < 0 || sourceY < 0 || sourceX >= baseWidth || sourceY >= baseHeight) {
+                return false;
+            }
+            return mask.isOpaque(sourceX, sourceY);
+        }
     }
 
     // Refactored pixel-perfect collision between two GameObjects
@@ -150,7 +198,7 @@ public class CollisionDetector {
         int x2 = getGameObjectXCoordinate(gameObject2);
         int y2 = getGameObjectYCoordinate(gameObject2);
 
-        return checkPixelCollision(img1, x1, y1, img2, x2, y2);
+        return checkPixelCollision(img1, getGameObjectGeometry(gameObject1), x1, y1, img2, getGameObjectGeometry(gameObject2), x2, y2);
     }
 
     private Point checkPixelCollision(BackgroundObject bgo1, BackgroundObject bgo2) {
@@ -163,7 +211,7 @@ public class CollisionDetector {
         int x2 = bgo2.getXCoordinate();
         int y2 = bgo2.getYCoordinate();
 
-        return checkPixelCollision(img1, x1, y1, img2, x2, y2);
+        return checkPixelCollision(img1, null, x1, y1, img2, null, x2, y2);
     }
 
     // Refactored pixel-perfect collision between a GameObject and a SpriteAnimation
@@ -177,7 +225,7 @@ public class CollisionDetector {
         int x2 = spriteAnimation.getXCoordinate();
         int y2 = spriteAnimation.getYCoordinate();
 
-        return checkPixelCollision(gameObjectImage, x1, y1, spriteImage, x2, y2);
+        return checkPixelCollision(gameObjectImage, getGameObjectGeometry(gameObject), x1, y1, spriteImage, null, x2, y2);
     }
 
     // Helper methods to get GameObject image and coordinates
@@ -187,6 +235,10 @@ public class CollisionDetector {
         } else {
             return gameObject.getImage();
         }
+    }
+
+    private RotationGeometry.Geometry getGameObjectGeometry(GameObject gameObject) {
+        return gameObject.getAnimation() != null ? gameObject.getAnimation().getCurrentGeometry() : gameObject.getDrawGeometry();
     }
 
     private int getGameObjectXCoordinate(GameObject gameObject) {

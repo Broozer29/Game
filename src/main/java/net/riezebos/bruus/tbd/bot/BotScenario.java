@@ -31,9 +31,11 @@ class BotScenario {
 
     enum FireMode { ALWAYS, NEVER }
 
+    enum ShopMode { SKIP, BUY_ALL }
+
     static final Set<String> EVENTS = Set.of("boss", "relic", "score-card", "dead", "shop");
     private static final Set<String> KEYS = Set.of("description", "class", "minutes", "levels", "runs", "devSwitches", "dodge",
-            "target", "special", "fire", "screenshots", "save", "expect");
+            "target", "special", "fire", "shop", "screenshots", "save", "expect");
     private static final Set<String> SCREENSHOT_KEYS = Set.of("intervalSeconds", "width", "events");
     private static final Set<String> EXPECT_KEYS = Set.of("maxHeapMb", "maxTickMs", "maxGapMs", "maxGcPauseMs", "noCrash");
 
@@ -48,6 +50,7 @@ class BotScenario {
     Target target = Target.AUTO;
     SpecialMode special = SpecialMode.CROWDED;
     FireMode fire = FireMode.ALWAYS;
+    ShopMode shop = ShopMode.SKIP;
     Integer screenshotIntervalSeconds;
     Integer screenshotWidth;
     Set<String> screenshotEvents; // null = the default events
@@ -101,6 +104,7 @@ class BotScenario {
         scenario.target = choice(root, "target", Target.class, problems, Target.AUTO, false);
         scenario.special = choice(root, "special", SpecialMode.class, problems, SpecialMode.CROWDED, false);
         scenario.fire = choice(root, "fire", FireMode.class, problems, FireMode.ALWAYS, false);
+        scenario.shop = choice(root, "shop", ShopMode.class, problems, ShopMode.SKIP, false);
         scenario.save = text(root, "save", problems, null);
 
         if (root.has("screenshots")) {
@@ -204,7 +208,7 @@ class BotScenario {
     private static <E extends Enum<E>> String options(Class<E> type, boolean allowBoolean) {
         List<String> names = new ArrayList<>();
         for (E constant : type.getEnumConstants()) {
-            names.add(constant.name().toLowerCase());
+            names.add(constant.name().toLowerCase().replace('_', '-'));
         }
         return String.join(", ", names) + (allowBoolean ? " (true and false also work)" : "");
     }

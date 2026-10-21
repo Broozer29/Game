@@ -74,6 +74,8 @@ class ImageCacheSection {
     static class CacheEntry {
         final List<BufferedImage> images;
         final ArrayList<BufferedImage> frames;
+        // The ImageEnums name of the sprite this entry was built from, for the log
+        String name;
 
         CacheEntry(BufferedImage image) {
             this.images = List.of(image);

@@ -18,25 +18,48 @@ Pick the smallest scenario that answers the question. A scenario that does not e
 | --- | --- |
 | A quick check that a change did not break the game | the short scenario for crashes |
 | Memory or stutter numbers over a long play | the long scenario with limits |
-| One class, one switch or one length different from a scenario | that scenario with a flag override for this run only |
+| One class or one length different from a scenario | that scenario with a flag override for this run only |
+| Different switches (levels, spawns) or a different save | a new scenario file: a flag can add a switch but never remove one |
 | A setup that will be repeated, or that Bruus will run | a new scenario file, with a description and measured limits |
+
+## Order of work
+
+Every bot run is set up in this order, never out of it:
+1. **Save first.** Decide the class and the items the run needs, and choose or make the test save that holds them. The test-saves README in `.claude/test-saves` says how.
+2. **Scenario second.** Write or pick the scenario that names that save, the levels mode, the switches and the length.
+3. **Run last.** Only then start the run script.
+
+A scenario without a save plays a fresh, empty run of its class. Say so to the user before starting.
 
 ## Before a run
 
 **When** you are about to start a bot run, **run this checklist** — check every item, top to bottom, skipping none:
 - [ ] The game compiles from the working tree that will be played (the run uses the compiled classes, not the jar).
+- [ ] The run uses the game's own memory and collector settings: `check-jvm-options.sh` passes, and the run prints them.
 - [ ] No dev test switch is on in committed code: the scenario turns switches on for the run only.
 - [ ] No other bot run or game window is open: two games cannot share the screen and the save file.
-- [ ] The user is not playing or using the PC full-screen: the game takes the screen for the whole run. Say how long it will take before starting.
+- [ ] The user is not playing or using the PC full-screen: the game takes the screen for the whole run.
 - [ ] Nothing in the run would clean the performance folder: never use `mvn clean` in this repo, because the only copies of recordings and reports live there.
+- [ ] The scenario file was read, and its switches fit the question: which levels (boss levels only or normal), spawn rate and class. A run is never described to anyone before its scenario file was read.
+- [ ] The scenario names the save the question needs (see "Order of work"). When the user has named, made or asked to keep a build or save since the last run, the run uses that save unless the user said otherwise.
+- [ ] The run can last: an immune ship, a start save strong enough to clear every level and boss, and a class the bot can play for the whole length.
+- [ ] A launch statement went to the user before starting: class, scenario, save, the build in that save read from the file (difficulty, stage, item kinds and stacks), levels mode, switches, spawn rate and length. Each part was compared with the user's latest instruction about the run and about builds, not an earlier plan.
 
-**If ANY item is unchecked**, you MUST fix it or tell the user and wait. **Zero exceptions.**
+**If ANY item is unchecked**, you MUST fix it or tell the user and wait. **Zero exceptions.** The launch statement informs the user; it does not ask permission.
 
 ## Running it
 
-- Start the run script as a background command and wait for its completion notice. Never poll, and never sleep in the foreground.
+- Start the run script with the Bash tool's background option and wait for its completion notice. Never end the command with `&` in a foreground shell: the script dies with the shell, the player's save is not put back, and the game stays open. Never poll, and never sleep in the foreground.
 - One run at a time. A run is long, so do other work that does not touch the game window or the save file while it runs.
-- Do not stop a run early unless the user asks. The script puts the player's own save back when the run ends. After a run that was killed hard, check that the save in the repo root matches the newest backup the script made.
+- Do not stop a run early unless the user asks or the first-minute check below fails. The script puts the player's own save back when the run ends. After a run that was killed hard, check that the save in the repo root matches the newest backup the script made.
+
+**When** a run has just started, **run this checklist** within its first minute, reading the start of the bot log (the how-to names the lines) — check every item:
+- [ ] The class playing is the one the launch statement named.
+- [ ] The run script's `save build` line shows the build the launch statement named.
+- [ ] A scenario with a save shows the saved run being continued, not a new run being started.
+- [ ] The levels mode matches the launch statement.
+
+**If ANY item is wrong**, you MUST stop the run, check that the player's save was put back, tell the user what was wrong, and fix it before launching again. **Zero exceptions.**
 
 ## After a run
 
@@ -58,6 +81,7 @@ Report plainly: the verdict, the numbers that matter, what the screenshots show,
 
 **When** you write or change a scenario, **run this checklist** — check every item, top to bottom, skipping none:
 - [ ] It has a description that says what the scenario is for.
+- [ ] A scenario that plays a class with items names a test save that has them, and its first run continued that save.
 - [ ] Every limit comes from a measured run of the current game, with room above the measured value. A guessed limit is never written.
 - [ ] Dev switches are listed in the scenario and not changed in the code.
 - [ ] It runs through the game's validation without problems.

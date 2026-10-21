@@ -27,6 +27,7 @@ public class DevTestSettings {
     public static boolean enableDirectShopAccess = false; // If true, enables direct access to the shop
     public static boolean showFullArmory = false; // If true, every item shows as seen in the ARMORY and no shop or relic card is marked as new; what is recorded does not change
     public static boolean disableImageCacheBudget = false; // If true, the rotated/resized image cache has no memory budget and never evicts, to compare old and new behaviour
+    public static boolean verifyRotateWhileDrawing = false; // If true, every rotation of a sprite kind that is drawn rotated is also checked against the real rotated copy (logs rotate-verify MISMATCH)
 
     public static boolean testFinalBossMode = false; // If true, spawns the final boss instead of any other boss
 

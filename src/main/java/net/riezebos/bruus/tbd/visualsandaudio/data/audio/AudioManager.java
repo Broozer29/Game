@@ -275,14 +275,22 @@ public class AudioManager {
     private boolean isLevelMusicOverdue() {
         double gameSeconds = GameState.getInstance().getGameSeconds();
         if (predictedEndGameSeconds > 0 && gameSeconds > predictedEndGameSeconds + MUSIC_END_GRACE_SECONDS) {
-            System.out.println("Level music did not report its end, ending the level after its predicted end");
+            LOG_printMusicOverdue(false);
             return true;
         }
         if (backGroundMusic.hasFailedToLoad() && musicStartGameSeconds >= 0 && gameSeconds > musicStartGameSeconds + FALLBACK_LEVEL_SECONDS) {
-            System.out.println("Level music failed to load, ending the level after the fallback length");
+            LOG_printMusicOverdue(true);
             return true;
         }
         return false;
+    }
+
+    private void LOG_printMusicOverdue(boolean failedToLoad) {
+        if (failedToLoad) {
+            System.out.println("Level music failed to load, ending the level after the fallback length");
+        } else {
+            System.out.println("Level music did not report its end, ending the level after its predicted end");
+        }
     }
 
     // Abstracted methods to handle the media players

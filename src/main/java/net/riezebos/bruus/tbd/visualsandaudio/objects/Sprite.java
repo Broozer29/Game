@@ -19,6 +19,9 @@ public class Sprite {
     protected BufferedImage image;
     protected BufferedImage originalImage;
     protected float scale;
+    protected RotationGeometry.Geometry drawGeometry; // Set when the rotated copy is not built but drawn through a transform
+    protected double drawAngle;
+    protected boolean drawCrop;
 
     protected float transparancyAlpha;
     protected boolean shouldChangeTransparancy;
@@ -60,19 +63,44 @@ public class Sprite {
             this.image = imageResizer.getScaledImage(image, scale);
         }
         this.originalImage = image;
+        clearRotation();
         configureImageDimensions();
 //		 Zet collision ook op die getallen en shits & giggles
     }
 
     protected void configureImageDimensions () {
-        width = image.getWidth(null);
-        height = image.getHeight(null);
+        width = pictureWidth();
+        height = pictureHeight();
+    }
+
+    // Size of the picture as drawn: the geometry's size when the rotation is drawn through a transform
+    protected int pictureWidth () {
+        return drawGeometry != null ? drawGeometry.width : image.getWidth(null);
+    }
+
+    protected int pictureHeight () {
+        return drawGeometry != null ? drawGeometry.height : image.getHeight(null);
+    }
+
+    public RotationGeometry.Geometry getDrawGeometry () {
+        return drawGeometry;
+    }
+
+    public void setDrawRotation (double angle, boolean crop, RotationGeometry.Geometry geometry) {
+        this.drawAngle = angle;
+        this.drawCrop = crop;
+        this.drawGeometry = geometry;
+    }
+
+    public void clearRotation () {
+        this.drawGeometry = null;
     }
 
     // Only used to re-use objects and change the image. Currently only used for
     // background planets.
     protected void setImage (BufferedImage image) {
         this.image = image;
+        clearRotation();
         configureImageDimensions();
     }
 
@@ -193,8 +221,9 @@ public class Sprite {
     }
 
     public void setImageDimensions (int newWidth, int newHeight) {
-        if (this.image.getWidth() != newWidth || this.image.getHeight() != newHeight) {
+        if (pictureWidth() != newWidth || pictureHeight() != newHeight) {
             this.image = imageResizer.resizeImageToDimensions(this.originalImage, newWidth, newHeight);
+            clearRotation();
             configureImageDimensions();
         }
     }
@@ -202,6 +231,7 @@ public class Sprite {
     public void cropWidth (float cropPercentage) {
         ImageCropper imageCropper = ImageCropper.getInstance();
         this.image = imageCropper.cropImage(this.originalImage, cropPercentage);
+        clearRotation();
     }
 
 
@@ -237,8 +267,8 @@ public class Sprite {
     }
 
     public void recalculateBoundsAndSize () {
-        this.width = image.getWidth();
-        this.height = image.getHeight();
+        this.width = pictureWidth();
+        this.height = pictureHeight();
         this.bounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
     }
 

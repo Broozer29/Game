@@ -35,7 +35,7 @@ public class LaserbeamMiniBoss extends Enemy {
         SpriteAnimationConfiguration destroyedExplosionfiguration = new SpriteAnimationConfiguration(spriteConfiguration.getSpriteConfiguration(), 0, false);
         destroyedExplosionfiguration.getSpriteConfiguration().setImageType(this.enemyType.getDestructionType());
         this.destructionAnimation = new SpriteAnimation(destroyedExplosionfiguration);
-        this.destructionAnimation.setAnimationScale(3);
+        initBossDeathExplosions(destroyedExplosionfiguration);
         this.detonateOnCollision = false;
         this.knockbackStrength = 10;
         this.movementConfiguration.setMovementSpeed(this.movementConfiguration.getOriginalMovementSpeed() + EnemyManager.getInstance().getEnemyDifficultyModifier() * 0.5f);

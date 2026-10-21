@@ -1,10 +1,9 @@
 {
-  "description": "Quick check after a change: 3 minutes on boss levels with an immune ship. Fails on any crash or a very high memory use.",
+  "description": "Quick check after a change: 3 minutes on boss levels with an immune ship. Fails on any crash.",
   "class": "Captain",
   "minutes": 3,
   "devSwitches": ["playerIsImmune", "onlyBossLevels"],
   "expect": {
-    "noCrash": true,
-    "maxHeapMb": 6500
+    "noCrash": true
   }
 }

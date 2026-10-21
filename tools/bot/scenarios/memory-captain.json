@@ -1,0 +1,17 @@
+{
+  "description": "Memory and image-cache check on normal levels (regular enemies, mini bosses and bosses): 8 levels (45-minute ceiling) as the Captain test save captain-items with an immune ship, infinite money and the image cache log on. The bot buys every shop item at each visit, so the build grows level by level. Fails only on a crash; heap and stutter limits get added once this scenario has a measured baseline.",
+  "class": "Captain",
+  "minutes": 45,
+  "levels": 8,
+  "shop": "buy-all",
+  "save": "captain-items",
+  "devSwitches": ["playerIsImmune", "exportCachePerformance", "infiniteMoney"],
+  "screenshots": {
+    "intervalSeconds": 120,
+    "width": 960,
+    "events": ["boss", "dead"]
+  },
+  "expect": {
+    "noCrash": true
+  }
+}

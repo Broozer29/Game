@@ -40,12 +40,17 @@ public class PermanentImageBuilder {
         } finally {
             levelManager.setCurrentEnemyTribeForPreload(originalTribe);
             imageCache.endPermanentBuild();
-            imageCache.resetLevelBuilds(); //startup builds must not show up in a level's build count
+            imageCache.LOG_resetLevelBuilds(); //startup builds must not show up in a level's build count
         }
 
-        long millis = (System.nanoTime() - start) / 1_000_000;
-        System.out.println("Permanent images: " + imageCache.getPermanentEntryCount() + " entries, "
-                + String.format("%.1f", imageCache.getPermanentMegabytes()) + " MB, built in " + millis + " ms");
+        LOG_printBuilt(start);
+    }
+
+    private static void LOG_printBuilt(long startNanos) {
+        ImageCache imageCache = ImageCache.getInstance();
+        long millis = (System.nanoTime() - startNanos) / 1_000_000;
+        System.out.println("Permanent images: " + imageCache.LOG_getPermanentEntryCount() + " entries, "
+                + String.format("%.1f", imageCache.LOG_getPermanentMegabytes()) + " MB, built in " + millis + " ms");
     }
 
     // Director.getSpawnDirection can return LEFT or RIGHT for a cash carrier (it is not in the up-or-down list), and

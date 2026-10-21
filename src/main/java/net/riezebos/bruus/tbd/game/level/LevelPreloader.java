@@ -1,25 +1,25 @@
 package net.riezebos.bruus.tbd.game.level;
 
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.twinboss.TwinBossManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
+import net.riezebos.bruus.tbd.game.level.directors.Director;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageCache;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.RotateWhileDrawing;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
- * Builds the images of the next level's boss (with all its summons) or mini bosses just before the level.
- * Generic enemies go into the image cache's protected level section, which is deleted at level end. Everything shared
- * (the non-Generic summons) is built into the normal cache. The cash carrier and the laser beams are not built here:
- * they live in the permanent section, built once at startup by PermanentImageBuilder.
- * The plan decides what, BossSummons says how, the cache stores it.
+ * Builds the images of the next level's boss or mini bosses just before the level, at the scale they spawn with,
+ * into the image cache's protected level section, which is deleted at level end. Their summons are not built here:
+ * a summon builds its resized copy when it first spawns, which takes a few milliseconds. The cash carrier and the laser
+ * beams live in the permanent section, built once at startup by PermanentImageBuilder.
  */
 public class LevelPreloader {
 
@@ -39,7 +39,7 @@ public class LevelPreloader {
         try {
             preloadLevel();
         } finally {
-            imageCache.resetLevelBuilds(); //builds of the preload itself are not counted for the level
+            imageCache.LOG_resetLevelBuilds(); //builds of the preload itself are not counted for the level
         }
     }
 
@@ -60,27 +60,15 @@ public class LevelPreloader {
                 planned.addAll(new LinkedHashSet<>(levelManager.getPlannedMiniBosses()));
             }
 
-            for (EnemyEnums topLevelEnemy : planned) {
-                List<EnemySpawnSettings> settingsList = BossSummons.forEnemy(topLevelEnemy);
-                if (settingsList.isEmpty()) {
-                    continue;
+            for (EnemyEnums enemy : planned) {
+                float scale = boss != null ? Director.getBossSpawnScale(enemy) : enemy.getDefaultScale(); //the scales Director spawns them with
+                imageCache.beginLevelPreload(); //bosses and mini bosses are Generic, so they go into the level section
+                try {
+                    buildEnemy(enemy, scale);
+                } finally {
+                    imageCache.endLevelPreload();
                 }
-                float parentScale = settingsList.get(0).scale(0); //entry 0 is the boss or mini boss itself
-                for (EnemySpawnSettings settings : settingsList) {
-                    for (Direction direction : settings.directions()) {
-                        if (settings.enemy().getEnemyTribe() == EnemyTribes.Generic) {
-                            imageCache.beginLevelPreload(); //only a Generic enemy is stored in the level section
-                            try {
-                                buildEnemy(settings, parentScale, direction);
-                            } finally {
-                                imageCache.endLevelPreload();
-                            }
-                        } else {
-                            buildEnemy(settings, parentScale, direction); //shared, so into the normal cache
-                        }
-                        built++;
-                    }
-                }
+                built++;
             }
         } catch (Exception e) {
             failed = true;
@@ -92,20 +80,38 @@ public class LevelPreloader {
             }
         }
 
-        long millis = (System.nanoTime() - start) / 1_000_000;
-        System.out.println("Level preload" + (failed ? " FAILED" : "") + ": " + planned + " built " + built
-                + " enemies in " + millis + " ms, " + imageCache.getStatsLine());
+        LOG_printPreload(start, failed, planned, built);
     }
 
-    private void buildEnemy(EnemySpawnSettings settings, float parentScale, Direction direction) {
-        Enemy enemy = EnemyCreator.createEnemy(settings.enemy(), 0, 0, direction,
-                settings.scale(parentScale), settings.enemy().getMovementSpeed());
+    private void LOG_printPreload(long startNanos, boolean failed, List<EnemyEnums> planned, int built) {
+        long millis = (System.nanoTime() - startNanos) / 1_000_000;
+        System.out.println("Level preload" + (failed ? " FAILED" : "") + ": " + planned + " built " + built
+                + " enemies in " + millis + " ms, " + imageCache.LOG_getStatsLine());
+    }
+
+    private void buildEnemy(EnemyEnums enemyType, float scale) {
+        Enemy enemy = EnemyCreator.createEnemy(enemyType, 0, 0, Direction.LEFT, scale, enemyType.getMovementSpeed());
         enemy.deleteObject();
     }
 
     public void clearLevel() {
-        System.out.println("Level end: " + imageCache.getLevelBuildSummary() + ", " + imageCache.getStatsLine());
-        imageCache.resetLevelBuilds();
+        LOG_printLevelEnd();
+        imageCache.LOG_resetLevelBuilds();
         imageCache.clearLevelEntries();
+        long flushStart = System.nanoTime();
+        ImageDatabase.getInstance().flushOriginals(); //graphics card copies of the level's pictures; the next level uploads what it draws
+        LOG_printFlush(flushStart);
+    }
+
+    private void LOG_printLevelEnd() {
+        System.out.println("Level end: " + imageCache.LOG_getLevelBuildSummary() + ", " + imageCache.LOG_getStatsLine());
+        System.out.println("Level end top: " + imageCache.LOG_getTopNamesLine());
+        if (DevTestSettings.verifyRotateWhileDrawing) {
+            System.out.println(RotateWhileDrawing.LOG_getSummaryLine());
+        }
+    }
+
+    private void LOG_printFlush(long startNanos) {
+        System.out.println("Level end: graphics card copies of the loaded pictures freed in " + (System.nanoTime() - startNanos) / 1_000_000 + " ms");
     }
 }

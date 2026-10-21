@@ -6,7 +6,6 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.boons.Boon;
 import net.riezebos.bruus.tbd.game.gameobjects.player.boons.BoonManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameMode;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
-import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
 import net.riezebos.bruus.tbd.game.gamestate.shop.ShopFreezer;
@@ -26,8 +25,6 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteConfiguration;
-
-import java.util.Objects;
 
 
 public class MenuButton extends GUIComponent {
@@ -161,21 +158,7 @@ public class MenuButton extends GUIComponent {
                 AudioManager.getInstance().addAudio(AudioEnums.getSelectClassAudioByClass(PlayerClass.Carrier));
                 break;
             case ContinueSaveFile:
-                SaveManager.getInstance().loadSaveFile();
-
-                if (Objects.requireNonNull(GameState.getInstance().getGameState()) == GameStatusEnums.Shopping) {
-                    ShopManager.getInstance().setRowsUnlockedByDifficulty(LevelManager.getInstance().getDifficultyScore());
-                    if (!ShopManager.getInstance().hasContents()) {
-                        //The save has no (readable) shop, so this counts as entering the shop
-                        ShopManager.getInstance().enterShop();
-                        SaveManager.getInstance().exportCurrentSave();
-                    }
-                    boardManager.getShopBoard().initShopBoardGUIComponents();
-                    boardManager.openShopWindow();
-                } else {
-                    boardManager.initGame();
-                }
-
+                BoardManager.getInstance().getMainMenuBoard().continueRun();
                 break;
             case CloseGame:
                 BoardManager.getInstance().getMainMenuBoard().closeGame();

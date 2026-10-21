@@ -1,0 +1,24 @@
+{
+  "description": "Rotated-copy measurement, Carrier against the Zerg: 14 levels (1 mini boss per normal level) from the test save carrier-medium with an immune ship, infinite money and the image cache log on. The bot buys every shop item at each visit. It measures how much memory each sprite kind's rotated copies hold (the \"Level end top\" lines). The Carrier alone needs about 27 minutes per boss, so a run measures about one normal level before the ceiling. Fails only on a crash.",
+  "class": "Carrier",
+  "minutes": 50,
+  "levels": 14,
+  "shop": "buy-all",
+  "save": "carrier-medium",
+  "devSwitches": [
+    "playerIsImmune",
+    "exportCachePerformance",
+    "infiniteMoney"
+  ],
+  "screenshots": {
+    "intervalSeconds": 120,
+    "width": 960,
+    "events": [
+      "boss",
+      "dead"
+    ]
+  },
+  "expect": {
+    "noCrash": true
+  }
+}

@@ -2,8 +2,6 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.yellow
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -103,10 +101,9 @@ public class YellowBossSpawnShurikens implements BossActionable {
 
     private Enemy createShuriken (Enemy enemy, SpriteAnimation spriteAnimation) {
         EnemyEnums enemyType = EnemyEnums.Shuriken;
-        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.YellowBoss, enemyType);
-        Direction direction = getRandomDirection(settings);
+        Direction direction = getRandomDirection();
         Enemy shuriken = EnemyCreator.createEnemy(enemyType, enemy.getXCoordinate(), enemy.getYCoordinate(), direction,
-                settings.scale(0), enemyType.getMovementSpeed() * moveSpeedModifier);
+                enemyType.getDefaultScale(), enemyType.getMovementSpeed() * moveSpeedModifier);
         shuriken.setCenterCoordinates(spriteAnimation.getCenterXCoordinate(), spriteAnimation.getCenterYCoordinate());
         BouncingPathFinder pathFinder = new BouncingPathFinder();
         pathFinder.setMaxBounces(15);
@@ -116,12 +113,19 @@ public class YellowBossSpawnShurikens implements BossActionable {
         return shuriken;
     }
 
-    private Direction getRandomDirection(EnemySpawnSettings settings){
+    private Direction getRandomDirection(){
         if(random == null){
             random = new Random();
         }
 
-        return settings.directions().get(random.nextInt(0, settings.directions().size()));
+        int number = random.nextInt(0, 4);
+        return switch (number) {
+            case 0 -> Direction.LEFT_UP;
+            case 1 -> Direction.LEFT_DOWN;
+            case 2 -> Direction.RIGHT_UP;
+            case 3 -> Direction.RIGHT_DOWN;
+            default -> Direction.LEFT_DOWN;
+        };
     }
 
 

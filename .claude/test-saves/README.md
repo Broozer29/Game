@@ -2,7 +2,7 @@
 
 Ready-made runs for play-testing and for memory and performance measurement. Each file is a normal
 `savefile.json` (same format the game writes). All start in the shop after 5 completed stages, player
-level 8, Medium difficulty, difficulty coefficient 7, Double Trouble mode (twice as many enemies at
+level 8, Medium difficulty (except `captain-hard` and `firefighter-easy`, whose names say their difficulty), difficulty coefficient 7, Double Trouble mode (twice as many enemies at
 half health). The next level is a normal level and the one after it is a boss level (boss levels come
 every 2nd stage from stage 6).
 
@@ -10,7 +10,13 @@ every 2nd stage from stage 6).
 | --- | --- |
 | `captain-lasers` | stress run: lasers and drone attacks (3000 minerals) |
 | `firefighter-scorch` | stress run: burns and Scorch (3000 minerals) |
+| `firefighter-distributed-heat` | memory recording with the heaviest Firefighter effect: `firefighter-scorch` plus Distributed Heat 1 and 99,999 minerals, so the build deals enough damage at difficulty 7 |
 | `captain-items` | play-test of item and shop fixes: `captain-lasers` plus Precision Amplifier 7, Guillotine 2, Wondrous Wisdomball 1 and 99,999 minerals |
+| `captain-focusfire` | Focus Fire load test: `captain-items` plus Upgrade: Focus Fire (all 8 drones fire one shot whenever a laser hits), which fills the screen with bullets |
+| `captain-hard` | measurement against the Royal Guard: `captain-items` with Hard difficulty (the next normal levels are Royal Guard with 2 mini bosses) and without Guillotine, which can crash the game at a level end |
+| `firefighter-easy` | measurement against the Pirates: `firefighter-distributed-heat` with Easy difficulty (Pirates, no mini bosses) |
+| `carrier-medium` | measurement of the Carrier against the Zerg (Medium): hangar bay ships (Scout 4, Arbiter 2, Shuttle 3, Corsair 3, Hangar Bay Upgrade 2), Rally the Fleet 2, Arbiter Multi Targeting, Aim Assist, Construction Kit, Emergency Repairs 2, Plasma Bullets 2, plus Overclock 3, Advanced Optics 3, Upgrade: Overload 2, Sticky Dynamite 2, Battery 3 and the survival items of `captain-items`; 99,999 minerals |
+| `captain-limit` | limit test of performance and memory: the Captain build the bot grew from `captain-hard` over 12 levels with buy-all (39 kinds of items, 399 stacks, Focus Fire, Plasma Launcher 12, Guardian Drone 8, Sticky Dynamite 27), Hard, stage 17, 7 bosses defeated, 99,999 minerals. Nelis: if this runs smoothly, anything a normal player can reach runs smoothly |
 
 ## Stress runs and recording
 
@@ -29,8 +35,12 @@ every 2nd stage from stage 6).
 3. Start the game and click **CONTINUE RUN** on the main menu. It opens the shop; leave the shop to start the level.
 
 The game overwrites `savefile.json` while you play (shop purchases, level end), so the installed
-profile is consumed. Re-run the script to start again. Both classes are already unlocked in `playerprofile.json`.
+profile is consumed. Re-run the script to start again. Captain, Firefighter and Carrier are already unlocked in `playerprofile.json`.
 Test saves do not change the list of seen items in `playerprofile.json`, so ARMORY keeps showing the items you have not bought or picked as locked.
+
+## Use in a bot run
+
+Order: make or pick the profile here first, then name it in a scenario's `save` key, then run the scenario. The run script installs the profile, the bot continues that run (bot.log: `continuing the saved run`), and the script puts your own save back afterwards. A new profile gets a row in the table above before any scenario uses it.
 
 ## captain-lasers (Captain)
 

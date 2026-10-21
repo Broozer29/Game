@@ -2,12 +2,11 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.spaces
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.movement.pathfinders.StraightLinePathFinder;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
@@ -110,11 +109,10 @@ public class SpaceStationSpawnNeedlers implements BossActionable {
 
     private Enemy createEnemy (SpriteAnimation animation, Enemy enemy, int angleDegrees) {
         EnemyEnums enemyType = EnemyEnums.Needler;
-        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.SpaceStationBoss, enemyType);
         int centerXCoordinate = animation.getCenterXCoordinate();
         int centerYCoordinate = animation.getCenterYCoordinate();
-        Enemy needler = EnemyCreator.createEnemy(enemyType, centerXCoordinate, centerYCoordinate, settings.directions().get(0),
-                settings.scale(0), enemyType.getMovementSpeed());
+        Enemy needler = EnemyCreator.createEnemy(enemyType, centerXCoordinate, centerYCoordinate, Direction.LEFT,
+                enemyType.getDefaultScale(), enemyType.getMovementSpeed());
         needler.getMovementConfiguration().setPathFinder(new StraightLinePathFinder());
 
         needler.setCenterCoordinates(centerXCoordinate, centerYCoordinate);

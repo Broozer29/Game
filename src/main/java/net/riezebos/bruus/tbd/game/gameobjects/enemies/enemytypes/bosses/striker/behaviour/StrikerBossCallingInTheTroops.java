@@ -2,8 +2,6 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.strike
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
@@ -55,16 +53,15 @@ public class StrikerBossCallingInTheTroops implements BossActionable {
     }
 
     private void spawnNeedlers(){
-        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.StrikerBoss, EnemyEnums.Needler);
         for(int i = 0; i < 2; i++){
-            Direction direction = settings.directions().get(i); //RIGHT first, then LEFT
+            Direction direction = i == 0 ? Direction.RIGHT : Direction.LEFT;
             EnemyEnums enemyEnums = EnemyEnums.Needler;
             for(int j = 2; j < 8; j++){
                 float xCoordinate = direction.equals(Direction.RIGHT) ? -enemyEnums.getBaseWidth() * (enemyEnums.getDefaultScale() * 2) : DataClass.getInstance().getWindowWidth() + enemyEnums.getBaseWidth() * enemyEnums.getDefaultScale();
                 float yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() * (j / 10f);
                 EnemyManager.getInstance().addEnemy(
                         EnemyCreator.createEnemy(
-                                enemyEnums, Math.round(xCoordinate), Math.round(yCoordinate), direction, settings.scale(0), enemyEnums.getMovementSpeed()
+                                enemyEnums, Math.round(xCoordinate), Math.round(yCoordinate), direction, enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed()
                         )
                 );
             }
@@ -72,15 +69,14 @@ public class StrikerBossCallingInTheTroops implements BossActionable {
     }
 
     private void spawnSeekers(){
-        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.StrikerBoss, EnemyEnums.Seeker);
         for(int i = 0; i < 6; i++){
             EnemyEnums enemyEnums = EnemyEnums.Seeker;
-            Direction direction = settings.directions().get(i < 3 ? 0 : 1); //RIGHT first, then LEFT
+            Direction direction = i < 3 ? Direction.RIGHT : Direction.LEFT;
             float yCoordinate = DataClass.getInstance().getPlayableWindowMaxHeight() * 0.5f;
             float xCoordinate = direction.equals(Direction.RIGHT) ? -enemyEnums.getBaseWidth() * (enemyEnums.getDefaultScale() * 3) : DataClass.getInstance().getWindowWidth() + enemyEnums.getBaseWidth() * (enemyEnums.getDefaultScale() * 2);
             EnemyManager.getInstance().addEnemy(
                     EnemyCreator.createEnemy(
-                            enemyEnums, Math.round(xCoordinate), Math.round(yCoordinate), direction, settings.scale(0), enemyEnums.getMovementSpeed()
+                            enemyEnums, Math.round(xCoordinate), Math.round(yCoordinate), direction, enemyEnums.getDefaultScale(), enemyEnums.getMovementSpeed()
                     )
             );
         }

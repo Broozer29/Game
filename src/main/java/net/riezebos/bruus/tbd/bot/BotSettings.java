@@ -207,6 +207,10 @@ public class BotSettings {
         return scenario.fire;
     }
 
+    public static BotScenario.ShopMode getShopMode() {
+        return scenario.shop;
+    }
+
     public static boolean takesEventScreenshot(String event) {
         return (scenario.screenshotEvents != null ? scenario.screenshotEvents : DEFAULT_EVENTS).contains(event);
     }

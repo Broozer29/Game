@@ -34,7 +34,8 @@ public class ImageResizer {
 
         long buildStart = System.nanoTime();
         BufferedImage bufferedImage = scaleWithoutCaching(image, scale);
-        cache.recordBuild(keyString, System.nanoTime() - buildStart);
+        cache.LOG_recordBuild(keyString, System.nanoTime() - buildStart);
+        LOG_ImageNames.inherit(bufferedImage, image);
         cache.putImage(keyString, bufferedImage);
 
         return bufferedImage;
@@ -67,8 +68,9 @@ public class ImageResizer {
         ArrayList<BufferedImage> newFrames = frames.parallelStream()
                 .map(frame -> scale == 0 ? frame : scaleWithoutCaching(frame, scale))
                 .collect(Collectors.toCollection(ArrayList::new));
-        cache.recordBuild(keyString, System.nanoTime() - buildStart);
+        cache.LOG_recordBuild(keyString, System.nanoTime() - buildStart);
 
+        LOG_ImageNames.inheritAll(newFrames, frames);
         cache.putFrames(keyString, newFrames);
 
         return newFrames;
@@ -93,7 +95,8 @@ public class ImageResizer {
         AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BICUBIC);
 
         BufferedImage bufferedImage = bilinearScaleOp.filter(image, new BufferedImage(width, height, image.getType()));
-        cache.recordBuild(keyString, System.nanoTime() - buildStart);
+        cache.LOG_recordBuild(keyString, System.nanoTime() - buildStart);
+        LOG_ImageNames.inherit(bufferedImage, image);
         cache.putImage(keyString, bufferedImage);
 
         return bufferedImage;
