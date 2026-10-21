@@ -62,6 +62,7 @@ public class ShopItem extends GUIComponent {
             PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
             SaveManager.getInstance().exportCurrentSave();
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
+            AudioManager.getInstance().getAlarakBarker().playRelicSelectBark();
             BoardManager.getInstance().getGameBoard().signalThatRelicHasBeenChosen(); //sloppy implementation, this way, Relic shopitems are not compatible with shopboard as the active screen
         } else if (shopItemInformation.isAvailable() && shopItemInformation.canAfford()) {
             AudioManager.getInstance().addAudio(AudioEnums.GenericSelect);
@@ -78,12 +79,13 @@ public class ShopItem extends GUIComponent {
                 PlayerInventory.getInstance().addItem(shopItemInformation.getItem());
             }
 
+            AudioManager.getInstance().getAlarakBarker().playItemPurchasedBark();
             PlayerInventory.getInstance().spendCashMoney(shopItemInformation.getCost());
             slot.setStatus(ShopSlotStatusEnums.Bought);
             applySlot();
             SaveManager.getInstance().exportCurrentSave();
         } else if (shopItemInformation.isAvailable() && !shopItemInformation.canAfford()) {
-            AudioManager.getInstance().addAudio(AudioEnums.NotEnoughMinerals);
+            AudioManager.getInstance().getAlarakBarker().playNotEnoughMineralsBark();
         }
     }
 

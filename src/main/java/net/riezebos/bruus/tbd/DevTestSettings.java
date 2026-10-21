@@ -10,8 +10,8 @@ public class DevTestSettings {
     public static boolean enablePlayerMovingPastBoundaries = false; // if true: allow the player to move outside the
                                                                     // screen
     public static boolean devTestMuteMode = false; // if true: mutes all audio after starting a level
-    public static boolean onlyBossLevels = true; // if true: all levels are boss levels
-    public static boolean infiniteMoney = true; // if true: add 9999999 money to the inventory
+    public static boolean onlyBossLevels = false; // if true: all levels are boss levels
+    public static boolean infiniteMoney = false; // if true: add 9999999 money to the inventory
     public static boolean freeReroll = false; // if true; set reroll discount to 99
     public static boolean spawnTargetDummy = false; // if true, spawns a target dummy at the start of a level
     public static boolean instantlySpawnPortal = false; // spawns a portla at the start of the level
@@ -27,7 +27,8 @@ public class DevTestSettings {
     public static boolean enableDirectShopAccess = false; // If true, enables direct access to the shop
     public static boolean disableImageCacheBudget = false; // If true, the rotated/resized image cache has no memory budget and never evicts, to compare old and new behaviour
 
-    public static boolean testFinalBossMode = true; // If true, spawns the final boss instead of any other boss
+    public static boolean testFinalBossMode = false; // If true, spawns the final boss instead of any other boss
+    public static boolean enableAlarakBarker = false;
 
     public static boolean enablePlayerRevivers = false; // todo niet een echte test setting, verwijderen wanneer dit
                                                         // getest is

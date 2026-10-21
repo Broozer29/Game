@@ -99,18 +99,21 @@ public class LevelManager {
                 enemyManager.removeOutOfBoundsEnemies();
                 enemyManager.startBurningEnemies();
                 audioManager.tryToDisposeBackgroundMusic();
+                AudioManager.getInstance().getAlarakBarker().playLevelFinishedBark();
             }
         } else if (levelType == LevelTypes.Boss) {
             boolean bossAlive = EnemyManager.getInstance().isBossAlive();
 
-            if(bossAlive){
+            if (bossAlive) {
                 audioManager.isLevelMusicFinished(); //todo VERY sloppy way of restarting music through the isFinished() method but it works for now
             }
             // For boss levels, music is set to loop=true at start, so no need to check if finished
             // Only end the level when boss is defeated
             if (!bossAlive) {
+                AudioManager.getInstance().getAlarakBarker().playBossRandomDeathBark();
                 gameState.setGameState(GameStatusEnums.Level_Finished);
                 DirectorManager.getInstance().setEnabled(false);
+
                 enemyManager.deleteAllEnemies();
             }
         }
@@ -141,6 +144,11 @@ public class LevelManager {
 
         if (this.levelType.equals(LevelTypes.Boss)) {
             selectedBoss = getNextBoss();
+            if (!selectedBoss.equals(EnemyEnums.FinalBoss)) {
+                AudioManager.getInstance().getAlarakBarker().playBossSpawnBark();
+            }
+        } else {
+            AudioManager.getInstance().getAlarakBarker().playLevelStartBark();
         }
 
         GameBoardCreator.getInstance().createDifficultyWings(this.levelType.equals(LevelTypes.Boss), getDifficultyScore());
@@ -238,11 +246,11 @@ public class LevelManager {
     private int loopBreaker = 0;
 
     public EnemyEnums getNextBoss() {
-        if(DevTestSettings.testFinalBossMode) {
+        if (DevTestSettings.testFinalBossMode) {
             return EnemyEnums.FinalBoss;
         }
 
-        if(GameState.getInstance().isSpawnFinalBoss()) {
+        if (GameState.getInstance().isSpawnFinalBoss()) {
             return EnemyEnums.FinalBoss;
         }
 
@@ -262,7 +270,7 @@ public class LevelManager {
         lastSpawnedBosses.add(eligibleBosses.get(randomlySelectedBoss));
 
         EnemyEnums chosenBoss = eligibleBosses.get(randomlySelectedBoss);
-        if(chosenBoss.equals(EnemyEnums.FinalBoss)) {
+        if (chosenBoss.equals(EnemyEnums.FinalBoss)) {
             FinalBoss.initBossAssets();
         }
 
@@ -367,7 +375,7 @@ public class LevelManager {
             return true;
         }
 
-        if(GameState.getInstance().isSpawnFinalBoss()){
+        if (GameState.getInstance().isSpawnFinalBoss()) {
             return true;
         }
 

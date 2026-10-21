@@ -27,6 +27,7 @@ import net.riezebos.bruus.tbd.guiboards.boardEnums.MenuFunctionEnums;
 import net.riezebos.bruus.tbd.guiboards.boardcreators.ShopBoardCreator;
 import net.riezebos.bruus.tbd.guiboards.guicomponents.*;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
@@ -718,6 +719,7 @@ public class ShopBoard extends JPanel implements TimerHolder {
             ControllerNotices.getInstance().draw(g2d);
             animationManager.updateGameTick();
             backgroundManager.updateGameTick();
+            AudioManager.getInstance().getAlarakBarker().playIdleInShopBark();
             Toolkit.getDefaultToolkit().sync();
 
             // Reading controller input

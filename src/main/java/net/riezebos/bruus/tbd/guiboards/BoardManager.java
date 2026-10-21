@@ -106,6 +106,7 @@ public class BoardManager extends JFrame {
 
         screenActions.put(ScreenType.SHOP, () -> {
             playShopMenuMusic();
+            AudioManager.getInstance().getAlarakBarker().playEnterShopBark();
             PlayerInventory.getInstance().setCashMoney(Math.round(PlayerInventory.getInstance().getCashMoney()));
             shopBoard.initShopBoardGUIComponents();
             ShopFreezer.getInstance().startUnfreezeAnimationIfFrozen();

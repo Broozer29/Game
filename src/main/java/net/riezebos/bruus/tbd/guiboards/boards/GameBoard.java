@@ -344,6 +344,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     private void playDeathMusic() {
         audioManager.stopMusicAudio();
+        audioManager.getAlarakBarker().playPlayerDeathBark();
         audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.VendlaSonrisa, true);
     }
 

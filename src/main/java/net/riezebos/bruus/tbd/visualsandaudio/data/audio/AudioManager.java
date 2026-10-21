@@ -27,10 +27,9 @@ public class AudioManager {
     private SpotifyMediaPlayer spotifyMediaPlayer = SpotifyMediaPlayer.getInstance();
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
+    private AlarakBarker alarakBarker = new AlarakBarker();
 
     private AudioManager() {
-
-
     }
 
     //Resets the manager
@@ -407,5 +406,9 @@ public class AudioManager {
     public boolean bossIsBarking(FinalBossBarker bossBarker) {
         return audioDatabase.getAllActiveClips().stream()
                 .anyMatch(clip -> bossBarker.getAllBarkEnums().contains(clip.getAudioType()));
+    }
+
+    public AlarakBarker getAlarakBarker() {
+        return alarakBarker;
     }
 }

@@ -1,6 +1,9 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
+import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyTribes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 
 import java.util.*;
@@ -243,6 +246,88 @@ public class AlarakBarker {
         return getRandomBark(barks);
     }
 
+
+    private double lastSecondsBarked = 0;
+    private static final double menuBarkCooldown = 10000;
+    private static final double shopBarkCooldown = 30000;
+
+    public void playPlayerDeathBark() {
+        if (!isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomPlayerDeathBark());
+        }
+    }
+
+
+    public void playRelicSelectBark() {
+        if (!isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomRelicSelectBark());
+        }
+    }
+
+    public void playEnterShopBark() {
+        if (!isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomEnterShopBark());
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+    public void playIdleInShopBark() {
+        if (System.currentTimeMillis() - lastSecondsBarked > shopBarkCooldown && !isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomIdleInShopBark());
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+    public void playItemPurchasedBark() {
+        if (System.currentTimeMillis() - lastSecondsBarked > 5000 && !isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomItemPurchasedBark());
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+    public void playNotEnoughMineralsBark() {
+        if (System.currentTimeMillis() - lastSecondsBarked > 2000 && !isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomNotEnoughMineralsBark());
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+    public void playMenuBark() {
+        if (System.currentTimeMillis() - lastSecondsBarked > menuBarkCooldown && !isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomMenuBark());
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+    public void playLevelStartBark() {
+        if (!isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomLevelStartBark(LevelManager.getInstance().getCurrentEnemyTribe().equals(EnemyTribes.Zerg)));
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+    public void playLevelFinishedBark() {
+        if (!isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomLevelFinishedBark(LevelManager.getInstance().getCurrentEnemyTribe().equals(EnemyTribes.Zerg)));
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+    public void playBossSpawnBark() {
+        if (!isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomBossSpawnBark());
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+    public void playBossRandomDeathBark() {
+        if (!isBarking()) {
+            AudioManager.getInstance().addAudio(getRandomBossDeathBark());
+            lastSecondsBarked = System.currentTimeMillis();
+        }
+    }
+
+
     public AudioEnums getRandomPlayerDeathBark() {
         return getRandomBark(playerDeathBarks);
     }
@@ -274,4 +359,15 @@ public class AlarakBarker {
     public Set<AudioEnums> getAllBarkEnums() {
         return allBarkEnums;
     }
+
+    public boolean isBarking() {
+        if (!DevTestSettings.enableAlarakBarker) {
+            return true;
+        }
+
+
+        return AudioDatabase.getInstance().getAllActiveClips().stream()
+                .anyMatch(clip -> this.getAllBarkEnums().contains(clip.getAudioType()));
+    }
+
 }
