@@ -5,9 +5,13 @@ import net.riezebos.bruus.tbd.controllerInput.MenuAction;
 import net.riezebos.bruus.tbd.controllerInput.MenuInput;
 import net.riezebos.bruus.tbd.controllerInput.ControllerNotices;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.gamestate.ShopManager;
 import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
+import net.riezebos.bruus.tbd.game.level.LevelManager;
 import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
+import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.TimerHolder;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundManager;
 import net.riezebos.bruus.tbd.guiboards.background.BackgroundObject;
@@ -26,6 +30,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainMenuBoard extends JPanel implements TimerHolder {
     private BackgroundManager backgroundManager = BackgroundManager.getInstance();
@@ -483,6 +488,24 @@ public class MainMenuBoard extends JPanel implements TimerHolder {
 
     /*------------------------------End of Drawing methods-------------------------------*/
 
+
+    public void continueRun() {
+        BoardManager boardManager = BoardManager.getInstance();
+        SaveManager.getInstance().loadSaveFile();
+
+        if (Objects.requireNonNull(GameState.getInstance().getGameState()) == GameStatusEnums.Shopping) {
+            ShopManager.getInstance().setRowsUnlockedByDifficulty(LevelManager.getInstance().getDifficultyScore());
+            if (!ShopManager.getInstance().hasContents()) {
+                //The save has no (readable) shop, so this counts as entering the shop
+                ShopManager.getInstance().enterShop();
+                SaveManager.getInstance().exportCurrentSave();
+            }
+            boardManager.getShopBoard().initShopBoardGUIComponents();
+            boardManager.openShopWindow();
+        } else {
+            boardManager.initGame();
+        }
+    }
 
     public Timer getTimer() {
         return this.timer;

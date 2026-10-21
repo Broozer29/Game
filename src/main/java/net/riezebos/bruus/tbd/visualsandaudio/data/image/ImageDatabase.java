@@ -579,6 +579,48 @@ public class ImageDatabase {
         }
         this.initPNGtoGIFAnimation();
         this.initLetters();
+        LOG_registerImageNames();
+    }
+
+    // Lets the image cache name its copies after the sprite they came from
+    private void LOG_registerImageNames() {
+        for (ImageEnums e : ImageEnums.values()) {
+            try {
+                List<BufferedImage> frames = getAnimation(e);
+                if (frames != null) {
+                    for (BufferedImage frame : frames) {
+                        LOG_ImageNames.register(frame, e.name());
+                    }
+                }
+                BufferedImage image = getImage(e);
+                // getImage falls back to the star for a missing image
+                if (image != null && !(image == this.star && e != ImageEnums.Star)) {
+                    LOG_ImageNames.register(image, e.name());
+                }
+            } catch (RuntimeException ignored) {
+                // A getter that cannot answer for this enum is skipped
+            }
+        }
+    }
+
+    // Frees the graphics card copy of every loaded picture; the pixels stay, and a picture gets a new copy when it is drawn again
+    public void flushOriginals() {
+        for (ImageEnums e : ImageEnums.values()) {
+            try {
+                List<BufferedImage> frames = getAnimation(e);
+                if (frames != null) {
+                    for (BufferedImage frame : frames) {
+                        frame.flush();
+                    }
+                }
+                BufferedImage image = getImage(e);
+                if (image != null) {
+                    image.flush();
+                }
+            } catch (RuntimeException ignored) {
+                // A getter that cannot answer for this enum is skipped
+            }
+        }
     }
 
     private void initImages() {
@@ -2561,11 +2603,12 @@ public class ImageDatabase {
             lightningOrbDestruction.add(image);
         }
 
-        for (int i = 0; i < 35; i++) {
-            String sourceString = String.format("/images/gif/PNGtoGIF/Level Up Animation/%d.png", i);
-            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
-            levelUpAnimation.add(image);
-        }
+        // Not loaded while the leveling system is disabled (PlayerStats.addXP returns at once); saves 48 MB. Re-enable together with leveling.
+//        for (int i = 0; i < 35; i++) {
+//            String sourceString = String.format("/images/gif/PNGtoGIF/Level Up Animation/%d.png", i);
+//            BufferedImage image = imgLoader.getSpritesheetImageFromStream(getClass().getResourceAsStream(sourceString));
+//            levelUpAnimation.add(image);
+//        }
 
         for (int i = 0; i < 64; i++) {
             String sourceString = String.format("/images/gif/PNGtoGIF/CoinExplosion/%d.png", i);

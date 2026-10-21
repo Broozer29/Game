@@ -1,5 +1,6 @@
 package net.riezebos.bruus.tbd.visualsandaudio.objects;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.*;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -17,6 +18,8 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	private List<BufferedImage> originalFrames = new ArrayList<>();
 	private List<BufferedImage> increasedSizeFrames = new ArrayList<>();
 	private List<BufferedImage> frames = new ArrayList<>();
+	private RotationGeometry.Geometry[] frameGeometries; // Per frame, set when the frames are unrotated and drawn through a transform
+	private RotationGeometry.Geometry drawnGeometry; // Geometry of the frame returned last by getCurrentFrameImage(true)
 	private int frameDelayCounter;
 	private int frameDelay = 2;
 	private boolean infiniteLoop;
@@ -59,7 +62,35 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		this.increasedSizeFrames = frames;
 		this.originalFrames = frames;
 		totalFrames = frames.size();
+		clearRotation();
 		recalculateBoundsAndSize();
+	}
+
+	@Override
+	public void clearRotation() {
+		super.clearRotation();
+		frameGeometries = null;
+		drawnGeometry = null;
+	}
+
+	// Size of a frame as drawn: the geometry's size when the frames are unrotated
+	private int frameWidth(int i) {
+		return frameGeometries != null ? frameGeometries[i].width : frames.get(i).getWidth(null);
+	}
+
+	private int frameHeight(int i) {
+		return frameGeometries != null ? frameGeometries[i].height : frames.get(i).getHeight(null);
+	}
+
+	public RotationGeometry.Geometry getCurrentGeometry() {
+		if (frameGeometries == null) {
+			return null;
+		}
+		return frameGeometries[currentFrame < frames.size() ? currentFrame : frames.size() - 1];
+	}
+
+	public RotationGeometry.Geometry getDrawnGeometry() {
+		return drawnGeometry;
 	}
 
 
@@ -76,6 +107,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		}
 		this.frames = imageResizer.getScaledFrames(originalFrames, newScale);
 		this.increasedSizeFrames = frames;
+		clearRotation();
 		recalculateBoundsAndSize();
 	}
 
@@ -86,7 +118,18 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 
 		//Doesnt use original frames because possible resizes, possible loss of performance and quality but maybe not enough to do anything about it
-		if(!this.increasedSizeFrames.isEmpty()){
+		List<BufferedImage> base = !this.increasedSizeFrames.isEmpty() ? increasedSizeFrames : frames;
+		if (RotateWhileDrawing.isEnabled(this.imageEnum)) {
+			RotationGeometry.Geometry[] geometries = new RotationGeometry.Geometry[base.size()];
+			for (int i = 0; i < geometries.length; i++) {
+				geometries[i] = RotationGeometry.geometry(base.get(i), rotation.toAngle(), crop);
+			}
+			this.frames = base;
+			this.frameGeometries = geometries;
+			if (DevTestSettings.verifyRotateWhileDrawing) {
+				RotateWhileDrawing.LOG_verifyFrames(this.imageEnum, base, ImageRotator.getInstance().getRotatedFrames(base, rotation, crop), rotation.toAngle(), true, crop, geometries);
+			}
+		} else if(!this.increasedSizeFrames.isEmpty()){
 			this.frames = ImageRotator.getInstance().getRotatedFrames(increasedSizeFrames, rotation, crop);
 		} else {
 			this.frames = ImageRotator.getInstance().getRotatedFrames(frames, rotation, crop);
@@ -100,7 +143,15 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		}
 
 		//Doesnt use original frames because possible resizes, possible loss of performance and quality but maybe not enough to do anything about it
-		if(!this.increasedSizeFrames.isEmpty()){
+		List<BufferedImage> base = !this.increasedSizeFrames.isEmpty() ? increasedSizeFrames : frames;
+		if (RotateWhileDrawing.isEnabled(this.imageEnum)) {
+			RotationGeometry.Geometry[] geometries = RotationGeometry.frameListGeometry(base, angle);
+			this.frames = base;
+			this.frameGeometries = geometries;
+			if (DevTestSettings.verifyRotateWhileDrawing) {
+				RotateWhileDrawing.LOG_verifyFrames(this.imageEnum, base, ImageRotator.getInstance().getRotatedFrames(base, angle), angle, false, crop, geometries);
+			}
+		} else if(!this.increasedSizeFrames.isEmpty()){
 			this.frames = ImageRotator.getInstance().getRotatedFrames(increasedSizeFrames, angle);
 		} else {
 			this.frames = ImageRotator.getInstance().getRotatedFrames(frames, angle);
@@ -140,9 +191,10 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 			if (currentFrame < frames.size()) {
 				BufferedImage returnImage = frames.get(currentFrame);
+				drawnGeometry = frameGeometries != null ? frameGeometries[currentFrame] : null;
 
-				width = returnImage.getWidth(null);
-				height = returnImage.getHeight(null);
+				width = frameWidth(currentFrame);
+				height = frameHeight(currentFrame);
 				if (frameDelayCounter >= frameDelay) {
 					updateFrameCount();
 					frameDelayCounter = 0;
@@ -210,11 +262,11 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 	public void setAnimationBounds(int xCoordinate, int yCoordinate) {
 		if (currentFrame < frames.size()) {
-			this.animationBounds.setBounds(xCoordinate, yCoordinate, frames.get(currentFrame).getWidth(null),
-					frames.get(currentFrame).getHeight(null));
+			this.animationBounds.setBounds(xCoordinate, yCoordinate, frameWidth(currentFrame),
+					frameHeight(currentFrame));
 		} else {
-			this.animationBounds.setBounds(xCoordinate, yCoordinate, frames.get(frames.size() - 1).getWidth(null),
-					frames.get(frames.size() - 1).getHeight(null));
+			this.animationBounds.setBounds(xCoordinate, yCoordinate, frameWidth(frames.size() - 1),
+					frameHeight(frames.size() - 1));
 		}
 	}
 
@@ -227,6 +279,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 		}
 		this.frames = resizedFrames;
 		this.increasedSizeFrames = resizedFrames;
+		clearRotation();
 		recalculateBoundsAndSize();
 	}
 
@@ -235,11 +288,11 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	@Override
 	public void setCenterCoordinates(int newXCoordinate, int newYCoordinate) {
 		if (currentFrame < frames.size()) {
-			this.xCoordinate = newXCoordinate - (frames.get(currentFrame).getWidth(null) / 2);
-			this.yCoordinate = newYCoordinate - (frames.get(currentFrame).getHeight(null) / 2);
+			this.xCoordinate = newXCoordinate - (frameWidth(currentFrame) / 2);
+			this.yCoordinate = newYCoordinate - (frameHeight(currentFrame) / 2);
 		} else {
-			this.xCoordinate = newXCoordinate - (frames.get(currentFrame - 1).getWidth(null) / 2);
-			this.yCoordinate = newYCoordinate - (frames.get(currentFrame - 1).getHeight(null) / 2);
+			this.xCoordinate = newXCoordinate - (frameWidth(currentFrame - 1) / 2);
+			this.yCoordinate = newYCoordinate - (frameHeight(currentFrame - 1) / 2);
 		}
 
 	}
@@ -274,8 +327,8 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 
 	@Override
 	public void recalculateBoundsAndSize(){
-		this.width = frames.get(0).getWidth();
-		this.height = frames.get(0).getHeight();
+		this.width = frameWidth(0);
+		this.height = frameHeight(0);
 		this.animationBounds = new Rectangle(xCoordinate, yCoordinate, this.width, this.height);
 		this.bounds = animationBounds;
 	}
@@ -307,6 +360,7 @@ public class SpriteAnimation extends Sprite implements Cloneable{
 	public SpriteAnimation clone() {
 		try {
 			SpriteAnimation cloned = (SpriteAnimation) super.clone();
+			cloned.clearRotation(); // The shallow copy shares the geometry, the clone starts unrotated
 
 			// Load frames from the ImageDatabase
 			cloned.loadGifFrames(this.imageEnum);

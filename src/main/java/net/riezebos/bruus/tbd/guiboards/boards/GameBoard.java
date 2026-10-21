@@ -49,7 +49,7 @@ import net.riezebos.bruus.tbd.game.util.OnScreenText;
 import net.riezebos.bruus.tbd.game.util.OnScreenTextManager;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
-import net.riezebos.bruus.tbd.game.util.performancelogger.GameLoadLogger;
+import net.riezebos.bruus.tbd.game.util.performancelogger.LOG_GameLoadLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLogger;
 import net.riezebos.bruus.tbd.game.util.performancelogger.PerformanceLoggerManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
@@ -66,6 +66,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.RotationGeometry;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -77,6 +78,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
@@ -307,8 +310,8 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         ControllerNotices.getInstance().draw(g2d);
 
         Toolkit.getDefaultToolkit().sync();
-        if (GameLoadLogger.getInstance().isEnabled()) {
-            GameLoadLogger.getInstance().logDraw(loadDrawStart);
+        if (LOG_GameLoadLogger.getInstance().isEnabled()) {
+            LOG_GameLoadLogger.getInstance().logDraw(loadDrawStart);
         }
     }
 
@@ -761,7 +764,12 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, sprite.getTransparancyAlpha()));
 
             // Draw the image
-            g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+            RotationGeometry.Geometry geometry = sprite.getDrawGeometry();
+            if (geometry != null) {
+                drawRotated(g, sprite.getImage(), geometry, sprite.getXCoordinate(), sprite.getYCoordinate());
+            } else {
+                g.drawImage(sprite.getImage(), sprite.getXCoordinate(), sprite.getYCoordinate(), this);
+            }
 
             // Reset to the original composite
             g.setComposite(originalComposite);
@@ -783,11 +791,34 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             // Set the alpha composite
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, animation.getTransparancyAlpha()));
 
-            g.drawImage(animation.getCurrentFrameImage(true), animation.getXCoordinate(), animation.getYCoordinate(),
-                    this);
+            BufferedImage frameImage = animation.getCurrentFrameImage(true);
+            RotationGeometry.Geometry geometry = animation.getDrawnGeometry(); // Read after the call, which sets it for the frame drawn
+            if (geometry != null) {
+                drawRotated(g, frameImage, geometry, animation.getXCoordinate(), animation.getYCoordinate());
+            } else {
+                g.drawImage(frameImage, animation.getXCoordinate(), animation.getYCoordinate(),
+                        this);
+            }
 
             // Reset to the original composite
             g.setComposite(originalComposite);
+        }
+    }
+
+    // Draws the unrotated picture through the geometry's transform, nearest neighbour like the rotated copy
+    private void drawRotated(Graphics2D g, BufferedImage base, RotationGeometry.Geometry geometry, int x, int y) {
+        if (base == null) {
+            return;
+        }
+        RenderingHints oldHints = (RenderingHints) g.getRenderingHints();
+        AffineTransform saved = g.getTransform();
+        try {
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            g.translate(x, y);
+            g.drawImage(base, geometry.transform, this);
+        } finally {
+            g.setTransform(saved);
+            g.setRenderingHints(oldHints);
         }
     }
 
@@ -1090,7 +1121,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
     // Called on every action/input. Essentially the infinite loop that plays the game
     public void actionPerformed(ActionEvent e) {
-        GameLoadLogger gameLoadLogger = GameLoadLogger.getInstance();
+        LOG_GameLoadLogger gameLoadLogger = LOG_GameLoadLogger.getInstance();
         long loadTickStart = gameLoadLogger.isEnabled() ? gameLoadLogger.startTick() : 0;
         try {
             if (gameState.getGameState() == GameStatusEnums.Zoning_In) {

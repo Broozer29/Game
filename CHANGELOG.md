@@ -2,17 +2,64 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-20
+
+### Changed
+- Internal: every boss and mini boss spawn class sets its own scale and directions again (the `EnemyEnums` defaults, overridden per class); the shared spawn list `BossSummons` and `EnemySpawnSettings` are removed. The level preload builds only the level's boss or mini bosses: their summons build their resized pictures when they first spawn, which takes a few milliseconds now that rotated sprites are drawn rotated. Nothing changes for players.
+- Internal: classes and methods that only log, measure or verify are prefixed with `LOG_` (`LOG_ImageNames`, `LOG_GameLoadLogger`, the cache statistics, the rotation checks and the level and startup log lines), so analysis code reads apart from gameplay code. Nothing changes for players.
+
+## 2026-10-19
+
+### Changed
+- The image cache is limited to 1,024 MB instead of 2,560 MB, so it always fits the 3 GB memory limit. A Captain run needs about a quarter of that; a Firefighter run fills it.
+- At the end of every level the graphics card copies of the game's pictures are freed and made again when drawn, so the graphics driver's memory stops growing during a long run (about 0.8 GB less late in a run).
+
+### Added
+- Internal: the level-end cache log lists the sprites with the most build time in that level, with their number of builds and distinct sizes.
+
 ## 2026-10-18
 
 ### Added
+- Internal: `docs/reviews/memory-reduction.md` explains every change on the memory-reduction branch for review: what changed in the code, why, and the memory before and after.
+- Internal: `RotateWhileDrawing` lets a sprite kind keep its unrotated picture and be drawn rotated, with the same size, position and hit pixels as its rotated copy. The dev switch `verifyRotateWhileDrawing` switches every kind except lasers on and compares each rotation with the real copy.
+- Internal: `RotationGeometry` computes the size, crop offset and hit pixels a rotated copy would have, without building the picture. It is what lets sprites be drawn rotated instead of storing rotated copies.
 - Internal: the autoplay bot is steered by JSON scenario files in `tools/bot/scenarios/` (class, minutes, dev switches, dodging, target, special attack, firing, screenshots, optional start save, optional pass limits). Run one with `bash .claude/scripts/bot-run.sh --scenario smoke`. Every run writes a `report.md` with PASS or FAIL per limit into `tools/bot/results/`. A wrong scenario stops before the window opens. Nothing changes for players.
+- Internal: test save and scenario `captain-limit` (a fully grown Captain build with Focus Fire against the Royal Guard) as the limit test for performance and memory; the bot run script prints the build of the installed save; the `rotation-baseline` scenario is removed, since stored rotated copies can no longer be run.
+- Internal: bot scenarios `matrix-captain-royalguard`, `matrix-firefighter-pirates`, `matrix-carrier-zerg` and `matrix-final-boss`, with the test saves `captain-hard`, `firefighter-easy` and `carrier-medium`, measure which sprite kinds hold the most rotated-copy memory per class, faction and boss; the results are in `docs/reviews/memory-reduction.md`.
+- Internal: the image cache log names the sprite each cached copy came from, lists at every level end the sprites that hold the most rotated and resized memory, and names the slowest rebuild.
+
+### Fixed
+- The game no longer crashes when an attack hits an enemy that was already removed earlier in the same attack (seen with Guillotine and with very strong builds).
+- The game no longer crashes when a boss is left with a sliver of health: its health bar stays at least 1 pixel wide.
+
+### Changed
+- The game starts with a 3 GB Java memory limit instead of 4 GB (`-Xms2g -Xmx3g`), so it uses about 1 GB less memory.
+- Every rotating sprite except laser beams is drawn rotated instead of stored as rotated copies, and its hit test reads a cached hit mask. They look and hit the same; a fully grown Captain build needs about 0.9 GB less heap.
+- Guardian missiles and Plasma Launcher missiles are drawn rotated instead of stored as rotated copies. They look and hit the same; with a grown Captain build the game uses about 0.7 GB less memory, mostly fewer graphics card copies and a smaller image cache.
+- Internal: the autoplay bot starts the game with the same memory settings as the game itself (read from `pom.xml`, printed at start), a check script compares every place that starts the game, the VS Code recording configurations drop the 50 ms pause target, and a shop visit no longer counts as a gap between ticks.
+- Internal: the autoplay bot continues the run stored in a scenario's start save instead of starting an empty run, buys every shop item when a scenario asks for it (`shop: buy-all`), and a Firefighter bot lets its fuel refill instead of holding fire on an empty tank; new scenarios memory-captain and memory-firefighter; the bot docs say that `--dev` adds switches.
 
 ## 2026-10-17
 
 ### Changed
+- Rotated pictures are now stored at their visible size instead of on the whole square they were rotated on, so the image cache fits more pictures in the same space and has to rebuild them less often; the game looks the same.
+- Internal: the image cache log shows how many MB are rotated copies and how many are resized copies.
+- Internal: the firefighter-distributed-heat test save is the full firefighter-scorch build plus Distributed Heat and 99,999 minerals.
+- Internal: planboard notes on the two designed memory steps (rotated sprites drawn without copies, boss images decoded per level).
 - Internal: an autoplay bot can play the game by itself for test runs (`-Dgame.bot=true`, started with `.claude/scripts/bot-run.sh`). It flies, shoots, picks relics, restarts after a death, and leaves a summary, performance CSV, GC log and screenshots in `target/perf/bot-<time>/`. Nothing changes for players.
 - Internal: Claude setup: a finished branch is cleaned up once its squash commit is pushed (worktree removed, local branch deleted).
 - Internal: planboard follow-ups from the boss preloading: rotations during play, the relic crash after Continue Run from a mid-level save, the `instantlySpawnPortal` dev setting, the Final boss clone crash with the Guillotine, and the open Final boss sound check.
+
+## 2026-10-16
+
+### Changed
+- Internal: planboard idea to decode boss and mini-boss images just before their level, pinned for later.
+- Internal: the level-up animation (48 MB) is no longer loaded at startup, because leveling is switched off; its code stays.
+- The image cache now also counts the copy the graphics card keeps of each image, so it holds about 1.1 GB of images instead of 2.5 GB, and once it is full the game uses up to about 3 GB less memory.
+- All five mini bosses now die in four explosions spread over their body instead of one explosion. For the Laserbeam, Mirage, Mother Ship and Shuriken mini bosses this replaces a blurry enlarged explosion and saves about 0.5 GB of memory on mini-boss levels.
+- The game now lets Java's heap (the memory for game objects and images) grow to at most 4 GB instead of 8 GB, and reserves 2 GB at start instead of 4 GB, so it fits better on PCs with 16 GB of RAM. Internal: a launch setting that did nothing (`-Dsun.java2d.accthresh=0`) is removed.
+- Internal: CLAUDE.md gives the run command with -Xms2g -Xmx4g.
+- Internal: planboard reply from Bruus on the mini-boss death explosion (a list of smaller explosions).
 
 ## 2026-10-15
 

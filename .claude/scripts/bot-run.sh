@@ -4,7 +4,7 @@
 # but the game opens a full-screen window: do not use the PC for other full-screen work while it runs.
 #
 # Usage: bot-run.sh [--scenario NAME] [options]
-#   --scenario NAME  run tools/bot/scenarios/NAME.json (see tools/bot/README.md); the options below then win over the file
+#   --scenario NAME  run tools/bot/scenarios/NAME.json (see tools/bot/README.md); the options below then win over the file, except --dev, which only adds switches
 #   --minutes N      play for N minutes, then stop (default 10, 0 = until a level or death limit)
 #   --class NAME     Captain, FireFighter, Carrier or Mutalisk (default Captain)
 #   --levels N       stop after N completed levels (default 0 = no limit)
@@ -129,6 +129,12 @@ if [ -n "$scenario_save" ]; then
   fi
   cp "$profile" "$save"
   echo "installed test save $scenario_save"
+  # The build the run plays, read from the save itself, so the launch can be checked against what was asked for
+  field() { sed -n "s/.*\"$1\":\"\{0,1\}\([^\",}]*\).*/\1/p" "$save"; }
+  items=$(sed -n 's/.*"items":{\([^}]*\)}.*/\1/p' "$save")
+  kinds=$(printf '%s' "$items" | grep -o '"[A-Za-z]*":' | wc -l | tr -d ' ')
+  stacks=$(printf '%s' "$items" | grep -o ':[0-9]*' | tr -d ':' | awk '{s+=$1} END {print s+0}')
+  echo "save build: class $(field playerclass), difficulty $(field lastKnownLevelDifficulty), stages completed $(field stagesCompleted), $kinds item kinds, $stacks stacks"
 fi
 
 flags=()
@@ -149,9 +155,19 @@ if [ "$jfr" = 1 ]; then
   flags+=("-XX:StartFlightRecording=filename=$wdir/run.jfr,settings=profile,dumponexit=true")
 fi
 
+# The game's own memory and collector settings come from pom.xml (the jpackage <javaOptions>), so the bot measures what the game does
+jvm_opts=$(sed -n 's|^[[:space:]]*<option>\(-X[^<]*\)</option>.*|\1|p' pom.xml | tr '\n' ' ')
+jvm_opts="${jvm_opts% }"
+case "$jvm_opts" in
+  *-Xmx*) ;;
+  *) echo "could not read the -Xms/-Xmx/-XX: options from pom.xml (got: '$jvm_opts')"; exit 1 ;;
+esac
+echo "JVM options: $jvm_opts"
+echo "JVM options: $jvm_opts" > "$dir/jvm-options.txt"
+
 echo "bot run in $dir (${scenario:-no scenario})"
-java -Xms4g -Xmx8g -XX:+UseG1GC -XX:MaxGCPauseMillis=50 \
-  -Dsun.java2d.opengl=true -Dsun.java2d.d3d=true -Dsun.java2d.accthresh=0 \
+java $jvm_opts \
+  -Dsun.java2d.opengl=true -Dsun.java2d.d3d=true \
   "-Xlog:gc:file=$wdir/gc.log:time,uptime" \
   -Dgame.bot=true "-Dgame.bot.dir=$wdir" \
   ${flags[@]+"${flags[@]}"} \

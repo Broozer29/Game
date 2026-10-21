@@ -65,7 +65,7 @@ Frame rate, lag, loading times and memory use.
   - Every time something turns to a whole degree it has not used before, its animation is rotated once and cached; the level preload cannot know these angles
   - Measured 2026-10-15 (target/perf/run-2026-10-15_12-10-28-normal.log in the boss-preload worktree, copied to target/perf/): one level with the `captain-lasers` test save built 1,597 images during the level, 0.9 s in total, the slowest 26.6 ms. Bouncing lasers and drones turn to many new angles
   - The Final boss clone attack aims its laser clones at angles known only during the fight; Nelis noticed lag in that fight
-  - The level-end log line names the slowest build by its cache key, which holds hash numbers only, so it cannot say which animation it was. Idea: log the image name as well
+  - The level-end log line names the slowest build by its sprite name since 2026-10-18 (it used to show only hash numbers), and a second line lists the sprites holding the most rotated and resized memory
 
 # Negeer de onderstaande
 
@@ -79,7 +79,7 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Item lookups stream and build a new list on every hit (`PlayerInventory.getItemsByApplicationMethod`)
   - On Carrier, the drone list is rebuilt for every enemy missile (`FriendlyManager.getAllProtossDrones`)
 - The save file is written to disk on the game thread on every purchase, shop refresh, relic pick and level change
-  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:63 and 84, ShopManager.java:211, MenuButton.java:124 and 165, ShopFreezeService.java:69, and GameBoard.java:185 and 336
+  - `SaveManager.exportCurrentSave()` creates a new `ObjectMapper` and writes the file synchronously; called from ShopItem.java:63 and 84, ShopManager.java:211, MenuButton (the reroll case), MainMenuBoard.continueRun, ShopFreezeService.java:69, and GameBoard.java:185 and 336
   - `PlayerProfileManager` does the same on boss deaths, `GameState`, `PlayerInventory` and several boons
   - Fix: one shared `ObjectMapper`, and write in the background or once when leaving the shop
 - When a frame takes longer than 15 ms the whole game runs in slow motion instead of skipping frames
@@ -141,8 +141,8 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
 - In-game animations advance their frames inside paint, so animation speed follows paint speed
   - `drawAnimation` calls `getCurrentFrameImage(true)` (GameBoard.java:782)
 - Sprite-sheet frames are views into the whole sheet (`getSubimage`), so each frame keeps the full sheet in memory
-  - ImageDatabase.java:3118, ImageCropper and ImageRotator; not measured
-- `-Xms4g` reserves 4 GB at launch, which slows startup slightly; no pause-time setting (`-XX:MaxGCPauseMillis`) is set for G1
+  - ImageDatabase.java:3118; not measured
+  - The same happened to rotated copies (ImageRotator, ImageCropper): measured 2026-10-17 at 1.7 to 3.5 times the visible part, about 600 MB in the Firefighter run; fixed the same day, rotated copies are now images of their own
 - Every moving object builds its whole route up front as up to a few thousand points, then removes the first point each step
   - RegularPathFinder.java:45-68 (up to twice the window width divided by the step size) and StraightLinePathFinder; `GameObjectMover.handleNextWaypointRemoval` does `getWaypoints().remove(0)`, which shifts the whole list every time
   - Formation enemies build their route twice (`resetMovementPath()` in `LevelManager.spawnEnemy`)
@@ -253,9 +253,13 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - A faster flamethrower lowers its damage cooldown, so more burn-effect copies are made per second
 
 ## Ideas
-- Question for Bruus: can the mini bosses' death explosion be cheaper? (Nelis, 2026-10-15)
-  - The four mini bosses (Laserbeam, Mirage, Mother Ship, Shuriken) build Explosion2 at 3x: 62 frames of 1536x1536, 558 MB. This is the main cost of a mini-boss level preload
-  - Could it be 2x, have fewer frames, or be a different explosion? Each would change how the death looks, so it is your call
+- Decode boss and mini-boss images just before their level instead of at startup (Nelis, 2026-10-16: pinned, not the easiest win)
+  - Every PNG is decoded at startup and kept all game; the five mini bosses and the Space Station boss alone are about 350 MB of the 1.25 GB image database (measured 2026-10-16)
+  - Only if it adds no noticeable wait before a level: decoding on all processor cores while the level preload waits for it, as the explosions are resized now, is acceptable; decoding in the background while the player is in the shop is out of the question (Nelis)
+  - Measured 2026-10-17: the five big sets take 1.3-1.4 s to decode on one core and 0.2 s on all 16; one mini boss 0.05 s on all cores. Design and council done (Plan wish game-boss-decode-per-level): measure live heap per level and the boss-level peak first, then try only the Shuriken mini boss
+- Draw rotated sprites without storing a rotated copy (Plan wish game-rotate-while-drawing, designed 2026-10-17)
+  - The cheap steps were dropped by Nelis on 2026-10-18: building laser angles at level start added 1.5 to 2 seconds to every level start when Nelis tried it, which is why they are built at startup; coarser angle steps change the look; a cache rule against early drops is no longer needed since rotated copies are trimmed (the cache drops pictures about 4 times less often)
+  - Bruus gave the green light (2026-10-18). Since the trim, rotated copies hold about 0.95 GB of real pixels, above the 0.75 GB bar. The cache log names the sprite kinds since 2026-10-18 (GuardianMissile and PlasmaLauncherMissile hold most of the rotated memory). Next: the drawing mechanism with every kind switched off, then a pilot that draws one sprite kind rotated, keeping every size and hitbox exactly as today
 - Redesign the image cache so it keys on what an image is, not which object it is
   - Key by `ImageEnums` plus whole-number scale, angle, crop and flip values, looked up directly
   - Never modify a list the cache or ImageDatabase hands out
@@ -263,18 +267,18 @@ De punten hieronder hebben opzich wel gelijk, maar de performance impact van dez
   - Cap the cache size or clean it per wave, and make the scratch fields in ImageResizer and ImageRotator local
   - Touches ImageResizer, ImageRotator, SpriteAnimation and about ten call sites, so plan it before coding
 - Never build boss images during a level: prepare them at game start, run start or level start (Nelis, 2026-10-08)
-  - Startup builds no enemies; bosses, their summons and mini bosses are prepared just before their level by `LevelPreloader`. Startup builds only the laserbeams and the cash carrier (pirate and Overlord), into a permanent part of the image cache that is never cleared
+  - Startup builds no enemies; bosses and mini bosses are prepared just before their level by `LevelPreloader`; their summons build their resized pictures when they first spawn. Startup builds only the laserbeams and the cash carrier (pirate and Overlord), into a permanent part of the image cache that is never cleared
   - The image cache now drops the copies used longest ago once it is full (2.5 GB, reached after 6 to 9 minutes in the stress runs of 2026-10-08), so a boss prepared at startup (before 2026-10-13) could be dropped again and rebuilt when it appears, which freezes the game for a moment
   - Proposal: when leaving the shop, prepare the boss of the next level if it is a boss level, or its mini bosses if it is a regular level (the level plan, `LevelManager.planNextLevel()`, now decides both before the level starts) and keep them from being dropped until the level ends (built on the branch boss-preload, 2026-10-13)
   - Built and squash-merged into `Nelis` on 2026-10-17 (Bruus gave the green light). Playtested: mini bosses and bosses spawn without a stutter, the Twin fight has exactly 4 ships, Continue Run prepares the next level. Still to check before this entry is deleted: no sound plays or hangs after a Final boss preload (the test of 2026-10-15 was cut short by the relic crash in Items & Shop)
   - Check first: a freeze analysis of the two stress recordings of 2026-10-08 (target/perf/run-2026_10_08_20_59_06.jfr and run-2026_10_08_21_17_44.jfr) shows whether the freezes come from rebuilt boss images, other large images, garbage collection pauses or sound. If other large images also cause them, the same rule applies to them
 - Why the game uses so much memory but hardly any processor or graphics card (Nelis, 2026-10-08: the PC almost ran out of memory again)
   - The process reached 7.9 GB and 8.5 GB in the two stress runs of 2026-10-08. After a forced garbage collection the Java heap held 3.9 to 4.4 GB, of which the image cache is 2.5 GB; the rest is outside the heap
-  - The heap: `-Xms4g` reserves 4 GB at start and `-Xmx8g` allows 8 GB; Java keeps memory it has grown to, so Windows shows the peak
-  - The image cache keeps every rotated and resized sprite fully decoded at 4 bytes per pixel, and each rotated copy is a square as wide as the sprite's diagonal
-  - Outside the heap: about 600 sound threads with their own memory, JavaFX media buffers, and the graphics driver's copies of the cached images (`-Dsun.java2d.accthresh=0` gives every cached image a graphics card copy)
+  - The heap: `-Xms2g` reserves 2 GB at start and `-Xmx3g` allows 3 GB (8 GB until 2026-10-16, then 6 GB, then 4 GB until 2026-10-18); Java keeps memory it has grown to, so Windows shows the peak
+  - The image cache keeps every rotated and resized sprite fully decoded at 4 bytes per pixel. Until 2026-10-17 each cropped rotated copy also kept the whole square it was rotated on, as wide as the sprite's diagonal; it is now stored at its visible size
+  - Outside the heap: the graphics driver's copies of the cached images that have been drawn at least once (Java gives every drawn image a graphics card copy by default; about 2.8 GB at minute 30 of the 2026-10-16 recording) and the Windows heaps (0.57 GB). The sound threads are short-lived and leave no memory behind (tested 2026-10-15)
   - The processor is barely used because the game logic runs on one thread (one busy core of 16 shows as about 6%), and the caches exist so it does not redo rotations and scaling; drawing 2D sprites is light work for the graphics card
-  - Levers already on the list: a lower `-Xmx` after a 20 to 30 minute run, rotated copies at their real size, and the sound fix (see the audio entry under "Negeer de onderstaande")
+  - Levers already on the list: the sound fix (rotated copies at their real size was done 2026-10-17) (see the audio entry under "Negeer de onderstaande")
 
 ## Probeerseltje. Kijk maar of je er wat mee gaat doen
 
@@ -285,8 +289,8 @@ Why: on 2026-10-07 a 15-minute stress run used up all of the PC's memory and cra
 The slow motion in busy levels turned out to be a different problem: damage numbers piling up (see Menus & UI). The cache does not cause the slowdown, only the memory use.
 
 Decisions for the experiment:
-- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; only Generic bosses, mini bosses and their summons built during a level preload sit in a level section outside the budget, and that section is deleted when the level ends; the laserbeams and the cash carrier, built once at startup, sit in a permanent section outside the budget that is never cleared
-- The budget is a constant at the top of that class, first set to about 2.5 GB, which is above what one level needs today. It can be lowered once each image takes less memory
+- One shared cache class, `ImageCache` in `visualsandaudio/data/image/`, holds both rotated and resized images, with one memory budget for both that applies to its normal section; only the bosses and mini bosses built during a level preload sit in a level section outside the budget, and that section is deleted when the level ends; the laserbeams and the cash carrier, built once at startup, sit in a permanent section outside the budget that is never cleared
+- The budget is a constant at the top of that class, set to about 2.5 GB. Since 2026-10-16 it counts each image's Java pixels plus an estimated graphics card copy (1.3 times the pixels), so the normal section holds about 1.1 GB of pixels, and one stress level (about 2.1 GB of pixels) does not fit, so the cache evicts during a level. Since 2026-10-17 rotated copies are stored at their visible size, so those 1.1 GB are all visible pixels. A limit of about 1.15 GB was tried on 2026-10-17: the live heap dropped from about 3.1 to 2.45 GB, but the cache dropped and rebuilt pictures about twice as often and Nelis felt hitches, so the limit went back
 - Memory is counted as width × height × 4 bytes per image, each image counted once even if two entries point to it
 - When the budget is full, the image used longest ago is dropped and `flush()`ed, so its graphics card copy is freed too
 - Laser rotations are no longer kept forever. A laser that is firing keeps being used, so it stays in the cache
@@ -303,8 +307,6 @@ Result of the first test (2026-10-07, 5-minute stress run, level 1, compared wit
 - The number of graphics card copies did not change (about 48,000)
 
 Not done, possible later steps if memory needs to come down further:
-- Store each rotated copy at its real size instead of a full square as wide as the diagonal; today a crop is only a view on that square, so it saves no memory
 - Round scales to steps of 0.05, so scales computed from difficulty or enemy size stop creating new copy families
 - Coarser angle steps for small sprites (2 to 3 degrees); bosses and lasers keep 1 degree
 - Convert images to the screen's own pixel format at load; resizing the old indexed-colour images is what made the first Mirage mini boss freeze the game
-- Lower `-Xmx` from 8 GB once a 20 to 30 minute run shows how the heap behaves

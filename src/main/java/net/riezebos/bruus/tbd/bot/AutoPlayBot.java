@@ -9,9 +9,12 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
+import net.riezebos.bruus.tbd.game.gamestate.save.SaveManager;
+import net.riezebos.bruus.tbd.game.gamestate.shop.ShopSlotStatusEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.guiboards.BoardManager.ScreenType;
+import net.riezebos.bruus.tbd.guiboards.guicomponents.ShopItem;
 
 import javax.swing.Timer;
 
@@ -40,6 +43,8 @@ public class AutoPlayBot {
     private int relicTaps = 0;
     private boolean bossWasAlive = false;
     private boolean finished = false;
+    private boolean continuedSave = false;
+    private boolean shopBought = false;
     private double lastGameSeconds = -1;
     private long lastProgressMillis;
 
@@ -121,8 +126,15 @@ public class AutoPlayBot {
         switch (screen) {
             case MAIN_MENU:
                 if (now >= readyAtMillis) {
-                    recorder.event("main menu: opening class selection");
-                    boardManager.menuToClassSelection();
+                    if (BotSettings.getScenario().save != null && !continuedSave && SaveManager.getInstance().doesSaveFileExist()) {
+                        continuedSave = true;
+                        recorder.event("main menu: continuing the saved run");
+                        recorder.runStarted();
+                        boardManager.getMainMenuBoard().continueRun();
+                    } else {
+                        recorder.event("main menu: opening class selection");
+                        boardManager.menuToClassSelection();
+                    }
                 }
                 break;
             case CLASS_SELECTION:
@@ -141,7 +153,11 @@ public class AutoPlayBot {
                 break;
             case SHOP:
                 if (now >= readyAtMillis) {
-                    recorder.event("shop: leaving without buying");
+                    if (BotSettings.getShopMode() == BotScenario.ShopMode.BUY_ALL && !shopBought) {
+                        shopBought = true;
+                        buyEverythingInShop();
+                    }
+                    recorder.event(BotSettings.getShopMode() == BotScenario.ShopMode.BUY_ALL ? "shop: leaving" : "shop: leaving without buying");
                     boardManager.initGame();
                 }
                 break;
@@ -157,6 +173,21 @@ public class AutoPlayBot {
         }
     }
 
+    // Buys every item on offer through ShopItem.activateComponent(), the code a player's confirm press runs: it checks the money and
+    // that the slot is available, adds the item, spends the money, marks the slot as bought and exports the save
+    private void buyEverythingInShop() {
+        for (ShopItem shopItem : BoardManager.getInstance().getShopBoard().getShopItems()) {
+            if (shopItem.getSlot().getStatus() != ShopSlotStatusEnums.Available || !shopItem.getShopItemInformation().canAfford()) {
+                continue;
+            }
+            String name = shopItem.getSlot().getItem().getItemName();
+            shopItem.activateComponent();
+            if (shopItem.getSlot().getStatus() == ShopSlotStatusEnums.Bought) {
+                recorder.event("shop: bought " + name);
+            }
+        }
+    }
+
     private void onPositionChanged(String from, String to, long now) {
         recorder.event(from.isEmpty() ? "now at " + to : from + " -> " + to);
         position = to;
@@ -164,6 +195,7 @@ public class AutoPlayBot {
         lastProgressMillis = now;
         readyAtMillis = now + SETTLE_MILLIS;
         relicTaps = 0;
+        shopBought = false;
         reader.releaseGameplayInput();
 
         if (from.equals(ScreenType.DIFFICULTY_SELECTION.name()) && to.startsWith("GAME/")) {

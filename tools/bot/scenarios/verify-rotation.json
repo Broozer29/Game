@@ -1,0 +1,17 @@
+{
+  "description": "Rotate-while-drawing check: 3 normal levels as the Captain test save captain-items with an immune ship, infinite money and buy-all, with verifyRotateWhileDrawing on, so every rotating sprite kind except lasers is drawn rotated and compared with its real copy (rotate-verify lines in stdout.log). Fails only on a crash.",
+  "class": "Captain",
+  "minutes": 20,
+  "levels": 3,
+  "shop": "buy-all",
+  "save": "captain-items",
+  "devSwitches": ["playerIsImmune", "infiniteMoney", "exportCachePerformance", "verifyRotateWhileDrawing"],
+  "screenshots": {
+    "intervalSeconds": 90,
+    "width": 1280,
+    "events": ["boss", "dead"]
+  },
+  "expect": {
+    "noCrash": true
+  }
+}

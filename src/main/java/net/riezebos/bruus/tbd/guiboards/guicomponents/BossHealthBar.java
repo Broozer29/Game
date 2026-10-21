@@ -58,7 +58,8 @@ public class BossHealthBar extends Sprite {
         }
 
         float factor = boss.getCurrentHitpoints() / boss.getMaxHitPoints();
-        redBar.setImageDimensions(Math.round(originalRedBarWidth * factor), redBar.getHeight());
+        //At least 1 pixel: a boss left with a sliver of health would round to width 0, which the resizer cannot scale to
+        redBar.setImageDimensions(Math.max(1, Math.round(originalRedBarWidth * factor)), redBar.getHeight());
     }
 
     public List<Sprite> getDrawableComponents(){

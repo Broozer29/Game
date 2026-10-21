@@ -2,12 +2,11 @@ package net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.bluebo
 
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.Enemy;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyCreator;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.BossSummons;
-import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemySpawnSettings;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.EnemyManager;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enemytypes.bosses.BossActionable;
 import net.riezebos.bruus.tbd.game.gameobjects.enemies.enums.EnemyEnums;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.game.util.WithinVisualBoundariesCalculator;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
@@ -111,10 +110,9 @@ public class BlueBossSpawnFactory implements BossActionable {
 
     private Enemy createBlueBossFactory(Enemy enemy) {
         EnemyEnums enemyEnums = EnemyEnums.BlueBossFactory;
-        EnemySpawnSettings settings = BossSummons.summon(EnemyEnums.BlueBoss, enemyEnums);
         Point spawnPoint = getNextAvailableSpawnPoint();
-        Enemy factory = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), settings.directions().get(0),
-                settings.scale(0),
+        Enemy factory = EnemyCreator.createEnemy(enemyEnums, enemy.getXCoordinate(), enemy.getYCoordinate(), Direction.LEFT,
+                enemyEnums.getDefaultScale(),
                 enemyEnums.getMovementSpeed());
         factory.setOwnerOrCreator(enemy);
         factory.setCenterCoordinates(spawnPoint.getX(), spawnPoint.getY());

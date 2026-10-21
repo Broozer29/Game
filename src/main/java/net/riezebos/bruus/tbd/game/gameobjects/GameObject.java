@@ -25,6 +25,8 @@ import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageRotator;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.RotateWhileDrawing;
+import net.riezebos.bruus.tbd.visualsandaudio.data.image.RotationGeometry;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.Sprite;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -45,6 +47,7 @@ public class GameObject extends Sprite {
 
     protected SpriteAnimation animation; //This is a code smell, because spriteanimation is already extension of sprite, need to untangle this
     protected SpriteAnimation destructionAnimation;
+    protected List<SpriteAnimation> bossDeathExplosions = new ArrayList<>(); // extra death explosions around the centre one, empty for most objects
     protected SpriteAnimation shieldDamagedAnimation;
     protected SpriteAnimation exhaustAnimation;
     protected SpriteAnimation chargingUpAttackAnimation;
@@ -357,6 +360,10 @@ public class GameObject extends Sprite {
 //                this.destructionAnimation.rotateAnimation(this.rotationAngle, false);
                 AnimationManager.getInstance().addUpperAnimation(destructionAnimation);
             }
+            for (SpriteAnimation explosion : bossDeathExplosions) {
+                explosion.setOriginCoordinates(this.getCenterXCoordinate(), this.getCenterYCoordinate());
+                AnimationManager.getInstance().addUpperAnimation(explosion);
+            }
 
             for (GameObject object : objectsFollowingThis) {
                 if (object.isVisible()) {
@@ -533,7 +540,15 @@ public class GameObject extends Sprite {
         }
 
         if (this.image != null) {
-            this.image = ImageRotator.getInstance().rotate(originalImage, direction, crop);
+            if (this.animation == null && RotateWhileDrawing.isEnabled(getImageEnum())) {
+                // Keep the unrotated picture, it is drawn rotated
+                this.image = this.originalImage;
+                RotationGeometry.Geometry geometry = RotationGeometry.geometry(originalImage, direction.toAngle(), crop);
+                setDrawRotation(direction.toAngle(), crop, geometry);
+                RotateWhileDrawing.LOG_verifySingle(getImageEnum(), originalImage, direction.toAngle(), crop, geometry);
+            } else {
+                this.image = ImageRotator.getInstance().rotate(originalImage, direction, crop);
+            }
             super.recalculateBoundsAndSize();
         }
     }
@@ -582,9 +597,17 @@ public class GameObject extends Sprite {
             if (this.animation != null) {
                 this.animation.rotateAnimation(calculatedAngle, crop);
             } else if (this.image != null) {
-                this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle, crop);
-                if (this.scale != 1) {
-                    this.setScale(this.scale);
+                if (RotateWhileDrawing.isEnabled(getImageEnum())) {
+                    // Keep the unrotated picture, it is drawn rotated
+                    this.image = this.originalImage;
+                    RotationGeometry.Geometry geometry = RotationGeometry.geometry(originalImage, calculatedAngle, crop);
+                    setDrawRotation(calculatedAngle, crop, geometry);
+                    RotateWhileDrawing.LOG_verifySingle(getImageEnum(), originalImage, calculatedAngle, crop, geometry);
+                } else {
+                    this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, calculatedAngle, crop);
+                    if (this.scale != 1) {
+                        this.setScale(this.scale);
+                    }
                 }
 
                 super.recalculateBoundsAndSize();
@@ -682,6 +705,10 @@ public class GameObject extends Sprite {
 
     public void setDestructionAnimation(SpriteAnimation destructionAnimation) {
         this.destructionAnimation = destructionAnimation;
+    }
+
+    public List<SpriteAnimation> getBossDeathExplosions() {
+        return bossDeathExplosions;
     }
 
     public Point getCurrentLocation() {
@@ -851,6 +878,11 @@ public class GameObject extends Sprite {
         if (this.animation != null) {
             this.animation.setAnimationScale(scale);
         } else {
+            if (drawGeometry != null) {
+                // Same as the switch-off case: build the real rotated copy first, then scale it
+                this.image = ImageRotator.getInstance().rotateOrFlip(this.originalImage, drawAngle, drawCrop);
+                clearRotation();
+            }
             this.image = ImageResizer.getInstance().getScaledImage(image, scale);
             configureImageDimensions();
             super.recalculateBoundsAndSize();

@@ -5,10 +5,10 @@ Bosses and the final boss: attacks, phases, difficulty and rewards.
 - The Final boss clone attack crashes when the Guillotine has executed one of its clones
   - Guillotine removes the executed enemy's death animation (Guillotine.java:35); `FinalBossLaserbeamClone.detonateClone` then uses it without a null check (FinalBossLaserbeamClone.java:100), while the method above it does check. Seen 2026-10-15 with the `captain-items` test save
 - Two spawn directions can never be picked; is that intended?
-  - Red Boss shurikens: the old pick was `nextInt(0, 2)`, so LEFT was never picked; `BossSummons` now lists only LEFT_UP and LEFT_DOWN for Red's shurikens
-  - Space Station: its shurikens never get RIGHT_DOWN (`BossSummons` lists only LEFT_UP, LEFT_DOWN and RIGHT_UP), and its bounce direction (`SpaceStationSpinningAttack.getRandomDirection`, `nextInt(0, directions.length - 1)`) never picks RIGHT_DOWN either
-  - To change either, add the direction to the `BossSummons` list (and fix the bounce pick for the Station)
-  - Both look like off-by-one slips. Nothing was changed: the allowed directions are listed in `BossSummons` exactly as they are picked today
+  - Red Boss shurikens: `RedBossSpawnShuriken.getRandomDirection` picks `nextInt(0, 2)`, so LEFT is never picked, only LEFT_UP and LEFT_DOWN
+  - Space Station: `SpaceStationSpinningAttack` picks its shuriken and bounce directions with `nextInt(0, directions.length - 1)`, so RIGHT_DOWN is never picked
+  - To change either, widen the pick in those two classes
+  - Both look like off-by-one slips. Nothing was changed
   - Question for Nelis/Bruus: should Red also spawn LEFT, and should the Space Station also pick RIGHT_DOWN, or leave it as it is?
 - The white battlecruiser boss sometimes crashes the game
 - The white battlecruiser crash is probably the reflective-block crash fixed in commit a7ccbe1b

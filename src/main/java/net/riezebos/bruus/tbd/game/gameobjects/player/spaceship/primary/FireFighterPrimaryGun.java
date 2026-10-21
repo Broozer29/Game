@@ -37,6 +37,10 @@ public class FireFighterPrimaryGun extends PrimaryPlayerGun {
     private float FUEL_MINIMUM_REQUIRED = 10f;
     public static float fireFighterBonusDamageRatio = 1;
 
+    public float getMinimumFuelToFire() {
+        return FUEL_MINIMUM_REQUIRED;
+    }
+
     private void startFiringFlameThrower(int xCoordinate, int yCoordinate, SpaceShip owner) {
 
         if (this.channeledAttack == null && orangeBarCurrentValue >= FUEL_MINIMUM_REQUIRED) {

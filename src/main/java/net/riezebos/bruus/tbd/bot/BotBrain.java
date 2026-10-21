@@ -10,6 +10,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.friendlies.Portal;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.primary.FireFighterPrimaryGun;
 import net.riezebos.bruus.tbd.visualsandaudio.data.DataClass;
 
 // Decides where the ship flies and when it fires. It is not a good player: it keeps away from enemies and enemy missiles,
@@ -25,6 +26,7 @@ class BotBrain {
     private static final double IMMUNE_STANDOFF = 250; // when immune, the ship parks this far left of the nearest enemy
 
     private long ticks = 0;
+    private boolean refuelling = false;
 
     // One tick of play. The ship may be null: the player is dying or has not spawned yet.
     void play(BotInputReader reader, SpaceShip ship) {
@@ -103,7 +105,20 @@ class BotBrain {
         push[1] += Math.cos(ticks / 63.0) * 0.15 * calm;
 
         applyMove(reader, push[0], push[1]);
-        reader.setFire(BotSettings.getFireMode() == BotScenario.FireMode.ALWAYS);
+        boolean fire = BotSettings.getFireMode() == BotScenario.FireMode.ALWAYS;
+        if (fire && ship.getSpaceShipRegularGun() instanceof FireFighterPrimaryGun) {
+            // The Firefighter's flames use fuel: hold fire below the gun's minimum and fire again once the tank is 90% full
+            FireFighterPrimaryGun gun = (FireFighterPrimaryGun) ship.getSpaceShipRegularGun();
+            float max = gun.getOrangeBarMaxValue(ship);
+            float current = max <= 0 ? 0 : gun.getOrangeBarCurrentValue(ship);
+            if (max <= 0 || current >= 0.9f * max) {
+                refuelling = false;
+            } else if (current < gun.getMinimumFuelToFire()) {
+                refuelling = true;
+            }
+            fire = !refuelling;
+        }
+        reader.setFire(fire);
 
         boolean hasCharge = ship.getSpecialGun() != null && ship.getSpecialGun().getSpecialAttackCharges() > 0;
         boolean crowded = danger >= SPECIAL_DANGER_LEVEL || enemyCount >= SPECIAL_CROWD_SIZE || bossOnScreen;

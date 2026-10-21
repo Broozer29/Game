@@ -1,0 +1,24 @@
+{
+  "description": "Limit test of performance and memory: 6 levels against the Royal Guard (Hard) from the test save captain-limit, the fully grown Captain build with Focus Fire, with an immune ship, infinite money, buy-all and the image cache log on. If this runs smoothly, anything a normal player can reach does. Fails only on a crash.",
+  "class": "Captain",
+  "minutes": 30,
+  "levels": 6,
+  "shop": "buy-all",
+  "save": "captain-limit",
+  "devSwitches": [
+    "playerIsImmune",
+    "exportCachePerformance",
+    "infiniteMoney"
+  ],
+  "screenshots": {
+    "intervalSeconds": 120,
+    "width": 960,
+    "events": [
+      "boss",
+      "dead"
+    ]
+  },
+  "expect": {
+    "noCrash": true
+  }
+}

@@ -176,6 +176,21 @@ public class Enemy extends GameObject {
         this.chargingUpAttackAnimation = new SpriteAnimation(spriteAnimationConfiguration);
     }
 
+    // Mini boss death: the centre explosion plus three more spread over the boss, all at scale 1 so no enlarged copy is built.
+    // Each row is the x and y direction of the offset (a third of the boss's width and height) and the frame delay.
+    protected void initBossDeathExplosions(SpriteAnimationConfiguration explosionConfiguration) {
+        this.destructionAnimation.setAnimationScale(1f);
+        int[][] offsetsAndFrameDelays = {{-1, -1, 1}, {1, -1, 1}, {0, 1, 2}};
+        for (int[] offsetAndFrameDelay : offsetsAndFrameDelays) {
+            SpriteAnimation explosion = new SpriteAnimation(explosionConfiguration);
+            explosion.setAnimationScale(1f);
+            explosion.addXOffset(offsetAndFrameDelay[0] * this.getWidth() / 3);
+            explosion.addYOffset(offsetAndFrameDelay[1] * this.getHeight() / 3);
+            explosion.setFrameDelay(offsetAndFrameDelay[2]);
+            this.bossDeathExplosions.add(explosion);
+        }
+    }
+
     @Override
     public void triggerOnDeathActions() {
         if (LevelManager.getInstance().isNextLevelABossLevel() && this.enemyType.getEnemyCategory().equals(EnemyCategory.Boss)) {
@@ -188,7 +203,9 @@ public class Enemy extends GameObject {
 
 
         } else if (!LevelManager.getInstance().isNextLevelABossLevel() && !this.enemyType.getEnemyCategory().equals(EnemyCategory.Summon)) {
-            if (this.movementConfiguration.getRotation().equals(Direction.RIGHT)) {
+            if (this.movementConfiguration == null) {
+                //Already removed earlier in the same attack (for example a follower of an enemy that just died): no board block to add
+            } else if (this.movementConfiguration.getRotation().equals(Direction.RIGHT)) {
                 GodRunDetector.getInstance().addBoardBlock(Math.max(8 - this.currentBoardBlock, 0)); //the inverse with a minimum of 0
             } else if (this.movementConfiguration.getRotation().equals(Direction.UP) || this.movementConfiguration.getRotation().equals(Direction.DOWN)) {
                 GodRunDetector.getInstance().addBoardBlock(5); //hardcoded 5 because these enemies dont change their boardblock when moving up or down so 5 is above average to easily maintain godrunscore

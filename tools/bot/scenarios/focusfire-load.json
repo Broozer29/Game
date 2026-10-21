@@ -1,0 +1,17 @@
+{
+  "description": "Focus Fire load test: 3 normal levels as the Captain test save captain-focusfire (captain-items plus Upgrade: Focus Fire, immune ship, infinite money, buy-all, cache log on) with the game's current drawing (verifyRotateWhileDrawing off). Fails only on a crash.",
+  "class": "Captain",
+  "minutes": 20,
+  "levels": 3,
+  "shop": "buy-all",
+  "save": "captain-focusfire",
+  "devSwitches": ["playerIsImmune", "infiniteMoney", "exportCachePerformance"],
+  "screenshots": {
+    "intervalSeconds": 90,
+    "width": 1280,
+    "events": ["boss", "dead"]
+  },
+  "expect": {
+    "noCrash": true
+  }
+}

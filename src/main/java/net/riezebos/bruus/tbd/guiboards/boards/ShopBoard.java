@@ -128,6 +128,19 @@ public class ShopBoard extends JPanel implements TimerHolder {
         timer.start();
     }
 
+    // The items on offer, in the three item rows; the bot clicks them the way a player's confirm press does
+    public List<ShopItem> getShopItems() {
+        List<ShopItem> shopItems = new ArrayList<>();
+        for (List<GUIComponent> row : List.of(regularGridFirstRow, regularGridSecondRow, regularGridThirdRow)) {
+            for (GUIComponent component : row) {
+                if (component instanceof ShopItem shopItem) {
+                    shopItems.add(shopItem);
+                }
+            }
+        }
+        return shopItems;
+    }
+
     public void initShopBoardGUIComponents() {
         for (List<GUIComponent> row : regularGrid) {
             for (GUIComponent component : row) {
