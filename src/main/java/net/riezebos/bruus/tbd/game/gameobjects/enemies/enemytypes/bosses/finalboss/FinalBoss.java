@@ -23,6 +23,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.finalboss.F
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
+import net.riezebos.bruus.tbd.game.gamestate.GameStatusEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.movement.BoardBlockUpdater;
 import net.riezebos.bruus.tbd.game.movement.Direction;
@@ -142,6 +143,7 @@ public class FinalBoss extends Enemy {
     public void triggerOnDeathActions() {
         super.triggerOnDeathActions();
         GameState.getInstance().setFinalBossDefeated(true);
+        GameState.getInstance().setGameState(GameStatusEnums.Show_Level_Score_Card);
     }
 
 

@@ -709,6 +709,8 @@ public class ImageLoader {
                 return "/images/UI/CompoundWealthUnlock.png";
             case UILevelComplete:
                 return "/images/UI/levelcompletelight.png";
+            case UIVictory:
+                return "/images/UI/victory.png";
             case UIScoreTextCard:
                 return "/images/UI/gradelight.png";
             case ProtossCarrierWithoutEngine:

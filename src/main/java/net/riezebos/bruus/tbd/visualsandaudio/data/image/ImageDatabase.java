@@ -100,6 +100,7 @@ public class ImageDatabase {
     private BufferedImage UIScoreTextImage;
     private BufferedImage UIYouDied;
     private BufferedImage UILevelCompleted;
+    private BufferedImage UIVictory;
     private BufferedImage progressBar;
     private BufferedImage progressBarFilling;
     private BufferedImage frame;
@@ -714,6 +715,7 @@ public class ImageDatabase {
         this.progressBar = imgLoader.getImage(ImageEnums.ProgressBar);
         this.progressBarFilling = imgLoader.getImage(ImageEnums.ProgressBarFilling);
 
+        this.UIVictory = imgLoader.getImage(ImageEnums.UIVictory);
         this.UILevelCompleted = imgLoader.getImage(ImageEnums.UILevelComplete);
         this.UIYouDied = imgLoader.getImage(ImageEnums.UIYouDied);
         this.UIScoreTextImage = imgLoader.getImage(ImageEnums.UIScoreTextCard);
@@ -990,6 +992,8 @@ public class ImageDatabase {
 
     public BufferedImage getImage(ImageEnums imageType) {
         switch (imageType) {
+            case UIVictory:
+                return this.UIVictory;
             case VileEruptionIcon:
                 return this.vileEruption;
             case BileIcon:

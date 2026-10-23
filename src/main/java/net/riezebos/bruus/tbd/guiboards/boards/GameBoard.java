@@ -352,6 +352,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private boolean isPlayingDeathMusic = false;
     private boolean hasExportedLogs = false;
 
+    //todo this whole method is unbelievable inefficient and sloppily coded, requires a refactor
     private void drawEndOfLevelScreen(Graphics2D g, boolean hasSurvived) {
         GameStatsTracker gameStatsTracker = GameStatsTracker.getInstance();
 
@@ -363,13 +364,16 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
 
         if (!hasSurvived && !isPlayingDeathMusic) {
-            if(LevelManager.getInstance().isNextLevelTheFinalBossLevel()) {
+            if (LevelManager.getInstance().isNextLevelTheFinalBossLevel()) {
                 FinalBoss.attemptMockingBark();
             } else {
                 playDeathMusic();
             }
             isPlayingDeathMusic = true;
-            LevelManager.getInstance().resetBossUsed(); //sloppy fix to reset the boss used flag, this could be refactored into something better
+        }
+
+        if(!hasSurvived || GameState.getInstance().isFinalBossDefeated()) {
+            LevelManager.getInstance().resetBossUsed();
             SaveManager.getInstance().deleteSaveFile();
         }
 
@@ -395,19 +399,25 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         if (hasSurvived) {
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Enemies spawned this level:            " + gameStatsTracker.getEnemiesSpawnedThisRound();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+            if (GameState.getInstance().isFinalBossDefeated()) {
+                //show something else, tbd
 
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Enemies missed this level:             " + gameStatsTracker.getAmountOfEnemiesMissedThisRound();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+            } else {
+                g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
 
-            firstRowYCoordinate += messageHeight;
-            msgToDraw = "Minerals acquired this level:          " + gameStatsTracker.getMineralsGainedThisRound();
-            g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+                firstRowYCoordinate += messageHeight;
+                msgToDraw = "Enemies spawned this level:            " + gameStatsTracker.getEnemiesSpawnedThisRound();
+                g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+                firstRowYCoordinate += messageHeight;
+                msgToDraw = "Enemies missed this level:             " + gameStatsTracker.getAmountOfEnemiesMissedThisRound();
+                g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+
+                firstRowYCoordinate += messageHeight;
+                msgToDraw = "Minerals acquired this level:          " + gameStatsTracker.getMineralsGainedThisRound();
+                g.drawString(msgToDraw, firstRowXCoordinate, firstRowYCoordinate);
+            }
 
         } else {
             msgToDraw = "Total enemies killed:                  " + gameStatsTracker.getEnemiesKilled();
@@ -430,12 +440,26 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
 
         if (hasSurvived) {
-            grade.changeImage(gameStatsTracker.getGradeImageTypeByCurrentRoundScore());
-            titleText.changeImage(ImageEnums.UILevelComplete);
-            msgToDraw = "Enemy percentage killed: " + gameStatsTracker.getPercentageOfEnemiesKilledThisRound() + "%";
-            int percentageKilledXCoordinate = gradeText.getXCoordinate() + 10;
-            int percentageKilledYCoordinate = grade.getYCoordinate() + Math.round(grade.getHeight() * 1.2f);
-            g.drawString(msgToDraw, percentageKilledXCoordinate, percentageKilledYCoordinate);
+            if (GameState.getInstance().isFinalBossDefeated()) {
+                grade.setCenterCoordinates(gameOverCard.getCenterXCoordinate(), gameOverCard.getCenterYCoordinate());
+                grade.changeImage(gameStatsTracker.getFinalBossScore());
+                grade.setImageDimensions(grade.getWidth() * 2, grade.getHeight() * 2);
+                titleText.changeImage(ImageEnums.UIVictory);
+                msgToDraw = "You have escaped!";
+                int escapedXCoordinate = grade.getXCoordinate() + 10;
+                int excapedYCoordinate = grade.getYCoordinate() + Math.round(grade.getHeight() * 1.2f);
+                g.drawString(msgToDraw, escapedXCoordinate, excapedYCoordinate);
+
+                msgToDraw = "Total run score: " + gameStatsTracker.getRunScore() + "%";
+                g.drawString(msgToDraw, escapedXCoordinate, excapedYCoordinate + 20); //todo 20 is temporary placeholder, should be calculated on fontsize
+            } else {
+                grade.changeImage(gameStatsTracker.getGradeImageTypeByCurrentRoundScore());
+                titleText.changeImage(ImageEnums.UILevelComplete);
+                msgToDraw = "Enemy percentage killed: " + gameStatsTracker.getPercentageOfEnemiesKilledThisRound() + "%";
+                int percentageKilledXCoordinate = gradeText.getXCoordinate() + 10;
+                int percentageKilledYCoordinate = grade.getYCoordinate() + Math.round(grade.getHeight() * 1.2f);
+                g.drawString(msgToDraw, percentageKilledXCoordinate, percentageKilledYCoordinate);
+            }
 
         } else {
             ImageEnums randomGameOverPeepo = gameUICreator.getRandomGameOverPeepo();
@@ -457,7 +481,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
 
         }
         drawImage(g, grade);
-        drawImage(g, gradeText);
+
+        if (!GameState.getInstance().isFinalBossDefeated()) {
+            drawImage(g, gradeText);
+        }
         drawImage(g, titleText);
 
 
@@ -1406,7 +1433,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                 }
             } else if (action == MenuAction.ANY_BUTTON) {
                 if (screenState == GameStatusEnums.Show_Level_Score_Card) {
-                    gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
+                    if(GameState.getInstance().isFinalBossDefeated()) {
+                        gameState.setGameState(GameStatusEnums.Level_Completed);
+                        BoardManager.getInstance().switchScreen(BoardManager.ScreenType.MAIN_MENU);
+                        resetGame();
+                    } else {
+                        gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
+                    }
                 } else {
                     boardManager.initMainMenu();
                     GameStatsTracker.getInstance().resetGameStatsTracker();

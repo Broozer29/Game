@@ -242,7 +242,7 @@ public enum ImageEnums {
     Star_Red3, Star_Red4, Star_Yellow1, Star_Yellow2, Star_Yellow3, Star_Yellow4, Star_Orange1, Star_Orange2, Star_Orange3, Star_Orange4,
     Star_White1, Star_White2, Star_White3, Star_White4, Moon2, Moon3, Moon4, Moon5, GreenPlanet1, GreenPlanet2, BluePlanet1,
     BluePlanet2, BluePlanet3, BluePlanet4, BluePlanet5, BluePlanet6, CashCarrier, CashExplosion, GradeBronze, GradeSilver, GradeGold, GradePlatinum, GradeDiamond,
-    GradeMaster, GradeGrandMaster, UIScoreTextCard, UIYouDied, UILevelComplete, Starcraft2Keystone, Starcraft2BouncingLaser, VIPTicket, PiercingLaser,
+    GradeMaster, GradeGrandMaster, UIScoreTextCard, UIYouDied, UILevelComplete,UIVictory, Starcraft2Keystone, Starcraft2BouncingLaser, VIPTicket, PiercingLaser,
     Starcraft2LockOn, ThornWeaver, BarbedMissiles, BarbedAegis, Thornedplates,
     Starcraft2FireBatWeapon,
     // Missile Animations

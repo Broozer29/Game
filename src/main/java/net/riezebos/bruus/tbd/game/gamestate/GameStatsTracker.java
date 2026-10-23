@@ -19,69 +19,91 @@ public class GameStatsTracker {
     private double mineralsGainedThisRound;
 
 
-    private GameStatsTracker () {
+    private GameStatsTracker() {
 
     }
 
-    public static GameStatsTracker getInstance () {
+    public static GameStatsTracker getInstance() {
         return instance;
     }
 
-    public void resetGameStatsTracker () {
+    public void resetGameStatsTracker() {
         enemiesKilled = 0;
         mineralsAcquired = 0;
         enemiesSpawned = 0;
         amountOfEnemiesMissedThisRound = 0;
     }
 
-    public void resetStatsForNextRound () {
+    public void resetStatsForNextRound() {
         amountOfEnemiesMissedThisRound = 0;
         enemiesKilledThisRound = 0;
         enemiesSpawnedThisRound = 0;
         mineralsGainedThisRound = 0;
     }
 
-    public int getAmountOfEnemiesMissedThisRound () {
+    public int getAmountOfEnemiesMissedThisRound() {
         amountOfEnemiesMissedThisRound = enemiesSpawnedThisRound - enemiesKilledThisRound;
         return amountOfEnemiesMissedThisRound;
     }
 
-    public int getEnemiesKilledThisRound () {
+    public int getEnemiesKilledThisRound() {
         return this.enemiesKilledThisRound;
     }
 
-    public int getEnemiesSpawnedThisRound () {
+    public int getEnemiesSpawnedThisRound() {
         return this.enemiesSpawnedThisRound;
     }
 
 
-    public void addEnemySpawned (int amount) {
+    public void addEnemySpawned(int amount) {
         enemiesSpawned += amount;
         enemiesSpawnedThisRound += amount;
     }
 
-    public void addEnemyKilled (int amount) {
+    public void addEnemyKilled(int amount) {
         enemiesKilled += amount;
         enemiesKilledThisRound += amount;
         GodRunDetector.getInstance().addEnemyKilled();
 
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Consume) != null){
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Consume) != null) {
             Consume consume = (Consume) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.Consume);
             consume.applyEffectToObject(null); //recheck how much hitpoints should be given
         }
     }
 
-    public void addMoneyAcquired (float amount) {
+    public void addMoneyAcquired(float amount) {
         mineralsAcquired += amount;
         mineralsGainedThisRound += amount;
     }
 
 
-    public int getPercentageOfEnemiesKilledThisRound () {
+    public int getPercentageOfEnemiesKilledThisRound() {
         return Math.round(((float) enemiesKilledThisRound / enemiesSpawnedThisRound) * 100);
     }
 
-    public ImageEnums getGradeImageTypeByCurrentRoundScore () {
+    private float runScore = 100;
+    public int getRunScore(){
+        return Math.round(runScore);
+    }
+
+    public ImageEnums getFinalBossScore() {
+        switch (GameState.getInstance().getBossesDefeated()) {
+            case 1:
+                return ImageEnums.GradeGrandMaster;
+            case 2:
+                return ImageEnums.GradeMaster;
+            case 3:
+                return ImageEnums.GradeDiamond;
+            case 4:
+                return ImageEnums.GradePlatinum;
+            case 5:
+                return ImageEnums.GradeGold;
+            default:
+                return ImageEnums.GradeBronze; //temporary placeholder
+        }
+    }
+
+    public ImageEnums getGradeImageTypeByCurrentRoundScore() {
         double percentage = 0;
         if (enemiesKilledThisRound > 0 && enemiesSpawnedThisRound > 0) {
             percentage = ((double) enemiesKilledThisRound / enemiesSpawnedThisRound) * 100;
@@ -106,19 +128,19 @@ public class GameStatsTracker {
         return ImageEnums.Test_Image;
     }
 
-    public int getEnemiesKilled () {
+    public int getEnemiesKilled() {
         return enemiesKilled;
     }
 
-    public long getMineralsAcquired () {
+    public long getMineralsAcquired() {
         return Math.round(mineralsAcquired);
     }
 
-    public long getMineralsGainedThisRound () {
+    public long getMineralsGainedThisRound() {
         return Math.round(mineralsGainedThisRound);
     }
 
-    public int getEnemiesSpawned () {
+    public int getEnemiesSpawned() {
         return enemiesSpawned;
     }
 

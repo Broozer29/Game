@@ -24,7 +24,7 @@ import java.util.Random;
 
 public class FinalBossSpawnFourDirectionalDrones implements BossActionable {
     private double lastAttackedTime = 0;
-    private double attackCooldown = 15;
+    private double attackCooldown = 20;
     private int priority = 2;
     private int amountToSpawn = 1;
     private Random random;
@@ -92,7 +92,7 @@ public class FinalBossSpawnFourDirectionalDrones implements BossActionable {
             random = new Random();
         }
 
-        return random.nextInt(1, 3);
+        return random.nextInt(4, 5);
     }
 
 

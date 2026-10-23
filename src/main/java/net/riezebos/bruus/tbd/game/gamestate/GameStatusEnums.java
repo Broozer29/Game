@@ -13,5 +13,6 @@ public enum GameStatusEnums {
 	Transition_To_Next_Stage,
 	SelectingRelic,
 	Shopping,
+	FinalBossDefeated, //Ending a run but showing score screen
 	Paused,
 }

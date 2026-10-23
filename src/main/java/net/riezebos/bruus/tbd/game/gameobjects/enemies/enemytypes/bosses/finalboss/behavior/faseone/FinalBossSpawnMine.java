@@ -8,6 +8,7 @@ import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileCreator;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileEnums;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
 import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.finalboss.FinalBossMine;
+import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
@@ -24,6 +25,7 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class FinalBossSpawnMine implements BossActionable {
     private double lastAttackedTime = 0;
@@ -36,7 +38,7 @@ public class FinalBossSpawnMine implements BossActionable {
 
     //Extra space on top of the outermost reflecting ring, so the mine and the ring blocks never overlap
     private static float extraDistanceFromRings = 75;
-    private static int maxLocationAttempts = 50;
+    private static int maxLocationAttempts = 100;
 
     /*
             Description of what this should do:
@@ -113,6 +115,11 @@ public class FinalBossSpawnMine implements BossActionable {
                 .map(missile -> (FinalBossMine) missile)
                 .toList();
 
+        List<Point> playerPoints = PlayerManager.getInstance().getAllSpaceShips().stream().map(spaceShip -> new Point(spaceShip.getCenterXCoordinate(), spaceShip.getCenterYCoordinate())).collect(Collectors.toList());
+        //The warp in animation is drawn on the mine location at the same scale, so it stands in for the size of the mine that doesn't exist yet
+        float mineWidth = attackingAnimation.getWidth();
+        float mineHeight = attackingAnimation.getHeight();
+
         float x = 0;
         float y = 0;
         Point clearOfRingsOnly = null;
@@ -120,6 +127,11 @@ public class FinalBossSpawnMine implements BossActionable {
             x = width * 0.1f + random.nextFloat() * (width * 0.4f); //no longer 0.8 but 0.4 so we should only spawn on the left side, sloppy hack
             y = minHeight + height * 0.1f + random.nextFloat() * height * 0.8f;
             if (Math.hypot(x - enemy.getCenterXCoordinate(), y - enemy.getCenterYCoordinate()) < minDistanceFromBoss) {
+                continue;
+            }
+
+            //A mine on top of a player detonates instantly, so this matters as much as staying clear of the rings
+            if (!isAwayFromPlayers(x, y, playerPoints, mineWidth, mineHeight)) {
                 continue;
             }
 
@@ -146,6 +158,18 @@ public class FinalBossSpawnMine implements BossActionable {
         for (FinalBossMine mine : existingMines) {
             boolean tooCloseHorizontally = Math.abs(x - mine.getCenterXCoordinate()) < mine.getWidth() * 2;
             boolean tooCloseVertically = Math.abs(y - mine.getCenterYCoordinate()) < mine.getHeight() * 2;
+            if (tooCloseHorizontally && tooCloseVertically) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //Same check as isAwayFromMines: the mine center stays 2 mine widths or 2 mine heights away from the center of every player
+    private boolean isAwayFromPlayers(float x, float y, List<Point> playerPoints, float mineWidth, float mineHeight) {
+        for (Point playerPoint : playerPoints) {
+            boolean tooCloseHorizontally = Math.abs(x - playerPoint.getX()) < mineWidth * 2;
+            boolean tooCloseVertically = Math.abs(y - playerPoint.getY()) < mineHeight * 2;
             if (tooCloseHorizontally && tooCloseVertically) {
                 return false;
             }
