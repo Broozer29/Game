@@ -190,7 +190,7 @@ public enum EnemyEnums {
             1150, 500, 0, 1.25f, 0.75f, 843, 800,
             2),
 
-    TwinBoss(4000, 9,
+    TwinBoss(4250, 9,
             AudioEnums.Alien_Spaceship_Destroyed,
             ImageEnums.TwinBoss, ImageEnums.BossExplosion, 0, EnemyCategory.Boss, EnemyTribes.Generic, 20,
             1150, 500, 0, 2.15f, 0.5f, 386, 285,

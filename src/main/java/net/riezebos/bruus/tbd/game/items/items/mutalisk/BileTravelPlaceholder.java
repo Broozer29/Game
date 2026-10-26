@@ -13,7 +13,7 @@ public class BileTravelPlaceholder extends Item {
     public static float timeBetweenExplosion = 0.35f;
 
     public BileTravelPlaceholder () {
-        super(ItemEnums.BileTravelRange, 1, ItemApplicationEnum.CustomActivation);
+        super(ItemEnums.ForcefulSpit, 1, ItemApplicationEnum.CustomActivation);
     }
 
     @Override

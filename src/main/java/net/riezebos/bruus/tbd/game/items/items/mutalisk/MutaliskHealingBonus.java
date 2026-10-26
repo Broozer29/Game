@@ -12,7 +12,7 @@ public class MutaliskHealingBonus extends Item {
     public static float healingBonus = 0.15f;
 
     public MutaliskHealingBonus(){
-        super(ItemEnums.MutaliskAttackSpeed, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
+        super(ItemEnums.MutaliskHealingBonus, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

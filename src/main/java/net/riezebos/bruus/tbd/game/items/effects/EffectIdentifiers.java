@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.items.effects;
 public enum EffectIdentifiers {
     AdrenalineAttackSpeedModifier,
     AdrenalineHealthRegen,
-    PoisonedNeedlesDoT,
+    PoisonedBileDoT,
     YellowBossVoidAttackSpeedModifier,
     YellowBossVoidMoveSpeedModifier,
     TazerAttackDisable,
@@ -16,6 +16,7 @@ public enum EffectIdentifiers {
     PlatinumSpongeArmorBonus,
     SelfRepairingSteelHealthRegeneration,
     MutaliskPassiveHealing,
+    MutaliskIncreasedPassiveHealing,
     MoneyPrinterGoldOnDeath,
     SpawnCoinsOnDeath,
     SpawnScrapMetalOnDeath,

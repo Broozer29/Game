@@ -171,7 +171,7 @@ public class FinalBossPhase2LaserbeamCloneAttack implements BossActionable {
             smokeAnimation.setCenterCoordinates(centerPoint.getX(), centerPoint.getY());
             AnimationManager.getInstance().addUpperAnimation(smokeAnimation);
 
-            TemporaryImmunity temporaryImmunity = new TemporaryImmunity(1); //short immunity to balance out the player teleporting in the middle of nowhere
+            TemporaryImmunity temporaryImmunity = new TemporaryImmunity(2); //short immunity to balance out the player teleporting in the middle of nowhere
             spaceShip.addEffect(temporaryImmunity);
         }
     }

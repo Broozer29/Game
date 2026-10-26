@@ -30,7 +30,7 @@ public enum ItemEnums {
     BombasticBarrier(ItemRarityEnums.Rare, ImageEnums.BombasticBarrier, "Bombastic Barrier", true),
     BarrierBooster(ItemRarityEnums.Common, ImageEnums.Starcraft2_BatteryUpgrade, "Barrier Booster", true),
     ReflectiveShielding(ItemRarityEnums.Legendary, ImageEnums.ReflectiveShielding, "Barrier Backfire", true),
-    CalmInChaos(ItemRarityEnums.Legendary, ImageEnums.CalmInChaos, "Blizzard Barrier", true),
+    BlizzardBarrier(ItemRarityEnums.Legendary, ImageEnums.CalmInChaos, "Blizzard Barrier", true),
 
     //Relics 2.0
     //generic relics
@@ -70,16 +70,28 @@ public enum ItemEnums {
 
     //Mutalisk relics
     Consume(ItemRarityEnums.Relic, ImageEnums.Consume, "Consume", false),
-    ThickHide(ItemRarityEnums.Common, ImageEnums.Test_Image, "Thick Hide", false),
     InstantViralEruption(ItemRarityEnums.Relic, ImageEnums.Test_Image, "InstantViralEruption", false),
-    BileTravelRange(ItemRarityEnums.Relic, ImageEnums.Test_Image, "BileTravelTRange", false),
+    ForcefulSpit(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Forceful spit", false),
     MutaliskSideCannons(ItemRarityEnums.Relic, ImageEnums.Test_Image, "MutaliskSideCannons", false),
+    BileBitPiercingPlaceholder(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Mutalisk Bile Bit Piercing placeholder", false),
+    PoisonedNeedles(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Poisoned Needles", false),
+    ViralEruptionBileBits(ItemRarityEnums.Relic, ImageEnums.Test_Image, "Vile eruption bile bits", false),
 
     //Mutalisk items
+
+    //defensive/healing
+    ThickHide(ItemRarityEnums.Common, ImageEnums.Test_Image, "Thick Hide", false),
     MutaliskHealingBonus(ItemRarityEnums.Common, ImageEnums.Test_Image, "MutaliskHealingBonus", false),
+    RavenousRegeneration(ItemRarityEnums.Rare, ImageEnums.Test_Image, "Ravenous Regeneration", false),
+
+    //offensive/damage
     MutaliskAttackSpeed(ItemRarityEnums.Common, ImageEnums.Test_Image, "MutaliskAttackSpeed", false),
-    PoisonedNeedles(ItemRarityEnums.Common, ImageEnums.Test_Image, "Poison Needles", false),
     FragmentationSacs(ItemRarityEnums.Common, ImageEnums.Test_Image, "Fragmentation Sacs", false),
+    PoisonedBile(ItemRarityEnums.Rare, ImageEnums.Test_Image, "Poisoned Bile", false),
+
+    //other/utlity
+
+
 
 
     //-----------------------------

@@ -95,7 +95,7 @@ public class MutaliskPrimaryGun extends PrimaryPlayerGun {
         double angleRadians = Math.toRadians(angleDegrees);
 
         float horizontalDistance = 150;
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BileTravelRange) != null){
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ForcefulSpit) != null){
             horizontalDistance *= BileTravelPlaceholder.bonusTravelRange;
         }
 
@@ -110,7 +110,7 @@ public class MutaliskPrimaryGun extends PrimaryPlayerGun {
         double ownerCenterY = owner.getCenterYCoordinate();
 
         float distanceToTravel = 150;
-        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BileTravelRange) != null){
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ForcefulSpit) != null){
             distanceToTravel *= BileTravelPlaceholder.bonusTravelRange;
         }
 

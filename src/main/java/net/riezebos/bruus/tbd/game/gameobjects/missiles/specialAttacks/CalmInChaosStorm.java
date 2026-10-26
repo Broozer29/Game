@@ -3,7 +3,7 @@ package net.riezebos.bruus.tbd.game.gameobjects.missiles.specialAttacks;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
-import net.riezebos.bruus.tbd.game.items.items.CalmInChaos;
+import net.riezebos.bruus.tbd.game.items.items.BlizzardBarrier;
 import net.riezebos.bruus.tbd.game.util.VisualLayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.SpriteAnimationConfiguration;
@@ -33,11 +33,11 @@ public class CalmInChaosStorm extends SpecialAttack {
         if(!isDissipating && this.getTransparancyAlpha() >= 0.4f){
             this.setTransparancyAlpha(false, 0.4f, 0);
         }
-        if ((ownerOrCreator == null || ownerOrCreator.getCurrentShieldPoints() < (getOwnerMaxShieldPoints() * CalmInChaos.hitPointRequirement)) && !isDissipating) {
+        if ((ownerOrCreator == null || ownerOrCreator.getCurrentShieldPoints() < (getOwnerMaxShieldPoints() * BlizzardBarrier.hitPointRequirement)) && !isDissipating) {
             startDissipation();
         }
 
-        if(!isDissipating && ownerOrCreator != null && ownerOrCreator.getCurrentShieldPoints() >= (getOwnerMaxShieldPoints() * CalmInChaos.hitPointRequirement)){
+        if(!isDissipating && ownerOrCreator != null && ownerOrCreator.getCurrentShieldPoints() >= (getOwnerMaxShieldPoints() * BlizzardBarrier.hitPointRequirement)){
             this.setDamage(this.originalDamage * (ownerOrCreator.getCurrentShieldPoints() / getOwnerMaxShieldPoints()));
         }
 
@@ -58,8 +58,8 @@ public class CalmInChaosStorm extends SpecialAttack {
         spriteConfiguration.setxCoordinate(-500);
         spriteConfiguration.setyCoordinate(-500);
         spriteConfiguration.setScale(1);
-        CalmInChaos calmInChaos = (CalmInChaos) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CalmInChaos);
-        float damageModifier = calmInChaos.getQuantity() * CalmInChaos.damageModifier;
+        BlizzardBarrier blizzardBarrier = (BlizzardBarrier) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BlizzardBarrier);
+        float damageModifier = blizzardBarrier.getQuantity() * BlizzardBarrier.damageModifier;
         SpriteAnimationConfiguration spriteAnimationConfiguration = new SpriteAnimationConfiguration(spriteConfiguration, 0, true);
         SpecialAttackConfiguration specialAttackConfiguration = new SpecialAttackConfiguration(
                 owner.getDamage() * damageModifier,

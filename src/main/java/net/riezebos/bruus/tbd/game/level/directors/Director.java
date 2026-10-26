@@ -581,15 +581,15 @@ public class Director {
             }
             return random.nextInt(min, max);
         } else if (direction == Direction.DOWN || direction == Direction.LEFT_DOWN || direction == Direction.RIGHT_DOWN) {
-            int min = instance.getPlayableWindowMinHeight() - Math.round(totalFormationHeight * 1.5f);
-            int max = instance.getPlayableWindowMinHeight() - 10;
+            int min = instance.getPlayableWindowMinHeight() - Math.round(totalFormationHeight * 1.25f);
+            int max = instance.getPlayableWindowMinHeight() - totalFormationHeight;
             if (min > max) {
                 return min; // Fallback to min if bounds are invalid
             }
             return random.nextInt(min, max + 1);
         } else if (direction == Direction.UP || direction == Direction.LEFT_UP || direction == Direction.RIGHT_UP) {
-            int min = instance.getPlayableWindowMaxHeight() + 10;
-            int max = instance.getPlayableWindowMaxHeight() + Math.round(totalFormationHeight * 1.5f);
+            int min = instance.getPlayableWindowMaxHeight() + totalFormationHeight;
+            int max = instance.getPlayableWindowMaxHeight() + Math.round(totalFormationHeight * 1.25f);
             if (min > max) {
                 return min; // Fallback to min if bounds are invalid
             }

@@ -2,8 +2,8 @@ package net.riezebos.bruus.tbd.game.items.items.mutalisk;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerClass;
-import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerManager;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
@@ -18,7 +18,9 @@ public class ThickHide extends Item {
 
     @Override
     public void applyEffectToObject (GameObject gameObject) {
-        PlayerManager.getInstance().getAllSpaceShips().forEach(spaceShip -> spaceShip.setMaxHitpointsModifier(spaceShip.getMaxHitpointsModifier() + (quantity * maxHitpointsModifier)));
+        if(gameObject instanceof SpaceShip spaceShip){
+            spaceShip.setMaxHitpointsModifier(spaceShip.getMaxHitpointsModifier() + (quantity * maxHitpointsModifier));
+        }
     }
 
     @Override

@@ -34,14 +34,6 @@ public class ModuleAccuracy extends Item {
             return false;
         }
 
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Carrier)){
-            return false;
-        }
-        if(PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Mutalisk)){
-            return false;
-        }
-
-
         if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ModuleScorch) != null){
             return false;
         }
@@ -54,6 +46,6 @@ public class ModuleAccuracy extends Item {
             return false;
         }
 
-        return true;
+        return PlayerStats.getInstance().getPlayerClass().equals(PlayerClass.Captain);
     }
 }

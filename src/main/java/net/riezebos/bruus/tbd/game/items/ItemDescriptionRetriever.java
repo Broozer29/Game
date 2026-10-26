@@ -97,12 +97,12 @@ public class ItemDescriptionRetriever {
             case ExplosiveGreed -> {
                 return "Coins now explode on pickup for " + Math.round(ExplosiveGreed.baseDamageModifier * 100) + "% damage. Damage is increased by " + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "% (+" + Math.round(ExplosiveGreed.damageModifierPerCoinPickup * 100) + "%) for every coin you have picked up since acquiring this item.";
             } //legendary
-            case CalmInChaos -> {
-                double value = CalmInChaos.damageModifier
+            case BlizzardBarrier -> {
+                double value = BlizzardBarrier.damageModifier
                         * (1.0 / SpecialAttack.defaultInternalTickCooldown)
                         * 100.0;
                 return "Whilst your shields are above "
-                        + Math.round(CalmInChaos.hitPointRequirement * 100)
+                        + Math.round(BlizzardBarrier.hitPointRequirement * 100)
                         + "% health, they generate a storm of ice dealing up to "
                         + Math.round(value) + "% (+" + Math.round(value)
                         + "%) damage per second based on the current hitpoints of your shield.";
@@ -375,25 +375,40 @@ public class ItemDescriptionRetriever {
             case InstantViralEruption -> {
                 return "Instead of charging up your SECONDARY_PLACEHOLDER now instantly releases and consumes " + Math.round(InstantViralEruption.hitpointsPerUse * 100) + " % of your maximum health.";
             }
+            case ViralEruptionBileBits -> {
+                return "Vile Eruption now unleashes up to " + ViralEruptionBileBits.maxBileBits + " (+" + ViralEruptionBileBits.maxBileBits + ") bile bits based on the time spent charging Vile Eruption.";
+            }
 
             case MutaliskAttackSpeed -> {
-                return "Increases attack speed by " + Math.round(MutaliskAttackSpeed.attackSpeedBonus) + "%";
+                return "Increases attack speed by " + Math.round(MutaliskAttackSpeed.attackSpeedBonus * 100) + "%";
             } //common
-
+            case BileBitPiercingPlaceholder -> {
+                return "Your Bile Bits now pierces through ALL enemies.";
+            }
+            case MutaliskSideCannons -> {
+                return "You spit 2 additional Biles.";
+            }
             case PoisonedNeedles -> {
-                double damagePerSecond = (PoisonedNeedles.hpDamageRatio / DamageOverTime.damageInterval) * 100;
-                return "Your attacks apply damage over time. Enemies take " +
+                return "Your Bile Bits now also apply Poisoned Bile's poison.";
+            }
+
+            case PoisonedBile -> {
+                double damagePerSecond = (PoisonedBile.hpDamageRatio / DamageOverTime.damageInterval) * 100;
+                return "Your Bile applies a permanent poison that deals damage over time. Enemies take " +
                         Math.round(damagePerSecond) +
-                        "% of their maximum hitpoints per second. Reduced effectiveness against Bosses.";
+                        "% (+" + Math.round(damagePerSecond) + "%) of their maximum hitpoints per second. Reduced effectiveness against Bosses. Your Bile heals you for the damage it deals.";
             }
             case MutaliskHealingBonus -> {
                 return "Increases ALL healing by " + Math.round(MutaliskHealingBonus.healingBonus * 100) + "%";
             }
-            case BileTravelRange -> {
+            case ForcefulSpit -> {
                 return "Increases the range of Bile by " + Math.round(BileTravelPlaceholder.bonusTravelRange * 100) + "% and causes it to release Bile Bits whilst traveling.";
             }
             case FragmentationSacs -> {
                 return "Increases the amount of Bile Bits created from Bile by " + FragmentationSacs.bonusBileBits + ".";
+            }
+            case RavenousRegeneration -> {
+                return "After your Bile damages an enemy, increase your passive health regeneration by " + Math.round(RavenousRegeneration.healingModifier * 100) + "% (+ " + Math.round(RavenousRegeneration.healingModifier * 100) + "%) for " + RavenousRegeneration.duration + " seconds.";
             }
             //--------------------------------------Uncounted--------------------------------------
             case ArmorPiercingRounds -> {

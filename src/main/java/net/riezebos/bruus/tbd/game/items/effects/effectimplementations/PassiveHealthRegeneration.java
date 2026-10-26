@@ -1,6 +1,7 @@
 package net.riezebos.bruus.tbd.game.items.effects.effectimplementations;
 
 import net.riezebos.bruus.tbd.game.gameobjects.GameObject;
+import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
 import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.effects.EffectActivationTypes;
 import net.riezebos.bruus.tbd.game.items.effects.EffectIdentifiers;
@@ -21,7 +22,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
     private double timeStartedHealing = -1;
     private List<SpriteAnimation> animationList = new ArrayList<>();
 
-    public PassiveHealthRegeneration (float healingAmount, EffectIdentifiers effectIdentifier) {
+    public PassiveHealthRegeneration(float healingAmount, EffectIdentifiers effectIdentifier) {
         this.healingAmount = healingAmount;
         this.lastTimeDamageTaken = GameState.getInstance().getGameSeconds();
         this.effectActivationTypes = EffectActivationTypes.CheckEveryGameTick;
@@ -29,7 +30,7 @@ public class PassiveHealthRegeneration implements EffectInterface {
         this.duration = -1;
     }
 
-    public PassiveHealthRegeneration (float healingAmount, float duration, EffectIdentifiers effectIdentifier) {
+    public PassiveHealthRegeneration(float healingAmount, float duration, EffectIdentifiers effectIdentifier) {
         this.healingAmount = healingAmount;
         this.lastTimeDamageTaken = GameState.getInstance().getGameSeconds();
         this.effectActivationTypes = EffectActivationTypes.CheckEveryGameTick;
@@ -38,9 +39,9 @@ public class PassiveHealthRegeneration implements EffectInterface {
     }
 
     @Override
-    public void activateEffect (GameObject gameObject) {
+    public void activateEffect(GameObject gameObject) {
         double currentTime = GameState.getInstance().getGameSeconds();
-        if(timeStartedHealing <= 0){
+        if (timeStartedHealing <= 0) {
             timeStartedHealing = currentTime;
         }
         if (currentTime - gameObject.getLastGameSecondDamageTaken() > 0.001 && // More than 10ms have passed
@@ -52,7 +53,12 @@ public class PassiveHealthRegeneration implements EffectInterface {
                 centerHealingAnimation(gameObject);
             }
 
-            gameObject.heal(healingAmount * GameObject.EFFECT_UPDATE_INTERVAL, false); // Apply healing
+            float actualHealAmount = healingAmount;
+            if (gameObject instanceof SpaceShip spaceShip && spaceShip.hasEffect(EffectIdentifiers.MutaliskIncreasedPassiveHealing)) {
+                MutaliskHealthRegenBonusEffect effect = (MutaliskHealthRegenBonusEffect) spaceShip.getEffectIfExists(EffectIdentifiers.MutaliskIncreasedPassiveHealing);
+                actualHealAmount *= effect.getHealingBonusModifier();
+            }
+            gameObject.heal(actualHealAmount * GameObject.EFFECT_UPDATE_INTERVAL, false); // Apply healing
         } else {
             if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
                 hideHealingAnimation();
@@ -60,17 +66,17 @@ public class PassiveHealthRegeneration implements EffectInterface {
         }
     }
 
-    private void centerHealingAnimation (GameObject gameObject) {
+    private void centerHealingAnimation(GameObject gameObject) {
         animationList.get(0).setCenterCoordinates(gameObject.getCenterXCoordinate(), gameObject.getCenterYCoordinate());
     }
 
-    private void showHealingAnimation () {
+    private void showHealingAnimation() {
         if (!AnimationManager.getInstance().getUpperAnimations().contains(animationList.get(0))) {
             AnimationManager.getInstance().addUpperAnimation(animationList.get(0));
         }
     }
 
-    private void hideHealingAnimation () {
+    private void hideHealingAnimation() {
         if (AnimationManager.getInstance().getUpperAnimations().contains(animationList.get(0))) {
             AnimationManager.getInstance().getUpperAnimations().remove(animationList.get(0));
             animationList.get(0).refreshAnimation();
@@ -78,8 +84,8 @@ public class PassiveHealthRegeneration implements EffectInterface {
     }
 
     @Override
-    public boolean shouldBeRemoved (GameObject gameObject) {
-        if(duration <= 0) { //negative duration should be infinitely lasting
+    public boolean shouldBeRemoved(GameObject gameObject) {
+        if (duration <= 0) { //negative duration should be infinitely lasting
             return false;
         } else return GameState.getInstance().getGameSeconds() - lastTimeDamageTaken >= duration;
     }
@@ -91,33 +97,33 @@ public class PassiveHealthRegeneration implements EffectInterface {
     }
 
     @Override
-    public EffectActivationTypes getEffectTypesEnums () {
+    public EffectActivationTypes getEffectTypesEnums() {
         return effectActivationTypes;
     }
 
     @Override
-    public void resetDuration () {
+    public void resetDuration() {
         timeStartedHealing = GameState.getInstance().getGameSeconds();
     }
 
     @Override
-    public void increaseEffectStrength (GameObject gameObject) {
+    public void increaseEffectStrength(GameObject gameObject) {
         //Not needed, the "healingAmount" already factors this in
     }
 
     @Override
-    public EffectInterface copy () {
+    public EffectInterface copy() {
         return new PassiveHealthRegeneration(healingAmount, effectIdentifier);
     }
 
     @Override
-    public EffectIdentifiers getEffectIdentifier () {
+    public EffectIdentifiers getEffectIdentifier() {
         return effectIdentifier;
     }
 
     @Override
-    public void removeEffect (GameObject gameObject){
-        if(!this.animationList.isEmpty() && this.animationList.get(0) != null){
+    public void removeEffect(GameObject gameObject) {
+        if (!this.animationList.isEmpty() && this.animationList.get(0) != null) {
             animationList.get(0).setInfiniteLoop(false);
             animationList.get(0).setVisible(false);
         }

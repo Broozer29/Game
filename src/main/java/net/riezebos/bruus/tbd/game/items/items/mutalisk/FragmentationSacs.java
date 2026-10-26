@@ -13,7 +13,7 @@ public class FragmentationSacs  extends Item {
     public static int bonusBileBits = 3;
 
     public FragmentationSacs(){
-        super(ItemEnums.MutaliskAttackSpeed, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
+        super(ItemEnums.FragmentationSacs, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);
     }
 
     @Override

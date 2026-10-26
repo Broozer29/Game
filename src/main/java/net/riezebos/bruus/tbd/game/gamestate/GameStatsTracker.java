@@ -87,7 +87,7 @@ public class GameStatsTracker {
     }
 
     public ImageEnums getFinalBossScore() {
-        switch (GameState.getInstance().getBossesDefeated()) {
+        switch (GameState.getInstance().getBossesDefeated() - 1) { //-1 to offset the defeat of the finalboss, as this one shouldnt count
             case 1:
                 return ImageEnums.GradeGrandMaster;
             case 2:

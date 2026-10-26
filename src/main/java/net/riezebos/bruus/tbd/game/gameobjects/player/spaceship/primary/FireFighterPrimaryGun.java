@@ -32,8 +32,8 @@ public class FireFighterPrimaryGun extends PrimaryPlayerGun {
 
 
     // Fuel tank mechanics
-    private float FUEL_DEPLETION_RATE = 0.3f;
-    private float FUEL_REGENERATION_RATE = 0.35f;
+    private float FUEL_DEPLETION_RATE = 0.325f;
+    private float FUEL_REGENERATION_RATE = 0.25f;
     private float FUEL_MINIMUM_REQUIRED = 10f;
     public static float fireFighterBonusDamageRatio = 1;
 

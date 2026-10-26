@@ -9,7 +9,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
 public class MutaliskAttackSpeed extends Item {
 
-    public static float attackSpeedBonus = 10;
+    public static float attackSpeedBonus = 0.1f;
 
     public MutaliskAttackSpeed(){
         super(ItemEnums.MutaliskAttackSpeed, 1,  ItemApplicationEnum.ApplyOnSpaceShipCreation);

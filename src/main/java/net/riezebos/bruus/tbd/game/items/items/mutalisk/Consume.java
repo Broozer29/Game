@@ -12,7 +12,7 @@ import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 public class Consume extends Item {
 
     public static int hitsPointsGrantedPerKill = 1;
-    public static int killsRequiredPerHitPoint = 15;
+    public static int killsRequiredPerHitPoint = 10;
     private int killsAcquiredBeforeCounting = -100;
     public static int currentKillCount = 0;
     public static float currentMaxHpBonus = 0;
@@ -26,7 +26,7 @@ public class Consume extends Item {
     public void applyEffectToObject (GameObject gameObject) {
         //should be called on each enemy kill
         currentKillCount++;
-        if((currentKillCount - killsAcquiredBeforeCounting) % 15 == 0){
+        if((currentKillCount - killsAcquiredBeforeCounting) % killsRequiredPerHitPoint == 0){
             currentMaxHpBonus += hitsPointsGrantedPerKill;
         }
     }

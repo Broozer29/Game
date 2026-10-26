@@ -17,7 +17,7 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.util.EffectAnimationHelper;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.CorrosiveOil;
 import net.riezebos.bruus.tbd.game.items.items.firefighter.FireWithoutGasIsAss;
-import net.riezebos.bruus.tbd.game.items.items.mutalisk.PoisonedNeedles;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.PoisonedBile;
 import net.riezebos.bruus.tbd.game.util.ThornsDamageDealer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
@@ -46,6 +46,8 @@ public class DamageOverTime implements EffectInterface {
     private double lastDamageTime = 0;
     public static final double damageInterval = 0.01;
     private boolean appliedArmorDebuff = false;
+
+    private GameObject objectThatAppliedDebuff; // this will be null in the majority of times, not reliable
 
     public DamageOverTime(float damage, double durationInSeconds, SpriteAnimation animation, EffectIdentifiers effectIdentifier) {
         this.damage = damage;
@@ -116,9 +118,13 @@ public class DamageOverTime implements EffectInterface {
 
                 if(this.effectIdentifier.equals(EffectIdentifiers.Ignite) && target.hasEffect(EffectIdentifiers.WithoutGasItsAssDamageBonus)){
                     target.takeDamage((this.damage * dotStacks * FireWithoutGasIsAss.increase) * GameObject.EFFECT_UPDATE_INTERVAL);
-                } else if(this.effectIdentifier.equals(EffectIdentifiers.PoisonedNeedlesDoT)){
-                    PoisonedNeedles poisonedNeedles = (PoisonedNeedles) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PoisonedNeedles);
-                    target.takeDamage(Math.min(5, (target.getMaxHitPoints() * (poisonedNeedles.getQuantity() * PoisonedNeedles.hpDamageRatio)) * GameObject.EFFECT_UPDATE_INTERVAL));
+                } else if(this.effectIdentifier.equals(EffectIdentifiers.PoisonedBileDoT)){
+                    PoisonedBile poisonedNeedles = (PoisonedBile) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.PoisonedBile);
+                    float damageTaken = Math.min(5, (target.getMaxHitPoints() * (poisonedNeedles.getQuantity() * PoisonedBile.hpDamageRatio)) * GameObject.EFFECT_UPDATE_INTERVAL);
+                    target.takeDamage(damageTaken);
+                    if(objectThatAppliedDebuff != null && objectThatAppliedDebuff.getCurrentHitpoints() <= objectThatAppliedDebuff.getMaxHitPoints()) {
+                        objectThatAppliedDebuff.heal(damageTaken, false);
+                    }
                 }
                 else {
                     target.takeDamage((this.damage * dotStacks) * GameObject.EFFECT_UPDATE_INTERVAL);
@@ -265,5 +271,13 @@ public class DamageOverTime implements EffectInterface {
 
     public int getDotStacks() {
         return dotStacks;
+    }
+
+    public GameObject getObjectThatAppliedDebuff() {
+        return objectThatAppliedDebuff;
+    }
+
+    public void setObjectThatAppliedDebuff(GameObject objectThatAppliedDebuff) {
+        this.objectThatAppliedDebuff = objectThatAppliedDebuff;
     }
 }

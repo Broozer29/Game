@@ -48,12 +48,9 @@ public class PlayerInventory {
 
         if (DevTestSettings.infiniteMoney) {
             cashMoney = 999999999999f;
-            addItem(ItemEnums.RegenerativeSteel);
-            addItem(ItemEnums.RegenerativeSteel);
-            addItem(ItemEnums.PlatinumSponge);
-            addItem(ItemEnums.PlatinumSponge);
-            addItem(ItemEnums.GuardianDrone);
-            addItem(ItemEnums.GuardianDrone);
+            addItem(ItemEnums.ViralEruptionBileBits);
+            addItem(ItemEnums.ViralEruptionBileBits);
+            addItem(ItemEnums.ViralEruptionBileBits);
         } else {
             cashMoney = 0;
         }
@@ -116,6 +113,10 @@ public class PlayerInventory {
 
     public Item createItemFromEnum(ItemEnums itemEnum) {
         switch (itemEnum) {
+            case ViralEruptionBileBits:
+                return new ViralEruptionBileBits();
+            case PoisonedNeedles:
+                return new PoisonedNeedles();
             case Recycler:
                 return new Recycler();
             case MutaliskSideCannons:
@@ -126,11 +127,11 @@ public class PlayerInventory {
                 return new FragmentationSacs();
             case MutaliskHealingBonus:
                 return new MutaliskHealingBonus();
-            case PoisonedNeedles:
-                return new PoisonedNeedles();
+            case PoisonedBile:
+                return new PoisonedBile();
             case MutaliskAttackSpeed:
                 return new MutaliskAttackSpeed();
-            case BileTravelRange:
+            case ForcefulSpit:
                 return new BileTravelPlaceholder();
             case InstantViralEruption:
                 return new InstantViralEruption();
@@ -142,8 +143,8 @@ public class PlayerInventory {
                 return new WisdomBall();
             case LeechingLasers:
                 return new LeechingLasers();
-            case CalmInChaos:
-                return new CalmInChaos();
+            case BlizzardBarrier:
+                return new BlizzardBarrier();
             case Placeholder:
                 return new Placeholder();
             case CashInfusion:
@@ -172,6 +173,10 @@ public class PlayerInventory {
                 return new EnergySyphon();
             case ElectroShredding:
                 return new ElectroShredding();
+            case RavenousRegeneration:
+                return new RavenousRegeneration();
+            case BileBitPiercingPlaceholder:
+                return new BileBitPiercingPlaceholder();
             case PuncturingPierce:
                 return new PuncturingPierce();
             case StickyDynamite:

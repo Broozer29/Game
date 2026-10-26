@@ -32,8 +32,8 @@ import net.riezebos.bruus.tbd.game.items.effects.EffectInterface;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.DamageOverTime;
 import net.riezebos.bruus.tbd.game.items.effects.effectimplementations.PassiveHealthRegeneration;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
+import net.riezebos.bruus.tbd.game.items.items.BlizzardBarrier;
 import net.riezebos.bruus.tbd.game.items.items.BombasticBarrier;
-import net.riezebos.bruus.tbd.game.items.items.CalmInChaos;
 import net.riezebos.bruus.tbd.game.items.items.carrier.KineticDynamo;
 import net.riezebos.bruus.tbd.game.items.items.mutalisk.Consume;
 import net.riezebos.bruus.tbd.game.level.LevelManager;
@@ -446,9 +446,9 @@ public class SpaceShip extends GameObject {
     }
 
     private void updateItemEffects() {
-        CalmInChaos calmInChaos = (CalmInChaos) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.CalmInChaos);
-        if (calmInChaos != null) {
-            if (currentShieldPoints >= (getTotalMaxShieldPoints() * CalmInChaos.hitPointRequirement) && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)) {
+        BlizzardBarrier blizzardBarrier = (BlizzardBarrier) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BlizzardBarrier);
+        if (blizzardBarrier != null) {
+            if (currentShieldPoints >= (getTotalMaxShieldPoints() * BlizzardBarrier.hitPointRequirement) && !MissileManager.getInstance().getSpecialAttacks().contains(calmInChaosStorm)) {
                 if (calmInChaosStorm == null) {
                     calmInChaosStorm = CalmInChaosStorm.createEffect(this);
                 }

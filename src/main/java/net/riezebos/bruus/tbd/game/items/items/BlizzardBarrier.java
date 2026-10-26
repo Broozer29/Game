@@ -8,7 +8,7 @@ import net.riezebos.bruus.tbd.game.items.Item;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.enums.ItemApplicationEnum;
 
-public class CalmInChaos extends Item {
+public class BlizzardBarrier extends Item {
     private static float targetDamagePercentage = 400;
     public static float hitPointRequirement = 0.01f;
     public static float damageModifier = (float) (
@@ -16,8 +16,8 @@ public class CalmInChaos extends Item {
                     * SpecialAttack.defaultInternalTickCooldown
     );
 
-    public CalmInChaos() {
-        super(ItemEnums.CalmInChaos, 1, ItemApplicationEnum.CustomActivation);
+    public BlizzardBarrier() {
+        super(ItemEnums.BlizzardBarrier, 1, ItemApplicationEnum.CustomActivation);
     }
 
 

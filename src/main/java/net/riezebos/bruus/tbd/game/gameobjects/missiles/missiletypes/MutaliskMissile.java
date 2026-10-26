@@ -7,6 +7,7 @@ import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.mutalisk.BileTravelPlaceholder;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.RavenousRegeneration;
 import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.MovementConfiguration;
 import net.riezebos.bruus.tbd.game.movement.Point;
@@ -62,11 +63,11 @@ public class MutaliskMissile extends Missile {
         float percent = 1.0f - ((float) stepsTaken / (float) stepsInPath);
         percent = Math.max(0.0f, Math.min(1.0f, percent)); // Clamp to [0, 1]
 
-        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BileTravelRange) != null &&
+        if (PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ForcefulSpit) != null &&
                 !isBileBit &&
                 GameState.getInstance().getGameSeconds() - gameSecondsSinceLastBileItemActivation > BileTravelPlaceholder.timeBetweenExplosion) {
             for (int i = 0; i < amountOfBileBits; i++) {
-                fireMissile(this);
+                createBileBit(this, minDistanceRange, maxDistanceRange, baseMovementSpeed);
             }
             gameSecondsSinceLastBileItemActivation = GameState.getInstance().getGameSeconds();
         }
@@ -87,6 +88,11 @@ public class MutaliskMissile extends Missile {
         if (!isBileBit) {
             this.ownerOrCreator.heal(flatHealValue, true);
             detonateMissile(collidedObject);
+
+            if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.RavenousRegeneration) != null && this.ownerOrCreator instanceof SpaceShip spaceShip){
+                RavenousRegeneration ravenousRegeneration = (RavenousRegeneration) PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.RavenousRegeneration);
+                spaceShip.addEffect(ravenousRegeneration.createEffect());
+            }
         } else {
             super.pierceAndBounce(collidedObject);
         }
@@ -113,12 +119,12 @@ public class MutaliskMissile extends Missile {
 
     private void detonate() {
         for (int i = 0; i < amountOfBileBits; i++) {
-            fireMissile(this);
+            MissileManager.getInstance().addExistingMissile(createBileBit(this, minDistanceRange, maxDistanceRange, baseMovementSpeed));
         }
         this.setVisible(false);
     }
 
-    private void fireMissile(GameObject owner) {
+    public static Missile createBileBit(GameObject owner, int minDistanceRange, int maxDistanceRange, float baseMovementSpeed) {
         int centerXCoordinate = Math.toIntExact(Math.round(owner.getCenterXCoordinate() + (owner.getWidth() * 0.25)));
         int centerYCoordinate = Math.toIntExact(Math.round(owner.getCenterYCoordinate() + (owner.getHeight() * 0.25)));
         float scale = 0.25f;
@@ -132,12 +138,13 @@ public class MutaliskMissile extends Missile {
                 1, new DestinationPathFinder(), Direction.RIGHT
         );
 
-        Point destination = calculateDestination();
+        Point destination = calculateBileBitDestination(owner, minDistanceRange, maxDistanceRange);
         movementConfiguration.setDestination(destination);
 
         boolean isFriendly = true;
 
-        SpaceShip spaceShip = (SpaceShip) owner.getOwnerOrCreator();
+        // Owner is either the SpaceShip itself (secondary gun) or a missile owned by the SpaceShip
+        SpaceShip spaceShip = owner instanceof SpaceShip ship ? ship : (SpaceShip) owner.getOwnerOrCreator();
         float damage = spaceShip.getDamage();
         boolean isExplosive = false;
         MissileConfiguration missileConfiguration = missileCreator1.createMissileConfiguration(MissileEnums.MutaliskMissile, damage, MissileEnums.MutaliskMissile.getDeathOrExplosionImageEnum(), isFriendly, isExplosive,
@@ -158,18 +165,21 @@ public class MutaliskMissile extends Missile {
         MutaliskMissile mutaliskMissile = (MutaliskMissile) missile;
         mutaliskMissile.isBileBit = true;
 
-        MissileManager.getInstance().addExistingMissile(missile);
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.BileBitPiercingPlaceholder) != null){
+            mutaliskMissile.setPiercesThroughObjects(true);
+            mutaliskMissile.setMaximumAmountOfPierces(99999);
+            mutaliskMissile.setAmountOfPiercesLeft(mutaliskMissile.getMaximumAmountOfPierces());
+        }
+
+        return missile;
     }
 
-    private int minDistanceRange = 80;
-    private int maxDistanceRange = 170;
+    private int minDistanceRange = 90;
+    private int maxDistanceRange = 200;
     private float baseMovementSpeed = 5.5f;
-
-    private Point calculateDestination() {
-        maxDistanceRange = 200;
-        minDistanceRange = 90;
-        double ownerCenterX = this.getCenterXCoordinate();
-        double ownerCenterY = this.getCenterYCoordinate();
+    public static Point calculateBileBitDestination(GameObject owner, int minDistanceRange, int maxDistanceRange) {
+        double ownerCenterX = owner.getCenterXCoordinate();
+        double ownerCenterY = owner.getCenterYCoordinate();
 
         // Random distance between min and max
         double distance = minDistanceRange + (Math.random() * (maxDistanceRange - minDistanceRange));
@@ -182,5 +192,9 @@ public class MutaliskMissile extends Missile {
         double targetY = ownerCenterY + distance * Math.sin(angle);
 
         return new Point(targetX, targetY);
+    }
+
+    public boolean isBileBit() {
+        return isBileBit;
     }
 }

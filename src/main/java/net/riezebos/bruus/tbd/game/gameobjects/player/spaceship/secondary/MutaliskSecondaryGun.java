@@ -1,5 +1,8 @@
 package net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.secondary;
 
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.Missile;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.MissileManager;
+import net.riezebos.bruus.tbd.game.gameobjects.missiles.missiletypes.MutaliskMissile;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.Explosion;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionConfiguration;
 import net.riezebos.bruus.tbd.game.gameobjects.neutral.ExplosionManager;
@@ -7,9 +10,11 @@ import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerSpecialAttackTypes;
 import net.riezebos.bruus.tbd.game.gameobjects.player.PlayerStats;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SecondaryPlayerGun;
 import net.riezebos.bruus.tbd.game.gameobjects.player.spaceship.SpaceShip;
+import net.riezebos.bruus.tbd.game.gamestate.GameState;
 import net.riezebos.bruus.tbd.game.items.ItemEnums;
 import net.riezebos.bruus.tbd.game.items.PlayerInventory;
 import net.riezebos.bruus.tbd.game.items.items.mutalisk.InstantViralEruption;
+import net.riezebos.bruus.tbd.game.items.items.mutalisk.ViralEruptionBileBits;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.AnimationManager;
 import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteAnimation;
@@ -24,11 +29,13 @@ public class MutaliskSecondaryGun extends SecondaryPlayerGun {
     public static float damagePerTickBonus = 0.175f;
     public static float damageModifier = 1.5f;
     public int ticksCounted = 0;
+    public static float bileBitsMaxChargeSeconds = 2f;
+    private double chargeStartTime = 0;
 
 
     public MutaliskSecondaryGun() {
         initBlankChargeUpAnim();
-        // MAAK EEN KEUZE: Doet het % van maxHealth? Dan helpt max hitpoints scaling alleen tegen enemies en heeft het hier geen synergy
+        // todo MAAK EEN KEUZE: Doet het % van maxHealth? Dan helpt max hitpoints scaling alleen tegen enemies en heeft het hier geen synergy
         //               OF: Doet het een vaste hoeveelheid? (Huidig) nu heb je het probleem dat health regen dit eventueel kan outscalen?
         hitPointsPerTick = PlayerStats.mutaliskBaseHitpoints * healthPercentagePerTick;
     }
@@ -91,7 +98,23 @@ public class MutaliskSecondaryGun extends SecondaryPlayerGun {
         chargingUpAnimation.setVisible(false);
         ticksCounted = 0;
         ExplosionManager.getInstance().addExplosion(explosion);
+        handleVileEruptionBileBits(owner);
     }
+
+    private void handleVileEruptionBileBits(SpaceShip owner){
+        if(PlayerInventory.getInstance().getItemFromInventoryIfExists(ItemEnums.ViralEruptionBileBits) != null){
+            double secondsCharged = GameState.getInstance().getGameSeconds() - chargeStartTime;
+            float chargeRatio = Math.clamp((float) secondsCharged / bileBitsMaxChargeSeconds, 0f, 1f);
+            int bileBitCount = Math.round(1 + (ViralEruptionBileBits.maxBileBits - 1) * chargeRatio);
+
+            for(int i = 0; i < bileBitCount; i++){
+                Missile bileBit = MutaliskMissile.createBileBit(owner, 200, 375, 4f);
+                MissileManager.getInstance().addExistingMissile(bileBit);
+            }
+        }
+    }
+
+
 
     private void handleMutaliskSpecialAttack(SpaceShip owner) {
         if (!owner.isVisible() || owner.getCurrentHitpoints() <= 0){
@@ -121,6 +144,9 @@ public class MutaliskSecondaryGun extends SecondaryPlayerGun {
 
         chargingUpAnimation.setCenterCoordinates(owner.getCenterXCoordinate(), owner.getCenterYCoordinate());
         owner.setCurrentHitpoints(owner.getCurrentHitpoints() - hitPointsPerTick);
+        if(ticksCounted == 0){
+            chargeStartTime = GameState.getInstance().getGameSeconds();
+        }
         ticksCounted += 1;
     }
 
