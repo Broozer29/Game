@@ -25,6 +25,8 @@ Sprites, effects, explosions, music and sounds.
   - Windows: the system media session (`GlobalSystemMediaTransportControlsSessionManager`) gives title, artist, play state and play/pause/skip for any media app, Spotify included. It is a Windows API, so Java needs a small native bridge or helper program (not verified)
   - macOS: AppleScript `tell application "Spotify"` can read the track, its position and length, and play, pause and skip, the same way `MacOSMediaPlayer` already controls Apple Music. macOS asks the player for permission once (not verified)
   - Track position and length are needed because the level ends when the song ends; whether the Windows session reports them reliably is not verified
+  - Built 2026-10-28, not yet in a menu: `MacOSMediaPlayer` controls Apple Music or Spotify (`DevTestSettings.macOSPlayerUsesSpotify`), `WindowsMediaPlayer` controls Spotify through a background PowerShell process (`DevTestSettings.useWindowsSpotify`), and `AudioManager.testMusicMediaPlayerConnection()` backs a "test connection" button
+  - Still to check: the Spotify path on macOS, and all of `WindowsMediaPlayer` on a Windows machine (does Spotify report position and length, does jumping to 0 work)
 - Let players add their own music folder
   - Fixes the "local files" bug above. JavaFX plays WAV, MP3 and AAC (m4a), not OGG
 - Store the music as MP3 or AAC instead of WAV

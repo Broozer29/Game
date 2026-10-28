@@ -6,6 +6,8 @@ public class DevTestSettings {
     public static boolean blockMusic = false; // if true: does NOT activate music during levels, making it impossible to
                                               // end the level too and breaks localfiles audio
     public static boolean useItunes = false;
+    public static boolean macOSPlayerUsesSpotify = false; // if true: the macOS media player controls the Spotify desktop app instead of Apple Music
+    public static boolean useWindowsSpotify = false; // if true: music comes from the Spotify desktop app on Windows, through the Windows media controls
     public static boolean stressTestSpawns = false; // if true: directors receive 5x spawn credits, for memory and performance test runs
     public static boolean enablePlayerMovingPastBoundaries = false; // if true: allow the player to move outside the
                                                                     // screen

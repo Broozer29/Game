@@ -10,7 +10,8 @@ import net.riezebos.bruus.tbd.game.level.enums.LevelTypes;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.AudioEnums;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.enums.MusicMediaPlayer;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.MacOSMediaPlayer;
-import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.SpotifyMediaPlayer;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.MediaPlayerConnectionResult;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.WindowsMediaPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,14 +23,19 @@ public class AudioManager {
     private AudioDatabase audioDatabase = AudioDatabase.getInstance();
     private AudioEnums currentSong;
     private Map<AudioEnums, Long> lastPlayTimeMap = new HashMap<>();
-    private MusicMediaPlayer musicMediaPlayer = DevTestSettings.useItunes ? MusicMediaPlayer.iTunesMacOS : MusicMediaPlayer.LocalFiles;
+//    private MusicMediaPlayer musicMediaPlayer = MusicMediaPlayer.iTunesMacOS;
+    private MusicMediaPlayer musicMediaPlayer = DevTestSettings.useItunes ? MusicMediaPlayer.iTunesMacOS
+            : DevTestSettings.useWindowsSpotify ? MusicMediaPlayer.SpotifyWindows : MusicMediaPlayer.LocalFiles;
     private MacOSMediaPlayer macOSMediaPlayer = MacOSMediaPlayer.getInstance();
-    private SpotifyMediaPlayer spotifyMediaPlayer = SpotifyMediaPlayer.getInstance();
+    private WindowsMediaPlayer windowsMediaPlayer = WindowsMediaPlayer.getInstance();
     private double predictedEndGameSeconds = -1; // Predicted game seconds when the song will end
     private double lastSyncGameSeconds = -1; // Initialize to a value ensuring immediate sync on the first check
     private AlarakBarker alarakBarker = new AlarakBarker();
 
     private AudioManager() {
+        if (musicMediaPlayer == MusicMediaPlayer.SpotifyWindows) {
+            windowsMediaPlayer.warmUp();
+        }
     }
 
     //Resets the manager
@@ -123,8 +129,9 @@ public class AudioManager {
             macOSMediaPlayer.stopPlayback();
             macOSMediaPlayer.resetCurrentSeconds();
         }
-        if (this.musicMediaPlayer == MusicMediaPlayer.Spotify && !DevTestSettings.devTestMuteMode) {  //if mute mode is on, dont stop playback since it shouldnt have started
-            spotifyMediaPlayer.stopPlayback();
+        if (this.musicMediaPlayer == MusicMediaPlayer.SpotifyWindows && !DevTestSettings.devTestMuteMode) {  //if mute mode is on, dont stop playback since it shouldnt have started
+            windowsMediaPlayer.stopPlayback();
+            windowsMediaPlayer.resetCurrentSeconds();
         }
     }
 
@@ -156,6 +163,20 @@ public class AudioManager {
 
     public void setMusicMediaPlayer(MusicMediaPlayer musicMediaPlayer) {
         this.musicMediaPlayer = musicMediaPlayer;
+        if (musicMediaPlayer == MusicMediaPlayer.SpotifyWindows) {
+            windowsMediaPlayer.warmUp();
+        }
+    }
+
+    //Checks that the chosen music app answers the game, for a "test connection" button.
+    //Blocks for a few seconds at most (up to 14 the first time on Windows), so call it off the game loop
+    public MediaPlayerConnectionResult testMusicMediaPlayerConnection() {
+        if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
+            return macOSMediaPlayer.testConnection();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.SpotifyWindows) {
+            return windowsMediaPlayer.testConnection();
+        }
+        return new MediaPlayerConnectionResult(true, "Local music files need no connection");
     }
 
     public void tryToDisposeBackgroundMusic() {
@@ -214,8 +235,8 @@ public class AudioManager {
     private boolean hasStartedMusic() {
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
             return macOSMediaPlayer.hasStartedMusic();
-        } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
-            return spotifyMediaPlayer.hasStartedMusic();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.SpotifyWindows) {
+            return windowsMediaPlayer.hasStartedMusic();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             return this.backGroundMusic != null && this.backGroundMusic.isRunning();
         }
@@ -225,8 +246,8 @@ public class AudioManager {
     private void stopPlayback() {
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
             macOSMediaPlayer.stopPlayback();
-        } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
-            spotifyMediaPlayer.stopPlayback();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.SpotifyWindows) {
+            windowsMediaPlayer.stopPlayback();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             if (backGroundMusic != null) {
                 backGroundMusic.stopClip();
@@ -237,8 +258,8 @@ public class AudioManager {
     private void goToNextSong() {
         if (this.musicMediaPlayer == MusicMediaPlayer.iTunesMacOS) {
             macOSMediaPlayer.goToNextSong();
-        } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
-            spotifyMediaPlayer.goToNextSong();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.SpotifyWindows) {
+            windowsMediaPlayer.goToNextSong();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             //idk moet dit iets doen? Reset de clip en stop hem voor de zekerheid, mogelijk geheel onnodig
             releaseBackgroundMusic(); //release het attribuut voor de volgende
@@ -246,13 +267,13 @@ public class AudioManager {
     }
 
     private boolean shouldResync(double currentGameSeconds) {
-        if(predictedEndGameSeconds <= 0){
+        if (predictedEndGameSeconds <= 0) {
             return true;
         }
 
         // Default resync interval
         double resyncInterval = 10;
-        if(this.musicMediaPlayer == MusicMediaPlayer.LocalFiles || LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
+        if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles || LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss)) {
             resyncInterval = 2; //local files can sync much more without issues
         }
 
@@ -273,10 +294,10 @@ public class AudioManager {
             macOSMediaPlayer.synchronizePlaybackInfo();
             actualCurrentSeconds = macOSMediaPlayer.getCurrentSeconds();
             totalSeconds = macOSMediaPlayer.getTotalSeconds();
-        } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
-            spotifyMediaPlayer.synchronizePlaybackInfo();
-            actualCurrentSeconds = spotifyMediaPlayer.getCurrentSeconds();
-            totalSeconds = spotifyMediaPlayer.getTotalSeconds();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.SpotifyWindows) {
+            windowsMediaPlayer.synchronizePlaybackInfo();
+            actualCurrentSeconds = windowsMediaPlayer.getCurrentSeconds();
+            totalSeconds = windowsMediaPlayer.getTotalSeconds();
         } else if (this.musicMediaPlayer == MusicMediaPlayer.LocalFiles) {
             if (backGroundMusic != null) {
                 actualCurrentSeconds = backGroundMusic.getCurrentSecondsInPlayback();
@@ -318,11 +339,11 @@ public class AudioManager {
             double trackDuration = macOSMediaPlayer.getTotalSeconds();
             predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + trackDuration;
             lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
-        } else if (this.musicMediaPlayer == MusicMediaPlayer.Spotify) {
-            spotifyMediaPlayer.setPlaybackPositionTo0();
-            spotifyMediaPlayer.startPlayback();
+        } else if (this.musicMediaPlayer == MusicMediaPlayer.SpotifyWindows) {
+            windowsMediaPlayer.setPlaybackPositionTo0();
+            windowsMediaPlayer.startPlayback();
 
-            double trackDuration = spotifyMediaPlayer.getTotalSeconds();
+            double trackDuration = windowsMediaPlayer.getTotalSeconds();
             predictedEndGameSeconds = GameState.getInstance().getGameSeconds() + trackDuration;
             lastSyncGameSeconds = GameState.getInstance().getGameSeconds();
         }
@@ -357,11 +378,11 @@ public class AudioManager {
             } else {
                 macOSMediaPlayer.stopPlayback();
             }
-        } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.Spotify)) {
+        } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.SpotifyWindows)) {
             if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) && backGroundMusic != null) {
                 backGroundMusic.pauseClip();
             } else {
-                spotifyMediaPlayer.stopPlayback();
+                windowsMediaPlayer.stopPlayback();
             }
         }
     }
@@ -385,11 +406,11 @@ public class AudioManager {
             } else {
                 macOSMediaPlayer.resumePlayback();
             }
-        } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.Spotify)) {
+        } else if (this.musicMediaPlayer.equals(MusicMediaPlayer.SpotifyWindows)) {
             if (LevelManager.getInstance().getLevelType().equals(LevelTypes.Boss) && backGroundMusic != null) {
                 backGroundMusic.resumeClip();
             } else {
-                spotifyMediaPlayer.resumePlayback();
+                windowsMediaPlayer.resumePlayback();
             }
         }
 

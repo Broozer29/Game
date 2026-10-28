@@ -1,5 +1,7 @@
 package net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers;
 
+import net.riezebos.bruus.tbd.DevTestSettings;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,10 +35,15 @@ public class MacOSMediaPlayer {
         return instance;
     }
 
+    // Apple Music or Spotify, both desktop apps understand the same AppleScript commands used below
+    private String getAppName() {
+        return DevTestSettings.macOSPlayerUsesSpotify ? "Spotify" : "Music";
+    }
+
     public void startPlayback() {
         resetPlaybackInfo();  // Reset before starting new playback
 
-        String script = "tell application \"Music\"\n"
+        String script = "tell application \"" + getAppName() + "\"\n"
                 + "play\n"
                 + "end tell";
 
@@ -48,18 +55,18 @@ public class MacOSMediaPlayer {
     }
 
 
-    // Method to stop playback in Apple Music (asynchronous)
+    // Method to stop playback in Apple Music or Spotify (asynchronous)
     public void stopPlayback() {
-        executeAppleScriptAsync("tell application \"Music\" to pause");
+        executeAppleScriptAsync("tell application \"" + getAppName() + "\" to pause");
     }
 
     public void resumePlayback() {
-        executeAppleScriptAsync("tell application \"Music\" to play");
+        executeAppleScriptAsync("tell application \"" + getAppName() + "\" to play");
     }
 
     // Method to get the current playback position (in seconds)
     public double getCurrentSecondsInPlayback() {
-        String script = "tell application \"Music\"\n"
+        String script = "tell application \"" + getAppName() + "\"\n"
                 + "return player position\n"
                 + "end tell";
         return executeAppleScriptWithDoubleResult(script);
@@ -67,14 +74,18 @@ public class MacOSMediaPlayer {
 
     // Method to get the total duration of the currently playing track (in seconds)
     public double getTotalSecondsInPlayback() {
-        return executeAppleScriptWithDoubleResult(
-                "tell application \"Music\" to return duration of current track");
+        double duration = executeAppleScriptWithDoubleResult(
+                "tell application \"" + getAppName() + "\" to return duration of current track");
+        if (DevTestSettings.macOSPlayerUsesSpotify && duration > 0) {
+            duration = duration / 1000; // Spotify gives the duration in milliseconds, Apple Music in seconds
+        }
+        return duration;
     }
 
 
     // Set the current playback position in seconds (asynchronous)
     public void setPlaybackPositionTo0() {
-        String script = "tell application \"Music\" to set player position to 0";
+        String script = "tell application \"" + getAppName() + "\" to set player position to 0";
         executeAppleScriptAsync(script);
         currentSeconds = 0;
         totalSeconds = 0;
@@ -113,9 +124,9 @@ public class MacOSMediaPlayer {
     }
 
 
-    // Method to skip to the next song in Apple Music
+    // Method to skip to the next song in Apple Music or Spotify
     public void goToNextSong() {
-        executeAppleScriptAsync("tell application \"Music\" to next track");
+        executeAppleScriptAsync("tell application \"" + getAppName() + "\" to next track");
     }
 
     // Method to reset playback state
@@ -168,7 +179,7 @@ public class MacOSMediaPlayer {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 if ((line = reader.readLine()) != null) {
-                    result = Double.parseDouble(line.trim());
+                    result = Double.parseDouble(line.trim().replace(',', '.')); // Some locales write a decimal comma
                 }
             } catch (IOException e) {
                 return -1;
@@ -187,6 +198,38 @@ public class MacOSMediaPlayer {
         return result;
     }
 
+
+    // Asks Apple Music or Spotify what it is playing, to check that it receives our commands. Blocks for up to 3 seconds
+    public MediaPlayerConnectionResult testConnection() {
+        String appName = getAppName();
+        if (!MediaPlayerProcesses.isMacOS()) {
+            return new MediaPlayerConnectionResult(false, "Controlling " + appName + " this way only works on macOS");
+        }
+        // Checked first because any AppleScript command would open the app
+        if (!MediaPlayerProcesses.isRunning("/" + appName + ".app/Contents/MacOS/" + appName)) {
+            return new MediaPlayerConnectionResult(false, appName + " is not running. Open it and start a playlist");
+        }
+
+        String script = "tell application \"" + appName + "\"\n"
+                + "set trackName to \"\"\n"
+                + "try\n"
+                + "set trackName to (artist of current track) & \" - \" & (name of current track)\n"
+                + "end try\n"
+                + "return (player state as string) & \"|\" & trackName\n"
+                + "end tell";
+        MediaPlayerProcesses.Output output = MediaPlayerProcesses.run(3000, "osascript", "-e", script);
+        if (!output.succeeded()) {
+            if (output.stderr().contains("-1743")) {
+                return new MediaPlayerConnectionResult(false, "macOS doesn't allow the game to control " + appName
+                        + ". Allow it under System Settings > Privacy & Security > Automation");
+            }
+            return new MediaPlayerConnectionResult(false, appName + " did not answer: " + output.stderr());
+        }
+
+        String[] parts = output.stdout().split("\\|", 2);
+        String trackName = parts.length > 1 && !parts[1].isEmpty() ? parts[1] : "no song selected";
+        return new MediaPlayerConnectionResult(true, "Connected to " + appName + ": " + parts[0] + ", " + trackName);
+    }
 
     public double getCurrentSeconds() {
         return currentSeconds;

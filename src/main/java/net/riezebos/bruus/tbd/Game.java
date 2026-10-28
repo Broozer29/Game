@@ -14,6 +14,8 @@ import net.riezebos.bruus.tbd.game.movement.Direction;
 import net.riezebos.bruus.tbd.game.movement.Point;
 import net.riezebos.bruus.tbd.guiboards.BoardManager;
 import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioDatabase;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.AudioManager;
+import net.riezebos.bruus.tbd.visualsandaudio.data.audio.osmediaplayers.MediaPlayerConnectionResult;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageDatabase;
 import net.riezebos.bruus.tbd.visualsandaudio.data.image.ImageResizer;
 
@@ -84,6 +86,8 @@ public class Game {
 
                             exportItemDescriptions();
                             assetsLoaded = true;
+                            MediaPlayerConnectionResult result = AudioManager.getInstance().testMusicMediaPlayerConnection();
+                            System.out.println(result);
 
                             // Finish initialization back on EDT
                             EventQueue.invokeLater(() -> {

@@ -2,6 +2,12 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-28
+
+### Added
+- Spotify as a music source without the Spotify API: on macOS the Apple Music player can control the Spotify app instead (dev test switch for now), and a new Windows player controls the Spotify app through the Windows media controls. Neither is in a menu yet.
+- A connection test for the chosen music app, for a future "test connection" button. It reports whether the app answers and what it is playing.
+
 ## 2026-10-14
 
 ### Changed
