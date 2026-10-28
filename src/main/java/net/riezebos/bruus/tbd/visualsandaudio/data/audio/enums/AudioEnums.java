@@ -34,7 +34,7 @@ public enum AudioEnums {
     mainmenu,
     Blood_On_The_Dancefloor,
     Lemmino_Firecracker,
-    VendlaSonrisa,
+    DeathMusic,
     nomad,
     NotEnoughMinerals,
     BroodlingAttached, //unused but the idea behind this audio effect is still interesting/cool

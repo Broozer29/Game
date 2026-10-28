@@ -8,38 +8,36 @@ import net.riezebos.bruus.tbd.visualsandaudio.objects.SpriteConfigurations.Sprit
 
 //Used to end the game
 public class Portal extends GameObject {
-	
-	private boolean spawned = false;
-	private boolean isFinalBossPortal = false;
 
-	public Portal(SpriteAnimationConfiguration spriteAnimationConfiguration, boolean isFinalBossPortal){
-		super(spriteAnimationConfiguration);
+    private boolean spawned = false;
+    private boolean isFinalBossPortal = false;
+
+    public Portal(SpriteAnimationConfiguration spriteAnimationConfiguration, boolean isFinalBossPortal) {
+        super(spriteAnimationConfiguration);
         this.isFinalBossPortal = isFinalBossPortal;
-		this.animation.setOriginCoordinates(spriteAnimationConfiguration.getSpriteConfiguration().getxCoordinate(),
-				spriteAnimationConfiguration.getSpriteConfiguration().getyCoordinate());
-		this.animation.cropAnimation();
+        this.animation.setOriginCoordinates(spriteAnimationConfiguration.getSpriteConfiguration().getxCoordinate(),
+                spriteAnimationConfiguration.getSpriteConfiguration().getyCoordinate());
+        this.animation.cropAnimation();
 
-	}
-	
-	public void setSpawned(boolean spawned) {
-		this.spawned = spawned;
-	}
-	
-	public boolean isSpawned () {
-		return this.spawned;
-	}
-
-    public void activatePortal(){
-        LevelManager.getInstance().finishLevel();
-        if(isFinalBossPortal){
-            GameState.getInstance().setSpawnFinalBoss(true);
-            GameState.getInstance().setGameState(GameStatusEnums.Show_Level_Score_Card);
-        } else {
-            GameState.getInstance().setGameState(GameStatusEnums.Show_Level_Score_Card);
-        }
     }
 
-    public void despawnPortal(){
+    public void setSpawned(boolean spawned) {
+        this.spawned = spawned;
+    }
+
+    public boolean isSpawned() {
+        return this.spawned;
+    }
+
+    public void activatePortal() {
+        LevelManager.getInstance().finishLevel();
+        if (isFinalBossPortal) {
+            GameState.getInstance().setSpawnFinalBoss(true);
+        }
+        GameState.getInstance().setGameState(GameStatusEnums.Show_Level_Score_Card);
+    }
+
+    public void despawnPortal() {
         this.setTransparancyAlpha(true, 1.0f, -0.02f);
         this.setSpawned(false);
     }

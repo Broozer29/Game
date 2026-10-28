@@ -123,6 +123,8 @@ public class GameState {
 
         if(ingame == GameStatusEnums.Paused) {
             this.setLastPause();
+        } else if(ingame == GameStatusEnums.Show_Level_Score_Card || ingame == GameStatusEnums.Dead){
+            BoardManager.getInstance().getGameBoard().setSysMillisSinceScoreScreenShowed(System.currentTimeMillis());
         }
     }
 

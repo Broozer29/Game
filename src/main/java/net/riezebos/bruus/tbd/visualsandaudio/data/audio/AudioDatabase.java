@@ -35,7 +35,7 @@ public class AudioDatabase {
         put(AudioEnums.Lemmino_Firecracker, 1);
         put(AudioEnums.Filth, 1);
         put(AudioEnums.GodRunDetected, 1);
-        put(AudioEnums.VendlaSonrisa, 1);
+        put(AudioEnums.DeathMusic, 1);
         put(AudioEnums.mainmenu, 1);
         put(AudioEnums.GenericError, 3);
         put(AudioEnums.ScarabExplosion, 2);

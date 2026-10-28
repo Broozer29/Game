@@ -217,6 +217,7 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         hasChosenRelic = false;
         relicSelectionEnabled = false;
         selectedComponent = null;
+        hasResetSave = false;
         BoardManager.getInstance().getShopBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
         BoardManager.getInstance().getDifficultySelectionBoard().updateSelectedDifficultyIcons(); //manually update the last selected difficulties
 
@@ -345,12 +346,13 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     private void playDeathMusic() {
         audioManager.stopMusicAudio();
         audioManager.getAlarakBarker().playPlayerDeathBark();
-        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.VendlaSonrisa, true);
+        audioManager.playDefaultBackgroundMusicForALevel(AudioEnums.DeathMusic, true);
     }
 
     // Draw the game over screen
     private boolean isPlayingDeathMusic = false;
     private boolean hasExportedLogs = false;
+    private boolean hasResetSave = false;
 
     //todo this whole method is unbelievable inefficient and sloppily coded, requires a refactor
     private void drawEndOfLevelScreen(Graphics2D g, boolean hasSurvived) {
@@ -372,9 +374,10 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
             isPlayingDeathMusic = true;
         }
 
-        if(!hasSurvived || GameState.getInstance().isFinalBossDefeated()) {
+        if ((!hasSurvived || GameState.getInstance().isFinalBossDefeated()) && !hasResetSave) {
             LevelManager.getInstance().resetBossUsed();
             SaveManager.getInstance().deleteSaveFile();
+            hasResetSave = true;
         }
 
         //Create font
@@ -1412,6 +1415,9 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
     }
 
     // The relic screen, score card and game over act on what MenuInput reports
+    private double sysMillisSinceScoreScreenShowed = 0;
+    private static double SCORE_SCREEN_DISPLAY_TIME = 2000;
+
     private void executeMenuScreenInput(GameStatusEnums screenState) {
         for (MenuAction action : MenuInput.getInstance().poll()) {
             if (screenState == GameStatusEnums.SelectingRelic) {
@@ -1431,21 +1437,16 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
                     selectedComponent.activateComponent();
                     return;
                 }
-            } else if (action == MenuAction.ANY_BUTTON) {
-                if (screenState == GameStatusEnums.Show_Level_Score_Card) {
-                    if(GameState.getInstance().isFinalBossDefeated()) {
-                        gameState.setGameState(GameStatusEnums.Level_Completed);
-                        BoardManager.getInstance().switchScreen(BoardManager.ScreenType.MAIN_MENU);
-                        resetGame();
-                    } else {
-                        gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
-                    }
-                } else {
-                    boardManager.initMainMenu();
-                    GameStatsTracker.getInstance().resetGameStatsTracker();
-                    drawTimer.stop();
+            } else if(screenState == GameStatusEnums.Dead && System.currentTimeMillis() > sysMillisSinceScoreScreenShowed + SCORE_SCREEN_DISPLAY_TIME){
+                boardManager.initMainMenu();
+                GameStatsTracker.getInstance().resetGameStatsTracker();
+                drawTimer.stop();
+            } else if(screenState == GameStatusEnums.Show_Level_Score_Card && System.currentTimeMillis() > sysMillisSinceScoreScreenShowed + SCORE_SCREEN_DISPLAY_TIME){
+                if (!GameState.getInstance().isFinalBossDefeated()) {
+                    gameState.setGameState(GameStatusEnums.Transition_To_Next_Stage);
+                    return;
                 }
-                return;
+                gameState.setGameState(GameStatusEnums.Level_Completed);
             }
         }
     }
@@ -1582,4 +1583,11 @@ public class GameBoard extends JPanel implements ActionListener, TimerHolder {
         }
     }
 
+    public double getSysMillisSinceScoreScreenShowed() {
+        return sysMillisSinceScoreScreenShowed;
+    }
+
+    public void setSysMillisSinceScoreScreenShowed(double sysMillisSinceScoreScreenShowed) {
+        this.sysMillisSinceScoreScreenShowed = sysMillisSinceScoreScreenShowed;
+    }
 }
