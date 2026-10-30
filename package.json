@@ -1,0 +1,10 @@
+{
+  "name": "game-scripts",
+  "private": true,
+  "description": "Commands for the agents dashboard's Workbench; the game itself builds with Maven.",
+  "scripts": {
+    "build": "mvn package",
+    "start": "node scripts/run/run-game.mjs",
+    "start:profiler": "node scripts/run/run-game.mjs --profile"
+  }
+}
