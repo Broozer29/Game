@@ -2,6 +2,11 @@
 
 All notable changes on the `Nelis` branch.
 
+## 2026-10-30
+
+### Added
+- Internal: `package.json` with `build` (`mvn package`), `start` and `start:profiler` for the agents dashboard's Workbench; `scripts/run/run-game.mjs` runs the jar with the "Run Game" memory settings, and with `--profile` records a Flight Recorder profile, a native-memory summary and a GC log into `target/perf`, as the "Run Game (recording memory)" launch configuration does. Nothing changes for players.
+
 ## 2026-10-21
 
 ### Added
